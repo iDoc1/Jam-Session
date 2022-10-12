@@ -1,8 +1,8 @@
 from rest_framework.routers import DefaultRouter
-from .views import InstrumentViewSet
+from .views import GenreViewSet
 
 
 router = DefaultRouter()
-router.register(r'instruments', InstrumentViewSet)
+router.register(r'genres', GenreViewSet)
 
 urlpatterns = router.urls
