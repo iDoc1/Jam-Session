@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist',
     'djoser',
     'accounts',
@@ -160,7 +161,7 @@ EMAIL_USE_TLS = True
 
 # Djoser configuration
 DOMAIN = 'localhost:3000'  # REMOVE FOR BUILD DEPLOYMENT
-SITE_NAME = 'Frontend'  # REMOVE FOR BUILD DEPLOYMENT
+SITE_NAME = 'Jam Session'
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,

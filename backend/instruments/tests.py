@@ -70,3 +70,15 @@ class InstrumentTestCase(TestCase):
         """
         response = self.client.delete(f'/api/instruments/{self.instrument.id}/')
         self.assertEqual(response.status_code, 204)
+
+    def test_create_duplicate_instrument(self):
+        """
+        Attempts to create a duplicate instrument
+        """
+        error_occurred = False
+        try:
+            Instrument.objects.create(name='vocals')
+        except:
+            error_occurred = True
+        finally:
+            self.assertTrue(error_occurred)

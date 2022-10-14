@@ -70,3 +70,15 @@ class GenreTestCase(TestCase):
         """
         response = self.client.delete(f'/api/genres/{self.genre.id}/')
         self.assertEqual(response.status_code, 204)
+
+    def test_create_duplicate_genre(self):
+        """
+        Attempts to create a duplicate genre
+        """
+        error_occurred = False
+        try:
+            Genre.objects.create(name='rock')
+        except:
+            error_occurred = True
+        finally:
+            self.assertTrue(error_occurred)

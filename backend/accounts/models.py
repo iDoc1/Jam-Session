@@ -22,12 +22,8 @@ class UserAccountManager(BaseUserManager):
         # Create the UserAccount
         email = self.normalize_email(email)
         user = self.model(email=email)
-        user.set_password(password)  # Create hashed version of password
+        user.set_password(password)  # Creates hashed version of password
         user.save()
-
-        # Create a UserProfile for this UserAccount
-        user = UserAccount.objects.get(id=user.id)
-        UserProfile.objects.create(user=user)
         return user
 
     def create_superuser(self, email, password):
