@@ -98,3 +98,10 @@ button:hover {
 .needAccount > span > a {
     color: black;
 }
+
+.success-message{
+    color: green;
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+}
