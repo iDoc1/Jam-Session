@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./style.css"
 import axios from "axios";
 
@@ -20,114 +20,113 @@ interface SignUpState {
     },
     success: boolean
 }
+// <SignUpProps, SignUpState>
 
-export class SignUp extends React.Component<SignUpProps, SignUpState>{
-    constructor(props: SignUpProps) {
-        super(props)
-        const initialState = {
-            email : '',
-            password : '',
-            repeatPassword : '',
-            errors : {
-                email : '',
-                password : '',
-                repeatPassword : ''
-            },
-            success: false
-        }
-        this.state = initialState;
-        this.handleChange = this.handleChange.bind(this)
-    }
-    handleChange = (event: any) => {
+function SignUp() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [repeatPassword, setRepeatPassword] = useState('');
+    const [errors, setErrors] = useState({
+        email : '',
+        password : '',
+        repeatPassword : ''
+    })
+    const [success, setSuccess] = useState(false)
+    
+    const handleChange = (event: any) => {
         event.preventDefault()
         const { name, value } = event.target;
-        let errors = this.state.errors;
         switch( name ) {
             case 'email':
                 errors.email = emailRegex.test(value)? '': 'Email is not valid!';
+                setEmail(value)
                 break
             case 'password':
                 errors.password = value.length < 8 ? 'Password must be eight characters long!': '';
+                setPassword(value)
                 break
             case 'repeatPassword':
-                errors.repeatPassword = this.state.password === event.target.value? '': 'Password do not match!';
+                errors.repeatPassword = password === event.target.value? '': 'Password do not match!';
+                setRepeatPassword(value)
                 break
             default:
                 break
         }
-        this.setState(Object.assign(this.state, {errors, [name]: value}))
+        console.log(email,password,repeatPassword);
+        
+        // this.setState(Object.assign(this.state, {errors, [name]: value}))
     }
-    handleSubmit = async (event:any) => {
+    const handleSubmit = async (event:any) => {
         event.preventDefault();
+        console.log('here');
+        
         try{
             const body = {
-                    "email": this.state.email,
-                    "password": this.state.password,
-                    "re_password": this.state.repeatPassword
+                    "email": email,
+                    "password": password,
+                    "re_password": repeatPassword
                 }
             
             const response = await axios.post(
                 'http://localhost:8000/auth/users/',
                 body
                 )
-            this.setState({success: true})
+            
+            setSuccess(true)
             console.log('success')
         }
         catch(err:any){
-
+            console.log(err);
+            
             if (err.response.data.email) {
                 // Error string isn't capitalized
                 let string = err.response.data.email[0]
-                const errors = {...this.state.errors, 'email': string[0].toUpperCase() + string.slice(1)};
+                const new_errors = {...errors, 'email': string[0].toUpperCase() + string.slice(1)};
                 
-                this.setState({errors})
-                console.log('email err', this.state);
+                setErrors(new_errors)
+
 
                 
             }
             if (err.response.data.password) {
-                const errors = {...this.state.errors, 'password': err.response.data.password[0]};
+                const new_errors = {...errors, 'password': err.response.data.password[0]};
                 
-                this.setState({errors})
-                console.log('password err', this.state);
+                setErrors(new_errors)
+                // console.log('password err', this.state);
 
             }
-            // console.log(err);
-            // console.log(err.response.data.password[0]);
         }
+        console.log('there');
         
     }
+    return (
+        <div className='wrapper'>
+        <div className='form-wrapper'>
+            <h2>Sign Up</h2>
+            <form onSubmit={handleSubmit} noValidate >
+                <div className='email'>
+                    <label htmlFor="email">Email</label>
+                    <input type='email' name='email' onChange={handleChange}/>
+                    {email.length > 0 && <span style={{color: 'red'}}>{errors.email}</span>}
+                </div>
+                <div className='password'>
+                    <label htmlFor="password">Password</label>
+                    <input type='password' name='password' onChange={handleChange}/>
+                    {password.length > 0 && <span style={{color: 'red'}}>{errors.password}</span>}
+                </div>              
+                <div className='repeatPassword'>
+                    <label htmlFor="repeatPassword">Repeat Password</label>
+                    <input type='password' name='repeatPassword' onChange={handleChange}/>
+                    {repeatPassword.length > 0 && errors.password !== errors.repeatPassword && <span style={{color: 'red'}}>{errors.repeatPassword}</span>}
+                </div>              
+                <div className='submit'>
+                    <button>Register Me</button>
+                </div>
+            {success? <span className='success-message'>Account created! Check email to complete sign up</span>:<></>}
 
-    render() {
-        const { errors } = this.state
-        return (
-          <div className='wrapper'>
-            <div className='form-wrapper'>
-               <h2>Sign Up</h2>
-               <form onSubmit={this.handleSubmit} noValidate >
-                    <div className='email'>
-                        <label htmlFor="email">Email</label>
-                        <input type='email' name='email' onChange={this.handleChange}/>
-                        {errors.email.length > 0 && <span style={{color: 'red'}}>{errors.email}</span>}
-                    </div>
-                    <div className='password'>
-                        <label htmlFor="password">Password</label>
-                        <input type='password' name='password' onChange={this.handleChange}/>
-                        {errors.password.length > 0 && <span style={{color: 'red'}}>{errors.password}</span>}
-                    </div>              
-                    <div className='repeatPassword'>
-                        <label htmlFor="repeatPassword">Repeat Password</label>
-                        <input type='password' name='repeatPassword' onChange={this.handleChange}/>
-                        {errors.repeatPassword.length > 0 && errors.password !== errors.repeatPassword && <span style={{color: 'red'}}>{errors.repeatPassword}</span>}
-                    </div>              
-                    <div className='submit'>
-                        <button>Register Me</button>
-                    </div>
-                {this.state.success? <span className='success-message'>Account created! Check email to complete sign up</span>:<></>}
-
-             </form>
-         </div>
-      </div>
-     );
-    }
-}
+            </form>
+        </div>
+    </div>
+    );
+};
+export default SignUp
