@@ -52,14 +52,10 @@ function SignUp() {
             default:
                 break
         }
-        console.log(email,password,repeatPassword);
         
-        // this.setState(Object.assign(this.state, {errors, [name]: value}))
     }
     const handleSubmit = async (event:any) => {
         event.preventDefault();
-        console.log('here');
-        
         try{
             const body = {
                     "email": email,
@@ -73,31 +69,21 @@ function SignUp() {
                 )
             
             setSuccess(true)
-            console.log('success')
         }
         catch(err:any){
-            console.log(err);
-            
             if (err.response.data.email) {
                 // Error string isn't capitalized
                 let string = err.response.data.email[0]
                 const new_errors = {...errors, 'email': string[0].toUpperCase() + string.slice(1)};
                 
                 setErrors(new_errors)
-
-
-                
             }
             if (err.response.data.password) {
                 const new_errors = {...errors, 'password': err.response.data.password[0]};
                 
                 setErrors(new_errors)
-                // console.log('password err', this.state);
-
             }
         }
-        console.log('there');
-        
     }
     return (
         <div className='wrapper'>
