@@ -45,7 +45,7 @@ class UserProfile(models.Model):
     first_name = models.CharField(max_length=75, blank=True, default='')
     last_name = models.CharField(max_length=75, blank=True, default='')
     gender = models.ForeignKey(Gender, blank=True, null=True, on_delete=models.SET_NULL)
-    birth_date = models.DateField(default=get_date_18_years_ago)
+    birth_date = models.DateField(null=True)
     zipcode = models.CharField(max_length=10, blank=True, default='')
     profile_picture_url = models.URLField(null=True, blank=True)
     join_date = models.DateTimeField(default=timezone.now)

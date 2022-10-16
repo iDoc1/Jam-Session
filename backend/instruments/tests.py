@@ -14,7 +14,7 @@ class InstrumentTestCase(TestCase):
         Create authenticated test user and test instrument
         """
         self.client = APIClient()
-        user = UserAccount.objects.create(email='testemail')
+        user = UserAccount.objects.create(email='testemail@test.com')
         self.client.force_authenticate(user=user)
         self.instrument = Instrument.objects.create(name='vocals')
 

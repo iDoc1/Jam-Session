@@ -46,10 +46,24 @@ class CommitmentLevelViewSet(ModelViewSet):
 
 
 class UserProfileViewSet(ModelViewSet):
+    """
+    A viewset for viewing and editing UserProfile instances
+    """
     serializer_class = UserProfileSerializer
-    http_method_names = ['get', 'put', 'patch']  # Only account can be deleted, not profile
+
+    # PUT not allowed since only some fields of UserProfile alloed to be updated
+    http_method_names = ['get', 'patch']  
     
     def get_queryset(self):
+        """
+        Returns the UserProfile associated with the currently authenticated user
+        """
         user = self.request.user
         return UserProfile.objects.filter(user=user)
+
+    def list(self, request, *args, **kwargs):
+        user = request.user
+        profile = UserProfile.objects.get(id=user.id)
+        serializer = UserProfileSerializer(profile)
+        return Response(serializer.data)
 
