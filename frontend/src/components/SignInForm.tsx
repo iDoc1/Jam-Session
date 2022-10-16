@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./style.css"
+import axios from "axios";
 
 const emailRegex = RegExp(/^\s?[A-Z0–9]+[A-Z0–9._+-]{0,}@[A-Z0–9._+-]+\.[A-Z0–9]{2,4}\s?$/i);
 
@@ -33,14 +34,24 @@ function SignIn() {
                 break
         }
     }
-    const handleSubmit = (event:any) => {
+    const handleSubmit = async (event:any) => {
         event.preventDefault();
         if (!email || !password) {           
             setError('Missing Username and/or Password')
             setTimeout(() =>{
                 setError('');
             }, 3000)
+            return
         }
+        const response = await axios.post(
+            'http://localhost:8000/auth/jwt/create/',
+            {
+                "email": email,
+                "password": password
+            }
+        )
+        window.localStorage.setItem('loggedJamSessionUser', JSON.stringify(response.data));
+        
     }
 
     return (

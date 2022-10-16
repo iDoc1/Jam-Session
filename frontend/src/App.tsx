@@ -5,8 +5,8 @@ import SignIn from './components/SignInForm';
 
 function App() {
   return (
-    <SignUp />
-    // <SignIn />
+    // <SignUp />
+    <SignIn />
   );
 }
 
