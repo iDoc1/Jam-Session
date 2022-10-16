@@ -7,15 +7,6 @@ from instruments.models import Instrument
 from genres.models import Genre
 
 
-def get_date_18_years_ago():
-    """
-    Returns the date object representing 18 years ago today. To be used as the default
-    birth date in UserProfile.
-    """
-    eighteen_years_ago = datetime.now() - relativedelta(years=18)
-    return eighteen_years_ago.date()
-
-
 class Gender(models.Model):
     """
     Gender options for users to enter when creating a profile
