@@ -1,5 +1,3 @@
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.utils import timezone
 from backend.settings import AUTH_USER_MODEL

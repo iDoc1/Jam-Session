@@ -1,7 +1,8 @@
-from .models import UserAccount
+from django.db.utils import IntegrityError
 from django.test import TestCase
-from rest_framework.test import APIClient
 from profiles.models import UserProfile
+from .models import UserAccount
+
 
 class GenreTestCase(TestCase):
     """
@@ -28,12 +29,12 @@ class GenreTestCase(TestCase):
         """
         Two accounts with the same email cannot be created
         """
-        UserAccount.objects.create(email='testemail@example.com', password='testpassword')        
-        
+        UserAccount.objects.create(email='testemail@example.com', password='testpassword')
+
         error_occurred = False
         try:
             UserAccount.objects.create(email='testemail@example.com', password='testpassword')
-        except:
+        except IntegrityError:
             error_occurred = True
         finally:
             self.assertTrue(error_occurred)

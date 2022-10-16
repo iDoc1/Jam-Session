@@ -8,7 +8,6 @@ from instruments.models import Instrument
 from .models import CommitmentLevel, Gender, ExperienceLevel
 
 
-
 class UserProfileTestCase(TestCase):
     """
     Tests GET, POST, PUT, and DELETE on the UserProfile urls
@@ -21,7 +20,7 @@ class UserProfileTestCase(TestCase):
         self.client = APIClient()
         user = UserAccount.objects.create(email='testemail@test.com')
         self.client.force_authenticate(user=user)
-        
+
         self.commitment_level = CommitmentLevel(level='Just for fun', rank=1)
         self.gender = Gender.objects.create(gender='Man')
         self.experience_level = ExperienceLevel.objects.create(level='Beginner', rank=1)
@@ -59,7 +58,7 @@ class UserProfileTestCase(TestCase):
             'years_playing': 10,
             'seeking': 'A really cool band to play with',
         }
-        
+
         response = self.client.patch('/api/profiles/1/', data, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['first_name'], 'John')
@@ -78,7 +77,7 @@ class UserProfileTestCase(TestCase):
             'years_playing': 4,
             'seeking': 'A neat band to play with',
         }
-        
+
         response = self.client.patch('/api/profiles/1/', data, format='json')
         data = response.json()
         self.assertEqual(response.status_code, 200)
@@ -118,9 +117,9 @@ class UserProfileTestCase(TestCase):
         """
         data = {
             'instruments': [{
-                'instrument':{'id': 1, 'name': 'guitar'},
+                'instrument': {'id': 1, 'name': 'guitar'},
                 'experience_level': {'id': 1, 'level': 'Beginner', 'rank': 1}
-        }]}
+            }]}
 
         response = self.client.patch('/api/profiles/1/', data, format='json')
         data = response.json()
@@ -133,9 +132,9 @@ class UserProfileTestCase(TestCase):
         """
         data = {
             'instruments': [{
-                'instrument':{'id': 1, 'name': 'guitar'},
+                'instrument': {'id': 1, 'name': 'guitar'},
                 'experience_level': {'id': 1, 'level': 'Beginner', 'rank': 1}
-        }]}
+            }]}
         response = self.client.patch('/api/profiles/1/', data, format='json')  # Add
         removed_data = {'instruments': []}
         response = self.client.patch('/api/profiles/1/', removed_data, format='json')  # Remove
@@ -151,7 +150,7 @@ class UserProfileTestCase(TestCase):
         data = {
             'genres': [
                 {'id': 1, 'genre': 'bass guitar'}
-        ]}
+            ]}
 
         response = self.client.patch('/api/profiles/1/', data, format='json')
         data = response.json()
@@ -165,7 +164,7 @@ class UserProfileTestCase(TestCase):
         data = {
             'genres': [
                 {'id': 1, 'genre': 'bass guitar'}
-        ]}
+            ]}
         response = self.client.patch('/api/profiles/1/', data, format='json')  # Add
         removed_data = {'genres': []}
         response = self.client.patch('/api/profiles/1/', removed_data, format='json')  # Remove
@@ -200,4 +199,3 @@ class UserProfileTestCase(TestCase):
         """
         response = self.client.delete('/api/profiles/1/')
         self.assertEqual(response.status_code, 405)
-

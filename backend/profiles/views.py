@@ -1,14 +1,11 @@
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST
-from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from accounts.models import UserAccount
 from .models import ExperienceLevel, UserInstrument, UserProfile, Gender, CommitmentLevel
 from .serializers import (
-    ExperienceLevelSerializer, 
-    UserInstrumentSerializer, 
-    UserProfileSerializer, 
-    GenderSerializer, 
+    ExperienceLevelSerializer,
+    UserInstrumentSerializer,
+    UserProfileSerializer,
+    GenderSerializer,
     CommitmentLevelSerializer
 )
 
@@ -52,8 +49,8 @@ class UserProfileViewSet(ModelViewSet):
     serializer_class = UserProfileSerializer
 
     # PUT not allowed since only some fields of UserProfile alloed to be updated
-    http_method_names = ['get', 'patch']  
-    
+    http_method_names = ['get', 'patch']
+
     def get_queryset(self):
         """
         Returns the UserProfile associated with the currently authenticated user
@@ -66,4 +63,3 @@ class UserProfileViewSet(ModelViewSet):
         profile = UserProfile.objects.get(id=user.id)
         serializer = UserProfileSerializer(profile)
         return Response(serializer.data)
-
