@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import "./style.css"
-import axios from "axios";
+import "../globalStyle.css"
+import "./SignUpForm.css"
+// import axios from "axios";
 
-const emailRegex = RegExp(/^\s?[A-Z0–9]+[A-Z0–9._+-]{0,}@[A-Z0–9._+-]+\.[A-Z0–9]{2,4}\s?$/i);
+const emailRegex = RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
 
 interface SignUpProps {
     name?: any;
@@ -56,33 +57,39 @@ function SignUp() {
     }
     const handleSubmit = async (event:any) => {
         event.preventDefault();
-        try{
-            const body = {
-                    "email": email,
-                    "password": password,
-                    "re_password": repeatPassword
-                }
-            
-            const response = await axios.post(
-                'http://localhost:8000/auth/users/',
-                body
-                )
-            
+        const body = {
+                "email": email,
+                "password": password,
+                "re_password": repeatPassword
+            }
+
+        const res = await fetch('http://localhost:8000/auth/users/', {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+        })
+        const jsonRes = await res.json()
+        if (res.status >= 200 && res.status <= 299){
             setSuccess(true)
-        }
-        catch(err:any){
-            if (err.response.data.email) {
-                // Error string isn't capitalized
-                let string = err.response.data.email[0]
+            
+            setTimeout(() => {
+                setSuccess(false)
+            }, 5000)
+
+        } else {
+            if (jsonRes.email) {
+                let string = jsonRes.email[0]
                 const new_errors = {...errors, 'email': string[0].toUpperCase() + string.slice(1)};
+            
+                setErrors(new_errors)                
+            }
+            if (jsonRes.password) {
+                const new_errors = {...errors, 'password': jsonRes.password[0]};
                 
                 setErrors(new_errors)
-            }
-            if (err.response.data.password) {
-                const new_errors = {...errors, 'password': err.response.data.password[0]};
-                
-                setErrors(new_errors)
-            }
+            }            
         }
     }
     return (
