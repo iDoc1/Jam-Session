@@ -3,8 +3,11 @@ Defines the necessary models for a custom User class with an email as the userna
 file was adapted from the following resource: https://github.com/linkedweb/auth_system
 """
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from profiles.models import UserProfile
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    PermissionsMixin,
+    BaseUserManager
+)
 
 
 class UserAccountManager(BaseUserManager):
@@ -18,7 +21,7 @@ class UserAccountManager(BaseUserManager):
         """
         if not email:
             raise ValueError("Users must have an email")
-        
+
         # Create the UserAccount
         email = self.normalize_email(email)
         user = self.model(email=email)
@@ -55,4 +58,4 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def __str__(self):
-        return self.email
+        return str(self.email)

@@ -1,14 +1,11 @@
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST
-from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from accounts.models import UserAccount
 from .models import ExperienceLevel, UserInstrument, UserProfile, Gender, CommitmentLevel
 from .serializers import (
-    ExperienceLevelSerializer, 
-    UserInstrumentSerializer, 
-    UserProfileSerializer, 
-    GenderSerializer, 
+    ExperienceLevelSerializer,
+    UserInstrumentSerializer,
+    UserProfileSerializer,
+    GenderSerializer,
     CommitmentLevelSerializer
 )
 
@@ -46,10 +43,23 @@ class CommitmentLevelViewSet(ModelViewSet):
 
 
 class UserProfileViewSet(ModelViewSet):
+    """
+    A viewset for viewing and editing UserProfile instances
+    """
     serializer_class = UserProfileSerializer
-    http_method_names = ['get', 'put', 'patch']  # Only account can be deleted, not profile
-    
+
+    # PUT not allowed since only some fields of UserProfile alloed to be updated
+    http_method_names = ['get', 'patch']
+
     def get_queryset(self):
+        """
+        Returns the UserProfile associated with the currently authenticated user
+        """
         user = self.request.user
         return UserProfile.objects.filter(user=user)
 
+    def list(self, request, *args, **kwargs):
+        user = request.user
+        profile = UserProfile.objects.get(id=user.id)
+        serializer = UserProfileSerializer(profile)
+        return Response(serializer.data)
