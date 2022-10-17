@@ -97,23 +97,23 @@ function SignUp() {
         <div className='form-wrapper'>
             <h2>Sign Up</h2>
             <form onSubmit={handleSubmit} noValidate >
-                <div className='email'>
+                <div className='email' data-jest="sign-up-email">
                     <label htmlFor="email">Email</label>
-                    <input type='email' name='email' onChange={handleChange}/>
+                    <input type='email' name='email' id='sign-up-email' onChange={handleChange}/>
                     {email.length > 0 && <span style={{color: 'red'}}>{errors.email}</span>}
                 </div>
                 <div className='password'>
                     <label htmlFor="password">Password</label>
-                    <input type='password' name='password' onChange={handleChange}/>
+                    <input type='password' name='password' id='sign-up-password' onChange={handleChange}/>
                     {password.length > 0 && <span style={{color: 'red'}}>{errors.password}</span>}
                 </div>              
                 <div className='repeatPassword'>
                     <label htmlFor="repeatPassword">Repeat Password</label>
-                    <input type='password' name='repeatPassword' onChange={handleChange}/>
+                    <input type='password' name='repeatPassword' id='sign-up-repeat-password' onChange={handleChange}/>
                     {repeatPassword.length > 0 && errors.password !== errors.repeatPassword && <span style={{color: 'red'}}>{errors.repeatPassword}</span>}
                 </div>              
                 <div className='submit'>
-                    <button>Register Me</button>
+                    <button id='sign-up-button'>Register Me</button>
                 </div>
             {success? <span className='success-message'>Account created! Check email to complete sign up</span>:<></>}
 

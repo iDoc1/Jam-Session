@@ -71,20 +71,20 @@ function SignIn() {
             <form onSubmit={handleSubmit} noValidate >
                 <div className='email'>
                     <label htmlFor="email">Email</label>
-                    <input type='email' name='email' onChange={handleChange}/>
+                    <input type='email' name='email' id='sign-in-email' onChange={handleChange}/>
                 </div>
                 <div className='password'>
                     <label htmlFor="password">Password</label>
-                    <input type='password' name='password' onChange={handleChange}/>
+                    <input type='password' name='password' id='sign-in-password' onChange={handleChange}/>
                 </div>              
                 <div className='submit'>
-                    <button>Register Me</button>
+                    <button id='sign-in-button'>Sign In</button>
                     {error.length > 0 && <span style={{color: "red"}}>{error}</span>}
                 </div>
                 <div className='needAccount'>
                 <p>Need an account? <br/></p>
                 <span>
-                    <a href="#">Sign Up</a>
+                    <a href="#" id="sign-in-registration-redirect">Sign Up</a>
                 </span>
                 </div>              
             </form>
