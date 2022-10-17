@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import "./style.css"
-import axios from "axios";
-
-const emailRegex = RegExp(/^\s?[A-Z0–9]+[A-Z0–9._+-]{0,}@[A-Z0–9._+-]+\.[A-Z0–9]{2,4}\s?$/i);
+import "../globalStyle.css"
 
 interface SignInProps {
     name?: any;
@@ -43,14 +40,27 @@ function SignIn() {
             }, 3000)
             return
         }
-        const response = await axios.post(
-            'http://localhost:8000/auth/jwt/create/',
-            {
+        // const response = await axios.post(
+        //     'http://localhost:8000/auth/jwt/create/',
+        // )
+        const body = {
                 "email": email,
                 "password": password
             }
-        )
-        window.localStorage.setItem('loggedJamSessionUser', JSON.stringify(response.data));
+        const res = await fetch('http://localhost:8000/auth/jwt/create/', {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+        })
+        
+        const jsonRes = await res.json()
+        console.log(jsonRes);
+        
+        if (res.status >= 200 && res.status <= 299){
+            window.localStorage.setItem('loggedJamSessionUser', JSON.stringify(jsonRes));
+        }
         
     }
 
