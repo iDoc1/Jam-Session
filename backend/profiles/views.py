@@ -59,6 +59,9 @@ class UserProfileViewSet(ModelViewSet):
         return UserProfile.objects.filter(user=user)
 
     def list(self, request, *args, **kwargs):
+        """
+        Returns a single UserProfile when a list is requested
+        """
         user = request.user
         profile = UserProfile.objects.get(id=user.id)
         serializer = UserProfileSerializer(profile)
