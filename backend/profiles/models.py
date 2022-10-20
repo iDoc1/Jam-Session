@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 from backend.settings import AUTH_USER_MODEL
 from genres.models import Genre
 from instruments.models import Instrument

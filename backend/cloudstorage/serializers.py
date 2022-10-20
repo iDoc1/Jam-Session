@@ -17,4 +17,3 @@ class ProfilePictureSerializer(serializers.ModelSerializer):
             **validated_data
         )
         return profile_pic
-

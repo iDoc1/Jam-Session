@@ -78,7 +78,6 @@ class ProfilePictureViewSet(ModelViewSet):
         if not ProfilePicture.objects.filter(id=id).exists():
             return Response({'detail': 'The specified profile picture does not exist'}, status=404)
 
-
     def _validate_request_file(self, request):
         """
         Validates the request user and file
@@ -102,6 +101,3 @@ class ProfilePictureViewSet(ModelViewSet):
         """
         file_size = request.FILES['image_file'].size
         return file_size < 2000000
-
-
-

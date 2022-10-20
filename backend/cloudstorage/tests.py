@@ -1,53 +1,49 @@
-import mock
 from accounts.models import UserAccount
-from datetime import datetime
-from dateutil import parser
-from django.core.files import File
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from rest_framework.test import APIClient
-from .models import ProfilePicture
 
 
 class ProfilePictureTestCase(TestCase):
     """
     Tests GET, POST, PUT, and DELETE on the ProfilePicture urls
     """
-
     def setUp(self):
         """
         Create authenticated test user and test objects
         """
         self.client = APIClient()
-        user = UserAccount.objects.create(email='testemail@test.com')
-        self.client.force_authenticate(user=user)
+        self.user = UserAccount.objects.create(email='testemail@test.com')
+        self.client.force_authenticate(user=self.user)
 
-        self.file_mock = mock.MagicMock(spec=File)
-        self.file_mock.name = 'test-image.jpg'
-        self.profile_pic = ProfilePicture(user=user, image_file=self.file_mock)
+    def test_post_wrong_file_type(self):
+        """
+        Sending the wrong file type returns client error
+        """
+        wrong_file_type = SimpleUploadedFile('test.mp4', b'test_data', content_type='video/mp4')
+        response = self.client.post('/api/profile-pics/', {'image_file': wrong_file_type})
+        self.assertEqual(response.status_code, 400)
 
-    def test_get_profile_pic(self):
+    def test_post_empty_file(self):
         """
-        Get an existing profile picture
+        Send a post request with a nonexistant file
         """
-        response = self.client.get('/api/profile-pics/1/')
-        data = response.json()
-        print(data)
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post('/api/profile-pics/', {'image_file': ''})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('detail', response.json())
 
+    def test_get_nonexistant_file(self):
+        """
+        Get a file that does not exist
+        """
+        response = self.client.get('/api/profile-pics/5/')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('detail', response.json())
 
-    def test_get_empty_profile_pic(self):
+    def test_update_nonexistant_file(self):
         """
-        Get a profile picture that doesn't exist
+        Update a file that does not exist
         """
-        pass
-
-    def test_update_profile_pic(self):
-        """
-        Change the profile picture to a new one
-        """
-        pass
-
-# Create your tests here.
-# Test wrong file type and size
-# Test does not exist for update/delete
-# Test CRUD
+        response = self.client.put('/api/profile-pics/5/')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('detail', response.json())

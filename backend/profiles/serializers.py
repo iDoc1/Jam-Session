@@ -50,4 +50,4 @@ class UserProfileSerializer(NestedUpdateMixin, serializers.ModelSerializer):
         model = UserProfile
         fields = ('id', 'first_name', 'last_name', 'gender', 'birth_date', 'zipcode', 'profile_picture',
                         'join_date', 'years_playing', 'level_of_commitment', 'seeking', 'instruments', 'genres')
-        read_only_fields = ( 'join_date',)
+        read_only_fields = ('join_date',)
