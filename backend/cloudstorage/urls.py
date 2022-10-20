@@ -3,6 +3,6 @@ from rest_framework.routers import DefaultRouter
 from .views import ProfilePictureViewSet
 
 router = DefaultRouter()
-router.register(r'profile-pic', ProfilePictureViewSet, basename='profile-pic')
+router.register(r'profile-pics', ProfilePictureViewSet, basename='profile-pics')
 
 urlpatterns = router.urls

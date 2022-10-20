@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from backend.settings import AUTH_USER_MODEL
-from instruments.models import Instrument
 from genres.models import Genre
+from instruments.models import Instrument
 
 
 class Gender(models.Model):
@@ -36,8 +36,7 @@ class UserProfile(models.Model):
     gender = models.ForeignKey(Gender, blank=True, null=True, on_delete=models.SET_NULL)
     birth_date = models.DateField(null=True)
     zipcode = models.CharField(max_length=10, blank=True, default='')
-    profile_picture_url = models.URLField(null=True, blank=True)
-    join_date = models.DateTimeField(default=timezone.now)
+    join_date = models.DateTimeField(auto_now=True)
     years_playing = models.SmallIntegerField(default=0)
     level_of_commitment = models.ForeignKey(CommitmentLevel, blank=True, null=True, on_delete=models.SET_NULL)
     seeking = models.TextField(blank=True, default='')

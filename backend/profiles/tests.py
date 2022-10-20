@@ -2,6 +2,7 @@ from accounts.models import UserAccount
 from datetime import datetime
 from dateutil import parser
 from django.test import TestCase
+from django.utils import timezone
 from rest_framework.test import APIClient
 from genres.models import Genre
 from instruments.models import Instrument
@@ -38,8 +39,8 @@ class UserProfileTestCase(TestCase):
         self.assertEqual(data['last_name'], '')
         self.assertIsNone(data['gender'])
         self.assertIsNone(data['birth_date'])
-        self.assertIsNone(data['profile_picture_url'])
-        self.assertEqual(parser.parse(data['join_date']).date(), datetime.now().date())
+        self.assertIsNone(data['profile_picture'])
+        self.assertEqual(parser.parse(data['join_date']).date(), timezone.now().date())
         self.assertEqual(data['years_playing'], 0)
         self.assertIsNone(data['level_of_commitment'])
         self.assertEqual(data['seeking'], '')
@@ -181,17 +182,7 @@ class UserProfileTestCase(TestCase):
         response = self.client.patch('/api/profiles/1/', data, format='json')
         data = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(parser.parse(data['join_date']).date(), datetime.now().date())
-
-    def test_cannot_update_profile_pic_url(self):
-        """
-        Client cannot update the profile picture URL for the /api/profiles endpoint
-        """
-        data = {'profile_picture_url': 'someurl.com'}
-        response = self.client.patch('/api/profiles/1/', data, format='json')
-        data = response.json()
-        self.assertEqual(response.status_code, 200)
-        self.assertIsNone(data['profile_picture_url'])
+        self.assertEqual(parser.parse(data['join_date']).date(), timezone.now().date())
 
     def test_cannot_delete_user_profile(self):
         """
