@@ -56,7 +56,7 @@ function SignIn() {
         })
         
         const jsonRes = await res.json()
-        console.log(jsonRes);
+        // console.log(jsonRes);
         
         if (res.status >= 200 && res.status <= 299){
             window.localStorage.setItem('loggedJamSessionUser', JSON.stringify(jsonRes));

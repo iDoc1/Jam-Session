@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../globalStyle.css"
 import "./SignUpForm.css"
 // import axios from "axios";
@@ -33,6 +33,7 @@ function SignUp() {
         repeatPassword : ''
     })
     const [success, setSuccess] = useState(false)
+    const [validated, setValidated] = useState(false)
     
     const handleChange = (event: any) => {
         event.preventDefault()
@@ -70,7 +71,10 @@ function SignUp() {
                 'Content-type': 'application/json; charset=UTF-8',
             }
         })
+        
         const jsonRes = await res.json()
+        // console.log(jsonRes);
+        
         if (res.status >= 200 && res.status <= 299){
             setSuccess(true)
             
@@ -92,6 +96,34 @@ function SignUp() {
             }            
         }
     }
+    const validateUser = async () => {
+        let url = new URL(window.location.href)
+        let params = url.pathname.split('/')
+        params = params.filter(e => e !== '' && e !== 'activate')
+        
+        if (params.length === 0) {return}
+        
+        if (!validated) {
+            const body = {
+                "uid": params[0],
+                "token": params[1]
+            }
+            const res = await fetch('http://localhost:8000/auth/users/activation/', {
+                method: 'POST',
+                body: JSON.stringify(body),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                }
+            })
+            console.log(res);
+            
+            setValidated(true)
+        }
+        
+    }
+    useEffect(()=>{
+        validateUser()
+    })
     return (
         <div className='wrapper'>
         <div className='form-wrapper'>
