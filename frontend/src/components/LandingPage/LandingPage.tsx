@@ -34,17 +34,17 @@ export default function LandingPage() {
             <div className='landing-inputs'>
                 <div>
                     <label htmlFor="seeking">I am</label>
-                    <Dropdown options={seekingOptions} onChange={(option)=>{setSeeking(option.value)}} placeholder={seekingOptions[0]}/>
+                    <Dropdown options={seekingOptions} className="landing-seeking" onChange={(option)=>{setSeeking(option.value)}} placeholder={seekingOptions[0]}/>
                 </div>
                 <div>
                     <label htmlFor="instruments">Instrument</label>
-                    <Dropdown options={instrumentOptions} onChange={(option)=>{setInstrument(option.value)}} placeholder='Select an instrument'/>
+                    <Dropdown options={instrumentOptions} className="landing-instrument" onChange={(option)=>{setInstrument(option.value)}} placeholder='Select an instrument'/>
                 </div>
                 <div>
                     <label htmlFor="zipcode">Zip Code</label>
-                    <input type="text" name='zipcode' onChange={(option) => {setZipcode(option.target.value)}}/>
+                    <input type="text" name='zipcode' className='landing-zipcode' onChange={(option) => {setZipcode(option.target.value)}}/>
                 </div>
-                <button onClick={onSubmit}>
+                <button onClick={onSubmit} className="landing-search">
                     Search
                 </button>
             </div>
