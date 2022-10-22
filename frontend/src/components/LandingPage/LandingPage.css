@@ -1,0 +1,38 @@
+.landing-image{
+    width: 100%;
+    margin-top: 1rem;
+
+}
+
+.landing-slogan {
+    color: white;
+    display: flex;
+    justify-content: center;
+    margin-top: .25rem;
+}
+
+.landing-inputs {
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+}
+.landing-inputs div {
+    display: flex;
+    flex-direction: column;
+}
+
+.landing-inputs div label {
+    color:white;
+}
+
+.landing-inputs button {
+    min-width: 8rem;
+    max-width: 5rem;
+    width: 2rem;
+    margin-top: auto;
+    color: white;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+}

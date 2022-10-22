@@ -24,7 +24,7 @@ export default function NavBar() {
         <nav className="nav">
             <div className='nav-container'>
                 <ul>
-                    <li><Link to="/" className="site-title">Jam Session</Link></li>
+                    <li><Link to="/" className="site-title" id='site-title'>Jam Session</Link></li>
                     <CustomLink to="/search">Search</CustomLink>
 
                 </ul>

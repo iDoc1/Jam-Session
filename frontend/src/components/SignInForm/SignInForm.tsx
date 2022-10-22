@@ -56,7 +56,7 @@ function SignIn() {
         })
         
         const jsonRes = await res.json()
-        // console.log(jsonRes);
+        console.log(jsonRes);
         
         if (res.status >= 200 && res.status <= 299){
             window.localStorage.setItem('loggedJamSessionUser', JSON.stringify(jsonRes));
@@ -84,7 +84,7 @@ function SignIn() {
                 <div className='needAccount'>
                 <p>Need an account? <br/></p>
                 <span>
-                    <a href="#" id="sign-in-registration-redirect">Sign Up</a>
+                    <a href="/signup" id="sign-in-registration-redirect">Sign Up</a>
                 </span>
                 </div>              
             </form>
