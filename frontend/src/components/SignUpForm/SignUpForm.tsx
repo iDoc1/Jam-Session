@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../globalStyle.css"
 import "./SignUpForm.css"
 // import axios from "axios";
@@ -33,6 +33,7 @@ function SignUp() {
         repeatPassword : ''
     })
     const [success, setSuccess] = useState(false)
+    const [validated, setValidated] = useState(false)
     
     const handleChange = (event: any) => {
         event.preventDefault()
@@ -70,7 +71,10 @@ function SignUp() {
                 'Content-type': 'application/json; charset=UTF-8',
             }
         })
+        
         const jsonRes = await res.json()
+        // console.log(jsonRes);
+        
         if (res.status >= 200 && res.status <= 299){
             setSuccess(true)
             
