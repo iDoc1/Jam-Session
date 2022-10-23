@@ -6,7 +6,7 @@ from django.utils import timezone
 from rest_framework.test import APIClient
 from genres.models import Genre
 from instruments.models import Instrument
-from .models import CommitmentLevel, Gender, ExperienceLevel
+from .models import CommitmentLevel, Gender, ExperienceLevel, get_year_diff
 
 
 class UserProfileTestCase(TestCase):
@@ -19,8 +19,8 @@ class UserProfileTestCase(TestCase):
         Create authenticated test user and test objects
         """
         self.client = APIClient()
-        user = UserAccount.objects.create(email='testemail@test.com')
-        self.client.force_authenticate(user=user)
+        self.user = UserAccount.objects.create(email='testemail@test.com')
+        self.client.force_authenticate(user=self.user)
 
         self.commitment_level = CommitmentLevel(level='Just for fun', rank=1)
         self.gender = Gender.objects.create(gender='Man')
@@ -190,3 +190,43 @@ class UserProfileTestCase(TestCase):
         """
         response = self.client.delete('/api/profiles/1/')
         self.assertEqual(response.status_code, 405)
+
+    def test_get_year_diff_month_greater(self):
+        """
+        Get year difference when end date has month greater than start date month
+        """
+        start_date = timezone.datetime(2000, 3, 1)
+        end_date = timezone.datetime(2022, 4, 1)
+        self.assertEqual(get_year_diff(start_date, end_date), 22)
+
+    def test_get_year_diff_day_greater(self):
+        """
+        Get year difference when end date has day greater than start date day
+        """
+        start_date = timezone.datetime(2000, 3, 1)
+        end_date = timezone.datetime(2022, 3, 5)
+        self.assertEqual(get_year_diff(start_date, end_date), 22)
+
+    def test_get_year_diff_month_less_than(self):
+        """
+        Get year difference when end date has month less than start date month
+        """
+        start_date = timezone.datetime(2000, 3, 1)
+        end_date = timezone.datetime(2022, 2, 1)
+        self.assertEqual(get_year_diff(start_date, end_date), 21)
+
+    def test_get_year_diff_day_less_than(self):
+        """
+        Get year difference when end date has day less than start date day
+        """
+        start_date = timezone.datetime(2000, 3, 4)
+        end_date = timezone.datetime(2022, 3, 1)
+        self.assertEqual(get_year_diff(start_date, end_date), 21)
+
+    def test_get_year_diff_same_month_day(self):
+        """
+        Get year difference when start and end date occur on same month and day
+        """
+        start_date = timezone.datetime(2000, 3, 1)
+        end_date = timezone.datetime(2022, 3, 1)
+        self.assertEqual(get_year_diff(start_date, end_date), 22)
