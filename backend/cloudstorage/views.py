@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from .models import ProfilePicture
-from .serializers import ProfilePictureSerializer
+from .models import ProfilePicture, MusicSample
+from .serializers import ProfilePictureSerializer, MusicSampleSerializer
 
 
 class ProfilePictureViewSet(ModelViewSet):
@@ -26,7 +26,7 @@ class ProfilePictureViewSet(ModelViewSet):
         if pic_exists_response is not None:
             return pic_exists_response
 
-        validate_file_response = self._validate_request_file(request)
+        validate_file_response = validate_request_file(request, 'image_file')
         if validate_file_response is not None:
             return validate_file_response
 
@@ -62,7 +62,7 @@ class ProfilePictureViewSet(ModelViewSet):
         if pic_exists_response is not None:
             return pic_exists_response
 
-        file_is_valid_response = self._validate_request_file(request)
+        file_is_valid_response = validate_request_file(request, 'image_file')
         if file_is_valid_response is not None:
             return file_is_valid_response
 
@@ -78,26 +78,76 @@ class ProfilePictureViewSet(ModelViewSet):
         if not ProfilePicture.objects.filter(id=id).exists():
             return Response({'detail': 'The specified profile picture does not exist'}, status=404)
 
-    def _validate_request_file(self, request):
-        """
-        Validates the request user and file
-        """
-        if not self._validate_file_exists(request):
-            return Response({'detail': 'File not found in the request'}, status=400)
 
-        if not self._validate_file_size(request):
-            return Response({'detail': 'File size must be smaller than 2MB'}, status=400)
+class MusicSampleViewSet(ModelViewSet):
+    """
+    Viewset to create and modify music samples
+    """
+    serializer_class = MusicSampleSerializer
+    http_method_names = ['get', 'post', 'put', 'delete']
 
-    def _validate_file_exists(self, request):
+    def get_queryset(self):
         """
-        Validates that a file exists
+        Returns the MusicSamples associated with the currently authenticated user
         """
-        file_exists = request.FILES.get('image_file', False)
-        return file_exists
+        user = self.request.user
+        return MusicSample.objects.filter(user=user)
 
-    def _validate_file_size(self, request):
+    def create(self, request, *args, **kwargs):
         """
-        Validates that file is less than 2MB
+        Create MusicSample for currently authenticated user
         """
-        file_size = request.FILES['image_file'].size
-        return file_size < 2000000
+        validate_file_response = validate_request_file(request, 'music_file')
+        if validate_file_response is not None:
+            return validate_file_response
+
+        return super(MusicSampleViewSet, self).create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        """
+        Deletes existing file before adding a new one
+        """
+        sample_exists_response = self._validate_music_sample_exists(**kwargs)
+        if sample_exists_response is not None:
+            return sample_exists_response
+
+        file_is_valid_response = validate_request_file(request, 'music_file')
+        if file_is_valid_response is not None:
+            return file_is_valid_response
+
+        sample = MusicSample.objects.get(user=request.user, id=kwargs['pk'])
+        sample.music_file.delete()
+        return super(MusicSampleViewSet, self).update(request, *args, **kwargs)
+
+    def _validate_music_sample_exists(self, **kwargs):
+        """
+        Validates that the path parameter id is an existing object
+        """
+        id = kwargs['pk']
+        if not MusicSample.objects.filter(id=id).exists():
+            return Response({'detail': 'The specified music sample does not exist'}, status=404)
+
+
+def validate_request_file(request, field_name):
+    """
+    Validates the request file in the request
+    """
+    if not validate_file_exists(request, field_name):
+        return Response({'detail': 'File not found in the request'}, status=400)
+
+    if not validate_file_size(request, field_name):
+        return Response({'detail': 'File size must be smaller than 2.5MB'}, status=400)
+
+def validate_file_exists(request, field_name):
+    """
+    Validates that a file exists
+    """
+    file_exists = request.FILES.get(field_name, False)
+    return file_exists
+
+def validate_file_size(request, field_name):
+    """
+    Validates that file is less than 2MB
+    """
+    file_size = request.FILES[field_name].size
+    return file_size < 2500000
