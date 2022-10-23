@@ -84,7 +84,7 @@ function SignIn() {
                 <div className='needAccount'>
                 <p>Need an account? <br/></p>
                 <span>
-                    <a href="#" id="sign-in-registration-redirect">Sign Up</a>
+                    <a href="/signup" id="sign-in-registration-redirect">Sign Up</a>
                 </span>
                 </div>              
             </form>
