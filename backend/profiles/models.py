@@ -55,13 +55,13 @@ class UserProfile(models.Model):
 
 
 def get_year_diff(start_date, end_date):
-        """
-        Returns number of years from start date to end date
-        """
-        if (end_date.month, end_date.day) < (start_date.month, start_date.day):
-            return end_date.year - start_date.year - 1
-        else:
-            return end_date.year - start_date.year
+    """
+    Returns number of years from start date to end date
+    """
+    if (end_date.month, end_date.day) < (start_date.month, start_date.day):
+        return end_date.year - start_date.year - 1
+    else:
+        return end_date.year - start_date.year
 
 
 class ExperienceLevel(models.Model):

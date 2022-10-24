@@ -6,11 +6,11 @@ from cloudstorage.serializers import ProfilePictureSerializer, MusicSampleSerial
 from genres.serializers import GenreSerializer
 from instruments.serializers import InstrumentSerializer
 from .models import (
-    ExperienceLevel, 
-    UserInstrument, 
-    UserProfile, 
-    Gender, 
-    CommitmentLevel, 
+    ExperienceLevel,
+    UserInstrument,
+    UserProfile,
+    Gender,
+    CommitmentLevel,
     SocialMediaLink
 )
 
@@ -45,7 +45,7 @@ class CommitmentLevelSerializer(UniqueFieldsMixin, serializers.ModelSerializer):
 class SocialMediaLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocialMediaLink
-        fields =('id', 'user', 'social_media_site', 'social_media_link')
+        fields = ('id', 'user', 'social_media_site', 'social_media_link')
         read_only_fields = ('user',)
 
     def create(self, validated_data):
@@ -75,7 +75,7 @@ class UserProfileSerializer(NestedUpdateMixin, serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('id', 'first_name', 'last_name', 'gender', 'birth_date', 'age', 'zipcode', 
-                    'profile_picture', 'join_date', 'years_playing', 'level_of_commitment', 
-                    'seeking', 'instruments', 'genres', 'music_samples', 'social_media')
+        fields = ('id', 'first_name', 'last_name', 'gender', 'birth_date', 'age', 'zipcode',
+                  'profile_picture', 'join_date', 'years_playing', 'level_of_commitment',
+                  'seeking', 'instruments', 'genres', 'music_samples', 'social_media')
         read_only_fields = ('join_date',)

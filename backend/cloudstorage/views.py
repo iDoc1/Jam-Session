@@ -138,12 +138,14 @@ def validate_request_file(request, field_name):
     if not validate_file_size(request, field_name):
         return Response({'detail': 'File size must be smaller than 2.5MB'}, status=400)
 
+
 def validate_file_exists(request, field_name):
     """
     Validates that a file exists
     """
     file_exists = request.FILES.get(field_name, False)
     return file_exists
+
 
 def validate_file_size(request, field_name):
     """
