@@ -230,3 +230,92 @@ class UserProfileTestCase(TestCase):
         start_date = timezone.datetime(2000, 3, 1)
         end_date = timezone.datetime(2022, 3, 1)
         self.assertEqual(get_year_diff(start_date, end_date), 22)
+
+
+class SocialMediaTestCase(TestCase):
+    """
+    Tests GET, POST, PUT, and DELETE on the SocialMediaLink urls
+    """
+
+    def setUp(self):
+        """
+        Create authenticated test user and test objects
+        """
+        self.client = APIClient()
+        self.user = UserAccount.objects.create(email='testemail@test.com')
+        self.client.force_authenticate(user=self.user)
+
+        self.commitment_level = CommitmentLevel(level='Just for fun', rank=1)
+        self.gender = Gender.objects.create(gender='Man')
+        self.experience_level = ExperienceLevel.objects.create(level='Beginner', rank=1)
+        self.instrument = Instrument.objects.create(name='guitar')
+        self.genre = Genre.objects.create(genre='rock')
+
+    def test_post_social_media_link(self):
+        """
+        Add a new social media link
+        """
+        data = {
+            "social_media_site": "facebook",
+            "social_media_link": "http://www.facebook.com/fakeprofile"
+        }
+        response = self.client.post('/api/social-media/', data, format='json')
+        data = response.json()
+
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('id', data)
+        self.assertIn('user', data)
+        self.assertIn('social_media_site', data)
+        self.assertIn('social_media_link', data)
+
+    def test_put_social_media_link(self):
+        """
+        Replace an existing social media link with an edited one
+        """
+        data = {
+            "social_media_site": "facebook",
+            "social_media_link": "http://www.facebook.com/fakeprofile"
+        }
+        self.client.post('/api/social-media/', data, format='json')
+
+        data = {
+            "social_media_site": "facebook",
+            "social_media_link": "http://www.facebook.com/newfakeprofile"
+        }
+        response = self.client.put('/api/social-media/1/', data, format='json')
+        data = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('id', data)
+        self.assertIn('user', data)
+        self.assertIn('social_media_site', data)
+        self.assertIn('social_media_link', data)
+
+    def test_get_social_media_links(self):
+        """
+        Get a user's social media links
+        """
+        data = {
+            "social_media_site": "facebook",
+            "social_media_link": "http://www.facebook.com/fakeprofile"
+        }
+        response = self.client.post('/api/social-media/', data, format='json')
+
+        response = self.client.get('/api/social-media/')
+        data = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(data), 1)
+
+    def test_delete_social_media_link(self):
+        """
+        Replace an existing social media link with an edited one
+        """
+        data = {
+            "social_media_site": "facebook",
+            "social_media_link": "http://www.facebook.com/fakeprofile"
+        }
+        self.client.post('/api/social-media/', data, format='json')
+
+        response = self.client.delete('/api/social-media/1/')
+        self.assertEqual(response.status_code, 204)

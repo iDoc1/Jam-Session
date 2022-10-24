@@ -1,12 +1,19 @@
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from .models import ExperienceLevel, UserInstrument, UserProfile, Gender, CommitmentLevel
+from .models import (
+    ExperienceLevel,
+    UserInstrument,
+    UserProfile, Gender,
+    CommitmentLevel,
+    SocialMediaLink
+)
 from .serializers import (
     ExperienceLevelSerializer,
     UserInstrumentSerializer,
     UserProfileSerializer,
     GenderSerializer,
-    CommitmentLevelSerializer
+    CommitmentLevelSerializer,
+    SocialMediaLinkSerializer
 )
 
 
@@ -40,6 +47,21 @@ class CommitmentLevelViewSet(ModelViewSet):
     """
     serializer_class = CommitmentLevelSerializer
     queryset = CommitmentLevel.objects.all()
+
+
+class SocialMediaLinkViewSet(ModelViewSet):
+    """
+    A viewset for viewing and editing a user's social media links
+    """
+    serializer_class = SocialMediaLinkSerializer
+    http_method_names = ['get', 'post', 'put', 'delete']
+
+    def get_queryset(self):
+        """
+        Returns the SocialMediaLinks associated with the current user
+        """
+        user = self.request.user
+        return SocialMediaLink.objects.filter(user=user)
 
 
 class UserProfileViewSet(ModelViewSet):

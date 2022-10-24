@@ -47,7 +47,8 @@ class UserProfile(models.Model):
         return self.first_name + " " + self.last_name
 
     def get_age(self):
-        return get_year_diff(self.birth_date, timezone.now())
+        if self.birth_date:
+            return get_year_diff(self.birth_date, timezone.now())
 
     def __str__(self):
         return str(self.user) + " " + self.get_full_name()
@@ -84,3 +85,12 @@ class UserInstrument(models.Model):
 
     def __str__(self):
         return self.user_profile.get_full_name() + " " + str(self.instrument)
+
+
+class SocialMediaLink(models.Model):
+    """
+    Social media link for a specific UserProfile
+    """
+    user = models.ForeignKey(AUTH_USER_MODEL, related_name='social_media', on_delete=models.CASCADE)
+    social_media_site = models.CharField(max_length=100)
+    social_media_link = models.URLField()
