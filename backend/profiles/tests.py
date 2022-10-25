@@ -2,10 +2,11 @@ from accounts.models import UserAccount
 from datetime import datetime
 from dateutil import parser
 from django.test import TestCase
+from django.utils import timezone
 from rest_framework.test import APIClient
 from genres.models import Genre
 from instruments.models import Instrument
-from .models import CommitmentLevel, Gender, ExperienceLevel
+from .models import CommitmentLevel, Gender, ExperienceLevel, get_year_diff
 
 
 class UserProfileTestCase(TestCase):
@@ -18,8 +19,8 @@ class UserProfileTestCase(TestCase):
         Create authenticated test user and test objects
         """
         self.client = APIClient()
-        user = UserAccount.objects.create(email='testemail@test.com')
-        self.client.force_authenticate(user=user)
+        self.user = UserAccount.objects.create(email='testemail@test.com')
+        self.client.force_authenticate(user=self.user)
 
         self.commitment_level = CommitmentLevel(level='Just for fun', rank=1)
         self.gender = Gender.objects.create(gender='Man')
@@ -38,8 +39,8 @@ class UserProfileTestCase(TestCase):
         self.assertEqual(data['last_name'], '')
         self.assertIsNone(data['gender'])
         self.assertIsNone(data['birth_date'])
-        self.assertIsNone(data['profile_picture_url'])
-        self.assertEqual(parser.parse(data['join_date']).date(), datetime.now().date())
+        self.assertIsNone(data['profile_picture'])
+        self.assertEqual(parser.parse(data['join_date']).date(), timezone.now().date())
         self.assertEqual(data['years_playing'], 0)
         self.assertIsNone(data['level_of_commitment'])
         self.assertEqual(data['seeking'], '')
@@ -181,17 +182,7 @@ class UserProfileTestCase(TestCase):
         response = self.client.patch('/api/profiles/1/', data, format='json')
         data = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(parser.parse(data['join_date']).date(), datetime.now().date())
-
-    def test_cannot_update_profile_pic_url(self):
-        """
-        Client cannot update the profile picture URL for the /api/profiles endpoint
-        """
-        data = {'profile_picture_url': 'someurl.com'}
-        response = self.client.patch('/api/profiles/1/', data, format='json')
-        data = response.json()
-        self.assertEqual(response.status_code, 200)
-        self.assertIsNone(data['profile_picture_url'])
+        self.assertEqual(parser.parse(data['join_date']).date(), timezone.now().date())
 
     def test_cannot_delete_user_profile(self):
         """
@@ -199,3 +190,132 @@ class UserProfileTestCase(TestCase):
         """
         response = self.client.delete('/api/profiles/1/')
         self.assertEqual(response.status_code, 405)
+
+    def test_get_year_diff_month_greater(self):
+        """
+        Get year difference when end date has month greater than start date month
+        """
+        start_date = timezone.datetime(2000, 3, 1)
+        end_date = timezone.datetime(2022, 4, 1)
+        self.assertEqual(get_year_diff(start_date, end_date), 22)
+
+    def test_get_year_diff_day_greater(self):
+        """
+        Get year difference when end date has day greater than start date day
+        """
+        start_date = timezone.datetime(2000, 3, 1)
+        end_date = timezone.datetime(2022, 3, 5)
+        self.assertEqual(get_year_diff(start_date, end_date), 22)
+
+    def test_get_year_diff_month_less_than(self):
+        """
+        Get year difference when end date has month less than start date month
+        """
+        start_date = timezone.datetime(2000, 3, 1)
+        end_date = timezone.datetime(2022, 2, 1)
+        self.assertEqual(get_year_diff(start_date, end_date), 21)
+
+    def test_get_year_diff_day_less_than(self):
+        """
+        Get year difference when end date has day less than start date day
+        """
+        start_date = timezone.datetime(2000, 3, 4)
+        end_date = timezone.datetime(2022, 3, 1)
+        self.assertEqual(get_year_diff(start_date, end_date), 21)
+
+    def test_get_year_diff_same_month_day(self):
+        """
+        Get year difference when start and end date occur on same month and day
+        """
+        start_date = timezone.datetime(2000, 3, 1)
+        end_date = timezone.datetime(2022, 3, 1)
+        self.assertEqual(get_year_diff(start_date, end_date), 22)
+
+
+class SocialMediaTestCase(TestCase):
+    """
+    Tests GET, POST, PUT, and DELETE on the SocialMediaLink urls
+    """
+
+    def setUp(self):
+        """
+        Create authenticated test user and test objects
+        """
+        self.client = APIClient()
+        self.user = UserAccount.objects.create(email='testemail@test.com')
+        self.client.force_authenticate(user=self.user)
+
+        self.commitment_level = CommitmentLevel(level='Just for fun', rank=1)
+        self.gender = Gender.objects.create(gender='Man')
+        self.experience_level = ExperienceLevel.objects.create(level='Beginner', rank=1)
+        self.instrument = Instrument.objects.create(name='guitar')
+        self.genre = Genre.objects.create(genre='rock')
+
+    def test_post_social_media_link(self):
+        """
+        Add a new social media link
+        """
+        data = {
+            "social_media_site": "facebook",
+            "social_media_link": "http://www.facebook.com/fakeprofile"
+        }
+        response = self.client.post('/api/social-media/', data, format='json')
+        data = response.json()
+
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('id', data)
+        self.assertIn('user', data)
+        self.assertIn('social_media_site', data)
+        self.assertIn('social_media_link', data)
+
+    def test_put_social_media_link(self):
+        """
+        Replace an existing social media link with an edited one
+        """
+        data = {
+            "social_media_site": "facebook",
+            "social_media_link": "http://www.facebook.com/fakeprofile"
+        }
+        self.client.post('/api/social-media/', data, format='json')
+
+        data = {
+            "social_media_site": "facebook",
+            "social_media_link": "http://www.facebook.com/newfakeprofile"
+        }
+        response = self.client.put('/api/social-media/1/', data, format='json')
+        data = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('id', data)
+        self.assertIn('user', data)
+        self.assertIn('social_media_site', data)
+        self.assertIn('social_media_link', data)
+
+    def test_get_social_media_links(self):
+        """
+        Get a user's social media links
+        """
+        data = {
+            "social_media_site": "facebook",
+            "social_media_link": "http://www.facebook.com/fakeprofile"
+        }
+        response = self.client.post('/api/social-media/', data, format='json')
+
+        response = self.client.get('/api/social-media/')
+        data = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(data), 1)
+
+    def test_delete_social_media_link(self):
+        """
+        Replace an existing social media link with an edited one
+        """
+        data = {
+            "social_media_site": "facebook",
+            "social_media_link": "http://www.facebook.com/fakeprofile"
+        }
+        self.client.post('/api/social-media/', data, format='json')
+
+        response = self.client.delete('/api/social-media/1/')
+        self.assertEqual(response.status_code, 204)

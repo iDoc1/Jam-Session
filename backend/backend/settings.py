@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'accounts',
     'profiles',
     'instruments',
-    'genres'
+    'genres',
+    'cloudstorage'
 ]
 
 MIDDLEWARE = [
@@ -203,3 +204,19 @@ SIMPLE_JWT = {
         'rest_framework_simplejwt.tokens.AccessToken',
     )
 }
+
+
+# AWS configuration. Adapted from: https://www.hacksoft.io/blog/direct-to-s3-file-upload-with-django
+file_upload_location = os.getenv('FILE_UPLOAD_LOCATION', default='local')
+
+if file_upload_location == 'local':
+    MEDIA_ROOT_NAME = "media"
+    MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_ROOT_NAME)
+    MEDIA_URL = f"/{MEDIA_ROOT_NAME}/"
+
+if file_upload_location == 'aws':
+    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = 'jam.session'
+    AWS_S3_REGION_NAME = 'us-west-2'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
