@@ -1,0 +1,83 @@
+.profile{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.profile-container{
+    max-width: 1000px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.user-banner{
+    background-color: #d9d9d9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .5rem 0;
+    margin-top: 1rem;
+}
+.user-banner h1, .user-banner h3 {
+    margin: 0 1rem;
+}
+.user-about{
+    margin-top: 1rem;
+    background-color: #d9d9d9;
+    display: flex;
+}
+.user-info{
+    display:flex;
+    justify-content: space-between;
+    background-color: #d9d9d9;
+    width: 100%;
+    padding: 1rem 2rem 1rem 1rem;
+}
+.user-info button {
+    width: 10rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: 1px solid black;
+}
+
+.user-info button a {
+    text-decoration: none;
+    color: inherit;
+}
+.profile-picture {
+    max-height: 200px;
+    margin: 1rem;
+}
+
+.user-music {
+    background-color: red;
+    display: flex;
+    margin-top: 1rem;
+}
+
+.music-player {
+    background-color: green;
+    width: 60%;
+    padding: 0 1rem;
+}
+.music-info {
+    background-color: blue;
+    width:40%;
+    padding: 0 2rem;
+}
+.music-seeking p {
+    font-style: italic;
+}
+
+.music-instruments ul {
+    padding: 0
+}
+.music-instruments li {
+    list-style: none;
+}
+
+.instrument-list {
+    font-weight: bold;
+}

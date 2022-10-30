@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "../globalStyle.css"
+import { useNavigate } from 'react-router-dom';
+
 
 interface SignInProps {
     name?: any;
@@ -12,10 +14,12 @@ interface SignInState {
     errors : string
 }
 
-function SignIn() {
+function SignIn({setTokens, setUserId, setUserEmail}:any) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('')
+
+    const navigate = useNavigate();
 
     const handleChange = (event: any) => {
         event.preventDefault()
@@ -58,10 +62,25 @@ function SignIn() {
         const jsonRes = await res.json()
         console.log(jsonRes);
         
-        if (res.status >= 200 && res.status <= 299){
-            window.localStorage.setItem('loggedJamSessionUser', JSON.stringify(jsonRes));
-        }
+        if (!(res.status >= 200 && res.status <= 299)){ return }
+       
+        window.localStorage.setItem('loggedJamSessionUser', JSON.stringify(jsonRes));
+        setTokens(jsonRes)
+
+        const me = await fetch('http://localhost:8000/auth/users/me/', {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': `JWT ${jsonRes.access}`
+            }
+        })
+        const jsonMe = await me.json()
+        console.log(jsonMe);
         
+        setUserId(jsonMe.id)
+        setUserEmail(jsonMe.email)
+        navigate('../', { replace: true })
+
     }
 
     return (

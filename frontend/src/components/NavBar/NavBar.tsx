@@ -26,7 +26,7 @@ export default function NavBar() {
                 <ul>
                     <li><Link to="/" className="site-title" id='site-title'>Jam Session</Link></li>
                     <CustomLink to="/search">Search</CustomLink>
-
+                    <CustomLink to="/profile">Profile</CustomLink>
                 </ul>
                 <ul>
                     <CustomLink to="/signup">Join Now</CustomLink>
