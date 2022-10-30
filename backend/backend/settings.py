@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'profiles',
     'instruments',
     'genres',
-    'cloudstorage'
+    'cloudstorage',
+    'posts'
 ]
 
 MIDDLEWARE = [
