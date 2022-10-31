@@ -145,9 +145,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = [
-#     '../frontend/build/static'  # Specify React static files directory
-# ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'build', 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static')]
 
@@ -179,7 +176,11 @@ EMAIL_USE_TLS = True
 
 
 # Djoser configuration
-DOMAIN = 'localhost:3000'  # REMOVE FOR BUILD DEPLOYMENT
+if deployment_location == 'local':
+    DOMAIN = 'localhost:3000'
+else:
+    DOMAIN = 'jam-session-capstone.herokuapp.com'
+
 SITE_NAME = 'Jam Session'
 DJOSER = {
     'LOGIN_FIELD': 'email',
