@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 import dj_database_url
+from corsheaders.defaults import default_headers
 from datetime import timedelta
 from dotenv import load_dotenv
 from pathlib import Path
@@ -162,8 +163,13 @@ AUTH_USER_MODEL = 'accounts.UserAccount'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = default_headers + (
+    'Cache-Control', 'If-Modified-Since',
+)
 
 
 # Define account and host that app will use to send emails with
@@ -177,9 +183,9 @@ EMAIL_USE_TLS = True
 
 # Djoser configuration
 if deployment_location == 'local':
-    DOMAIN = 'localhost:3000'
+    DOMAIN = 'localhost:3000'  # Dev environment
 else:
-    DOMAIN = 'jam-session-capstone.herokuapp.com'
+    DOMAIN = 'jam-session-capstone.herokuapp.com'  # Heroku production environment
 
 SITE_NAME = 'Jam Session'
 DJOSER = {
