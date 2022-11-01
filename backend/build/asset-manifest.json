@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/static/css/main.1aa29f79.css",
-    "main.js": "/static/js/main.151ca7fc.js",
+    "main.js": "/static/js/main.139a9564.js",
     "static/media/jamband-cropped.jpg": "/static/media/jamband-cropped.ed2d32e641a6772fedfd.jpg",
     "index.html": "/index.html",
     "main.1aa29f79.css.map": "/static/css/main.1aa29f79.css.map",
-    "main.151ca7fc.js.map": "/static/js/main.151ca7fc.js.map"
+    "main.139a9564.js.map": "/static/js/main.139a9564.js.map"
   },
   "entrypoints": [
     "static/css/main.1aa29f79.css",
-    "static/js/main.151ca7fc.js"
+    "static/js/main.139a9564.js"
   ]
 }
