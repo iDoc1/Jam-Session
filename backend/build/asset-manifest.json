@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.1aa29f79.css",
+    "main.js": "/static/js/main.dc303f39.js",
+    "static/media/jamband-cropped.jpg": "/static/media/jamband-cropped.ed2d32e641a6772fedfd.jpg",
+    "index.html": "/index.html",
+    "main.1aa29f79.css.map": "/static/css/main.1aa29f79.css.map",
+    "main.dc303f39.js.map": "/static/js/main.dc303f39.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1aa29f79.css",
+    "static/js/main.dc303f39.js"
+  ]
+}

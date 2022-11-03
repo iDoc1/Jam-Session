@@ -6,4 +6,4 @@ class ProfilesConfig(AppConfig):
     name = 'profiles'
 
     def ready(self):
-        from profiles.signals import handlers
+        from profiles.signals import handlers  # noqa: F401
