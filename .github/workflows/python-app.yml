@@ -12,6 +12,9 @@ on:
 permissions:
   contents: read
 
+env:
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+
 jobs:
   build:
 
