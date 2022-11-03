@@ -24,7 +24,7 @@ function App() {
       "refresh": tokens.refresh
     }
 
-    const res = await fetch('http://localhost:8000/auth/jwt/refresh/',{
+    const res = await fetch('/auth/jwt/refresh/',{
       method: 'POST',
       body: JSON.stringify(refreshBody),
       headers: {
@@ -43,7 +43,7 @@ function App() {
     const resJSON = await res.json()
     
     setTokens({"refresh": tokens.refresh, "access": resJSON.access})
-    const me = await fetch('http://localhost:8000/auth/users/me/', {
+    const me = await fetch('/auth/users/me/', {
       method: 'GET',
       headers: {
           'Content-type': 'application/json',

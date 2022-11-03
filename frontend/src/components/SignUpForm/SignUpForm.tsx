@@ -64,7 +64,7 @@ function SignUp() {
                 "re_password": repeatPassword
             }
 
-        const res = await fetch('http://localhost:8000/auth/users/', {
+        const res = await fetch('/auth/users/', {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {

@@ -44,14 +44,12 @@ function SignIn({setTokens, setUserId, setUserEmail}:any) {
             }, 3000)
             return
         }
-        // const response = await axios.post(
-        //     'http://localhost:8000/auth/jwt/create/',
-        // )
+
         const body = {
                 "email": email,
                 "password": password
             }
-        const res = await fetch('http://localhost:8000/auth/jwt/create/', {
+        const res = await fetch('/auth/jwt/create/', {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {
@@ -67,7 +65,7 @@ function SignIn({setTokens, setUserId, setUserEmail}:any) {
         window.localStorage.setItem('loggedJamSessionUser', JSON.stringify(jsonRes));
         setTokens(jsonRes)
 
-        const me = await fetch('http://localhost:8000/auth/users/me/', {
+        const me = await fetch('/auth/users/me/', {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',

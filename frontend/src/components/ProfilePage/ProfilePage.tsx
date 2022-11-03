@@ -62,7 +62,7 @@ export default function ProfilePage({tokens, userId, userEmail}:ProfileProps) {
     const [profile, setProfile] = useState<Profile | undefined>(undefined);
 
     const getProfile = async () => {
-        const res = await fetch('http://localhost:8000/api/profiles/',{
+        const res = await fetch('/api/profiles/',{
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
