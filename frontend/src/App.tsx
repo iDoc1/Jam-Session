@@ -8,7 +8,7 @@ import NavBar from './components/NavBar/NavBar';
 import Activate from './components/ActivatePage/ActivatePage';
 import EditProfile from './components/EditProfile/EditProfileForm';
 import ProfilePage from './components/ProfilePage/ProfilePage';
-import Player from './components/MusicPlayer/Player';
+
 import { Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -67,7 +67,6 @@ function App() {
     <>
       <NavBar/>
       <Routes>
-        {/* <Route path='/' element={<Player />} /> */}
         <Route path='/' element={<LandingPage />} />
         <Route path='/search' element={<Search />} />
         <Route path='/signup' element={<SignUp />} />
