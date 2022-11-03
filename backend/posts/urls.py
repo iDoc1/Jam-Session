@@ -3,6 +3,6 @@ from .views import CommentViewSet, PostViewSet
 
 router = DefaultRouter()
 router.register(r'comments', CommentViewSet)
-router.register(r'posts', PostViewSet)
+router.register(r'posts', PostViewSet, basename='posts')
 
 urlpatterns = router.urls
