@@ -1,14 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { styled, Typography, Slider, Paper, Stack, Box} from '@mui/material'
 
-
-
 import fsm from '../../assets/music/fsm.mp3'
 import mixaund from '../../assets/music/mixaund.mp3'
-
-
-
-
 
 import VolumeDownIcon from '@mui/icons-material/VolumeDown'
 import VolumeUpIcon from '@mui/icons-material/VolumeUp'
@@ -21,9 +15,6 @@ import FastForwardIcon from '@mui/icons-material/FastForward'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
-
-
-
 
 const Div = styled('div')(({theme}) => ({
     width: '100%',
