@@ -4,6 +4,7 @@ from accounts.models import UserAccount
 from genres.models import Genre
 from instruments.models import Instrument
 from .models import Post, Comment
+from .zipcode_lookup import ZipCodeLookup
 
 
 class PostsCommentsTestCase(TestCase):
@@ -38,15 +39,6 @@ class PostsCommentsTestCase(TestCase):
             post=self.post,
             content='test comment'
         )
-
-    def test_list_posts(self):
-        """
-        Get a list of posts
-        """
-        response = self.client.get('/api/posts/')
-        data = response.json()
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(data), 1)
 
     def test_retrieve_post(self):
         """
@@ -169,3 +161,121 @@ class PostsCommentsTestCase(TestCase):
         self.assertEqual(data['user'], 1)
         self.assertEqual(data['post'], 1)
         self.assertEqual(data['content'], 'I"d like to join!')
+
+    def test_get_posts_without_query_params(self):
+        """
+        Attempt to get list of Posts without specifying any query params
+        """
+        response = self.client.get('/api/posts/')
+        data = response.json()
+        self.assertEqual(data['detail'], 'GET requests must have either query params or a key specified in URL')
+
+    def test_get_posts_without_zipcode_or_radius(self):
+        """
+        Attempt to get list of Posts without specifying zipcode or radius
+        """
+        response = self.client.get('/api/posts/?instrument=guitar')
+        data = response.json()
+        self.assertEqual(data['detail'], 'zipcode and radius are required parameters')
+
+    def test_get_posts_with_zipcode_only(self):
+        """
+        Attempt to get list of Posts and only specify a zipcode
+        """
+        response = self.client.get('/api/posts/?zipcode=98105')
+        data = response.json()
+        self.assertEqual(data['detail'], 'radius parameter is missing')
+
+    def test_get_posts_with_radius_only(self):
+        """
+        Attempt to get list of Posts and only specify a radius
+        """
+        response = self.client.get('/api/posts/?radius=5')
+        data = response.json()
+        self.assertEqual(data['detail'], 'zipcode parameter is missing')
+
+    def test_get_posts_with_invalid_zipcode(self):
+        """
+        Attempt to get list of Posts with a zipcode that is not 5 digits
+        """
+        response = self.client.get('/api/posts/?zipcode=123456&radius=10')
+        data = response.json()
+        self.assertEqual(data['detail'], 'zipcode must be 5 digits long')
+
+    def test_get_posts_with_nonexistant_zipcode(self):
+        """
+        Attempt to get list of Posts with a zipcode that does not exist
+        """
+        response = self.client.get('/api/posts/?zipcode=00000&radius=10')
+        data = response.json()
+        self.assertEqual(data['detail'], 'zipcode does not exist')
+
+    def test_get_posts_with_invalid_radius(self):
+        """
+        Attempt to get list of Posts with a radius that is not a number
+        """
+        response = self.client.get('/api/posts/?zipcode=98105&radius=abc')
+        data = response.json()
+        self.assertEqual(data['detail'], 'radius must be a positive integer')
+
+    def test_get_posts_with_negative_radius(self):
+        """
+        Attempt to get list of Posts with a radius that is not a number
+        """
+        response = self.client.get('/api/posts/?zipcode=98105&radius=-5')
+        data = response.json()
+        self.assertEqual(data['detail'], 'radius must be a positive integer')
+
+
+class ZipCodeLookupTestCase(TestCase):
+    """
+    Tests functionality of the ZipCodeLookup class
+    """
+
+    def test_zipcode_exists(self):
+        """
+        Zipcode exists returns true
+        """
+        zipcode_lookup = ZipCodeLookup('98105')
+        exists = zipcode_lookup.zipcode_exists()
+        self.assertTrue(exists)
+
+    def test_zipcode_does_not_exist(self):
+        """
+        Zipcode exists returns true
+        """
+        zipcode_lookup = ZipCodeLookup('12')
+        exists = zipcode_lookup.zipcode_exists()
+        self.assertFalse(exists)
+
+    def test_zipcodes_in_radius(self):
+        """
+        Specific zipcode exists within 2 mile radius
+        """
+        zipcode_lookup = ZipCodeLookup('98105')
+        results = zipcode_lookup.get_zipcodes_in_radius(2)
+        self.assertIn('98102', results)
+
+    def test_zipcodes_in_zero_radius(self):
+        """
+        A zero mile radius returns a set containing a single zipcode
+        """
+        zipcode_lookup = ZipCodeLookup('98105')
+        results = zipcode_lookup.get_zipcodes_in_radius(0)
+        self.assertEquals(results, {'98105'})
+
+    def test_zipcode_city(self):
+        """
+        Zipcode lookup city is corrent
+        """
+        zipcode_lookup = ZipCodeLookup('98105')
+        city = zipcode_lookup.get_city()
+        self.assertEqual(city, 'Seattle')
+
+    def test_zipcode_state(self):
+        """
+        Zipcode lookup city is corrent
+        """
+        zipcode_lookup = ZipCodeLookup('98105')
+        state = zipcode_lookup.get_state()
+        self.assertEqual(state, 'WA')
