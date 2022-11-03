@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './ProfilePage.css'
 import ProfilePic from '../../assets/default-profile.png'
+import Player from '../MusicPlayer/Player'
+import { setInterval } from 'timers/promises'
 
 interface Gender {
     id:number,
@@ -69,7 +71,12 @@ export default function ProfilePage({tokens, userId, userEmail}:ProfileProps) {
           })
           const jsonRes = await res.json()
           setProfile(jsonRes[0]);
-          console.log(jsonRes[0]);
+
+          if (res.status === 200) {
+               window.localStorage.setItem('loggedJamSessionProfile', JSON.stringify(jsonRes))
+          }
+          
+
     }
 
     const getAge = (dateString:any) => {
@@ -87,8 +94,43 @@ export default function ProfilePage({tokens, userId, userEmail}:ProfileProps) {
       return new Date(dateString).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
     }
 
+    const getGenres = () => {
+        let genreString = '';
+
+        profile?.genres.map(g => genreString += (g.genre.charAt(0).toUpperCase() + g.genre.slice(1)) + ', ')
+        
+        if (genreString.slice(-2) === ', '){
+            genreString = genreString.slice(0,-2)
+        }
+        
+        return genreString
+    }
+
+    const getInstruments = () => {
+        let instrumentString = '';
+
+        let instrumentList = profile?.instruments
+    
+        instrumentList?.map(inst => instrumentString += (inst.instrument.name.charAt(0).toUpperCase() + inst.instrument.name.slice(1)) + ', ')
+        if (instrumentString.slice(-2) === ', '){
+            instrumentString = instrumentString.slice(0,-2)
+        }
+
+        return instrumentString
+    }
     useEffect(() => {
-        getProfile();
+        const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
+
+        if (!loggedProfileString) {
+            getProfile();
+        }
+        else {
+            
+            const profileJSON = JSON.parse(loggedProfileString);
+            setProfile(profileJSON[0])
+        }
+        
+
     },[])
 
     return (
@@ -107,21 +149,28 @@ export default function ProfilePage({tokens, userId, userEmail}:ProfileProps) {
                     <img src={ProfilePic} alt="" className='profile-picture'/>
                     <div className="user-info">
                         <div>
-                            <h3>City, State, {profile?.zipcode} | {getAge(profile?.birth_date)} Year old {profile?.gender.gender}</h3>
-                            <h3>Genres: {profile?.genres[0].genre}</h3>
-                            <h3>Instruments: {profile?.instruments[0].instrument.name}</h3>
+                            <h3>City, State, {profile?.zipcode}</h3>
+                            <h3>Genres:</h3>
+                            <p>{getGenres()}</p>
+                            <h3>Instruments:</h3> 
+                            <p>{getInstruments()}</p>
                             <button><a href={`mailto:${userEmail}`}>Contact</a></button>
                         </div>
                         <div>
-                            <h3>Years playing music: {profile?.years_playing}</h3>
-                            <h3>Level of commitment: {profile?.level_of_commitment.level}</h3>
-                            <h3>Member since: {formatDate(profile?.join_date)}</h3>
+                            <h3>{getAge(profile?.birth_date)} Year old {profile?.gender.gender}</h3>
+                            <h3>Years playing music:</h3> 
+                            <p>{profile?.years_playing}</p>
+                            <h3>Level of commitment:</h3>
+                            <p>{profile?.level_of_commitment.level}</p>
+                            <h3>Member since:</h3>
+                            <p>{formatDate(profile?.join_date)}</p>
                         </div>
                     </div>
                 </div>
                 <div className="user-music">
                     <div className="music-player">
-                        <h3>Music Sample</h3>
+                        <h2>Music Sample</h2>
+                        <Player />
                     </div>
                     <div className="music-info">
                         <div className="music-seeking">
@@ -131,7 +180,10 @@ export default function ProfilePage({tokens, userId, userEmail}:ProfileProps) {
                         <div className="music-instruments">
                             <h3>Instrument Experience</h3>
                             <ul>
-                                <li><span className='instrument-list'>{profile?.instruments[0].instrument.name}:</span> <span>{profile?.instruments[0].experience_level.level}</span></li>
+                                {profile?.instruments.map(inst => 
+                                    <li key={inst.instrument.id}><span className='instrument-list'>{inst.instrument.name.charAt(0).toUpperCase() + inst.instrument.name.slice(1)}:</span> <span>{inst.experience_level.level}</span></li>
+                                    
+                                )}
                             </ul>
                         </div>
                     </div>
