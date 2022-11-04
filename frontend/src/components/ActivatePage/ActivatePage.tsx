@@ -15,7 +15,7 @@ export default function Activate() {
                 "uid": params[0],
                 "token": params[1]
             }
-            const res = await fetch('http://localhost:8000/auth/users/activation/', {
+            const res = await fetch('/users/activation/', {
                 method: 'POST',
                 body: JSON.stringify(body),
                 headers: {
