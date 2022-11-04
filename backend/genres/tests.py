@@ -1,4 +1,5 @@
 from accounts.models import UserAccount
+from django.db.utils import IntegrityError
 from django.test import TestCase
 from rest_framework.test import APIClient
 from .models import Genre
@@ -77,8 +78,8 @@ class GenreTestCase(TestCase):
         """
         error_occurred = False
         try:
-            Genre.objects.create(name='rock')
-        except:
+            Genre.objects.create(genre='rock')
+        except IntegrityError:
             error_occurred = True
         finally:
             self.assertTrue(error_occurred)

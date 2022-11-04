@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('first_name', models.CharField(default='', max_length=75)),
                 ('last_name', models.CharField(default='', max_length=75)),
                 ('gender', models.CharField(default='', max_length=30)),
-                ('birth_date', models.DateField(default=profiles.models.get_date_18_years_ago)),
+                ('birth_date', models.DateField(default=None)),
                 ('zipcode', models.CharField(default='', max_length=10)),
                 ('profile_picture_url', models.URLField(blank=True, null=True)),
                 ('join_date', models.DateTimeField(default=datetime.datetime(2022, 10, 10, 18, 57, 45, 790695))),

@@ -8,4 +8,4 @@ class GenreViewSet(ModelViewSet):
     A viewset for viewing and editing music genres
     """
     serializer_class = GenreSerializer
-    queryset = Genre.objects.all()
+    queryset = Genre.objects.order_by('genre')  # Sort alphabetically

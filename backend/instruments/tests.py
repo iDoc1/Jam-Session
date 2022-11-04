@@ -1,4 +1,5 @@
 from accounts.models import UserAccount
+from django.db.utils import IntegrityError
 from django.test import TestCase
 from rest_framework.test import APIClient
 from .models import Instrument
@@ -14,7 +15,7 @@ class InstrumentTestCase(TestCase):
         Create authenticated test user and test instrument
         """
         self.client = APIClient()
-        user = UserAccount.objects.create(email='testemail')
+        user = UserAccount.objects.create(email='testemail@test.com')
         self.client.force_authenticate(user=user)
         self.instrument = Instrument.objects.create(name='vocals')
 
@@ -78,7 +79,7 @@ class InstrumentTestCase(TestCase):
         error_occurred = False
         try:
             Instrument.objects.create(name='vocals')
-        except:
+        except IntegrityError:
             error_occurred = True
         finally:
             self.assertTrue(error_occurred)
