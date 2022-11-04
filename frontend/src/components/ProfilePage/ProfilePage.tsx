@@ -36,9 +36,11 @@ interface CommitmentLevel{
     rank:number
 }
 interface Profile {
+    id: number,
     first_name: string,
     last_name: string,
     zipcode: string,
+    profile_picture_url: string | null,
     birth_date: string,
     gender: Gender,
     genres: Genres[],
@@ -59,7 +61,77 @@ interface ProfileProps {
 }
 
 export default function ProfilePage({tokens, userId, userEmail}:ProfileProps) {
-    const [profile, setProfile] = useState<Profile | undefined>(undefined);
+    const [profile, setProfile] = useState<Profile | undefined>(
+            {
+                "id": 13,
+                "first_name": "Sample",
+                "last_name": "Account",
+                "gender": {
+                    "id": 1,
+                    "gender": "Man"
+                },
+                "birth_date": "1992-06-28",
+                "zipcode": "99999",
+                "profile_picture_url": null,
+                "join_date": "2022-10-22T21:30:45.042693Z",
+                "years_playing": 5,
+                "level_of_commitment": {
+                    "id": 1,
+                    "level": "Moderately serious",
+                    "rank": 2
+                },
+                "seeking": "Vocals, Guitar, Keys",
+                "instruments": [
+                    {
+                        "instrument": {
+                            "id": 5,
+                            "name": "drums"
+                        },
+                        "experience_level": {
+                            "id": 1,
+                            "level": "Moderately serious",
+                            "rank": 2
+                        }
+                    },
+                    {
+                        "instrument": {
+                            "id": 3,
+                            "name": "bass guitar"
+                        },
+                        "experience_level": {
+                            "id": 2,
+                            "level": "Intermediate",
+                            "rank": 3
+                        }
+                    },
+                    {
+                        "instrument": {
+                            "id": 4,
+                            "name": "backup vocals"
+                        },
+                        "experience_level": {
+                            "id": 3,
+                            "level": "Beginner",
+                            "rank": 4
+                        }
+                    }
+                ],
+                "genres": [
+                    {
+                        "id": 2,
+                        "genre": "rock"
+                    },
+                    {
+                        "id": 3,
+                        "genre": "metal"
+                    },
+                    {
+                        "id": 4,
+                        "genre": "r&b"
+                    }
+                ]
+            }
+    );
 
     const getProfile = async () => {
         const res = await fetch('/api/profiles/',{
@@ -70,10 +142,10 @@ export default function ProfilePage({tokens, userId, userEmail}:ProfileProps) {
             }
           })
           const jsonRes = await res.json()
-          setProfile(jsonRes[0]);
-
+          
           if (res.status === 200) {
-               window.localStorage.setItem('loggedJamSessionProfile', JSON.stringify(jsonRes))
+                setProfile(jsonRes[0]);
+                window.localStorage.setItem('loggedJamSessionProfile', JSON.stringify(jsonRes))
           }
           
 
