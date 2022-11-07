@@ -23,6 +23,12 @@
 .user-banner h1, .user-banner h3 {
     margin: 0 1rem;
 }
+.left-side-banner {
+    display: flex;
+}
+.left-side-banner button {
+    font-size: 1rem;
+}
 .user-about{
     margin-top: 1rem;
     background-color: #d9d9d9;

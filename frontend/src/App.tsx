@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import SignUp from './components/SignUpForm/SignUpForm';
 import SignIn from './components/SignInForm/SignInForm';
@@ -16,7 +16,7 @@ function App() {
   const [loading, setLoading] = useState<boolean>(true);
 
   // Checks if access token for current user is valid
-  const checkUserAuthenticated = async () => {
+  const checkUserAuthenticated = useCallback( async () => {
     // Check if access token exists, then verify that it is still valid
     if (localStorage.getItem('access')) {
       const res = await fetch('/auth/jwt/verify/', {
@@ -41,7 +41,7 @@ function App() {
     }
 
     setLoading(false); // Done loading authentication check
-  }
+  }, [])
 
   // Attempts to get a new access token using the refresh token
   const refreshAccessToken = async () => {
@@ -67,7 +67,7 @@ function App() {
 
   useEffect(() => {
     checkUserAuthenticated();
-  }, []);
+  }, [checkUserAuthenticated]);
 
   return (
     <>

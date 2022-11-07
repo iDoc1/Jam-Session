@@ -27,13 +27,17 @@ export default function NavBar({isAuthenticated, setIsAuthenticated}: NavBarProp
                     <Link to="/search">Search</Link>
                     {isAuthenticated
                       ? <Link to="/profile">Profile</Link>
-                      : null}
+                      : null
+                    }
                 </ul>
                 <ul>
-                    <Link to="/signup">Join Now</Link>
                     {isAuthenticated
                       ? <Link to='' onClick={logout}>Logout</Link>
-                      : <Link to="login">Login</Link>}
+                      : <>
+                            <Link to="/signup">Join Now</Link>
+                            <Link to="login">Login</Link>
+                        </>
+                    }
                 </ul>
             </div>
         </nav>
