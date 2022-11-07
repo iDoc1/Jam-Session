@@ -2,22 +2,15 @@ import React, { useState } from "react";
 import "../globalStyle.css"
 import { useNavigate } from 'react-router-dom';
 
-
 interface SignInProps {
-    name?: any;
-    value?: any;
+    isAuthenticated: null | boolean,
+    setIsAuthenticated: Function,
 }
 
-interface SignInState {
-    email : string,
-    password : string
-    errors : string
-}
-
-function SignIn({setTokens, setUserId, setUserEmail}:any) {
+function SignIn({isAuthenticated, setIsAuthenticated}: SignInProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('')
+    const [error, setError] = useState('');
 
     const navigate = useNavigate();
 
@@ -35,6 +28,24 @@ function SignIn({setTokens, setUserId, setUserEmail}:any) {
                 break
         }
     }
+
+    const getUserProfile = async () => {
+        const res = await fetch('/auth/users/me/', {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json',
+            'Authorization': `JWT ${localStorage.getItem('access')}`
+          }
+        });
+        const jsonMe = await res.json();
+        
+        // Save user if and email to local storage
+        if (res.status === 200) {
+          localStorage.setItem('loggedJamSessionUser', jsonMe.id);
+          localStorage.setItem('loggedJamSessionEmail', jsonMe.email);
+        }
+      }
+
     const handleSubmit = async (event:any) => {
         event.preventDefault();
         if (!email || !password) {           
@@ -48,7 +59,9 @@ function SignIn({setTokens, setUserId, setUserEmail}:any) {
         const body = {
                 "email": email,
                 "password": password
-            }
+        }
+
+        // Log in user
         const res = await fetch('/auth/jwt/create/', {
             method: 'POST',
             body: JSON.stringify(body),
@@ -58,27 +71,24 @@ function SignIn({setTokens, setUserId, setUserEmail}:any) {
         })
         
         const jsonRes = await res.json()
-        console.log(jsonRes);
         
-        if (!(res.status >= 200 && res.status <= 299)){ return }
-       
-        window.localStorage.setItem('loggedJamSessionUser', JSON.stringify(jsonRes));
-        setTokens(jsonRes)
+        // Save tokens to local storage
+        if (res.status === 200) {
+            setIsAuthenticated(true);
+            localStorage.setItem('access', jsonRes.access);
+            localStorage.setItem('refresh', jsonRes.refresh);
+            getUserProfile();
+            navigate('/');
+        } else {
+            setIsAuthenticated(true);
+            setError('Username and/or password incorrect');
+        }
 
-        const me = await fetch('/auth/users/me/', {
-            method: 'GET',
-            headers: {
-                'Content-type': 'application/json',
-                'Authorization': `JWT ${jsonRes.access}`
-            }
-        })
-        const jsonMe = await me.json()
-        console.log(jsonMe);
-        
-        setUserId(jsonMe.id)
-        setUserEmail(jsonMe.email)
-        navigate('../', { replace: true })
+    }
 
+    // Redirect to homepage if user already authenticated
+    if (isAuthenticated) {
+        navigate('/');
     }
 
     return (

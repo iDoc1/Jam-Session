@@ -50,17 +50,8 @@ interface Profile {
     join_date: string,
     seeking:string
 }
-interface Tokens{
-    refresh:string,
-    access:string
-}
-interface ProfileProps {
-    tokens: Tokens,
-    userId: number,
-    userEmail:string
-}
 
-export default function ProfilePage({tokens, userId, userEmail}:ProfileProps) {
+export default function ProfilePage() {
     const [profile, setProfile] = useState<Profile | undefined>(
             {
                 "id": 13,
@@ -138,7 +129,7 @@ export default function ProfilePage({tokens, userId, userEmail}:ProfileProps) {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
-                'Authorization': `JWT ${tokens.access}`
+                'Authorization': `JWT ${localStorage.getItem('access')}`
             }
           })
           const jsonRes = await res.json()
@@ -226,7 +217,7 @@ export default function ProfilePage({tokens, userId, userEmail}:ProfileProps) {
                             <p>{getGenres()}</p>
                             <h3>Instruments:</h3> 
                             <p>{getInstruments()}</p>
-                            <button><a href={`mailto:${userEmail}`}>Contact</a></button>
+                            <button><a href={`mailto:${localStorage.getItem('loggedJamSessionEmail')}`}>Contact</a></button>
                         </div>
                         <div>
                             <h3>{getAge(profile?.birth_date)} Year old {profile?.gender.gender}</h3>

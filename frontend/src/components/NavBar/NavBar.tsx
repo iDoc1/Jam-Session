@@ -1,36 +1,39 @@
 import React from 'react';
 import './NavBarStyle.css'
-import { Link, useMatch, useResolvedPath } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-// interface props {
-//     href?: React.ReactNode
-//     children?: React.ReactNode
-// }
-
-function CustomLink({ to, children, ...props}:any) {
-    const resolvedPath = useResolvedPath(to)
-    const isActive = useMatch({path:resolvedPath.pathname, end:true})
-    return (
-        <li className={isActive? "active": ""}>
-            <Link to={to} {...props}>
-                {children}
-            </Link>
-        </li>
-    )
+interface NavBarProps {
+    isAuthenticated: null | boolean,
+    setIsAuthenticated: Function
 }
 
-export default function NavBar() {
+export default function NavBar({isAuthenticated, setIsAuthenticated}: NavBarProps) {
+    const navigate = useNavigate();
+
+    const logout = () => {
+      setIsAuthenticated(false);
+      localStorage.removeItem('access');
+      localStorage.removeItem('refresh');
+      localStorage.removeItem('loggedJamSessionUser');
+      localStorage.removeItem('loggedJamSessionEmail');
+      navigate('/');
+  }
+
     return (
         <nav className="nav">
             <div className='nav-container'>
                 <ul>
                     <li><Link to="/" className="site-title" id='site-title'>Jam Session</Link></li>
-                    <CustomLink to="/search">Search</CustomLink>
-                    <CustomLink to="/profile">Profile</CustomLink>
+                    <Link to="/search">Search</Link>
+                    {isAuthenticated
+                      ? <Link to="/profile">Profile</Link>
+                      : null}
                 </ul>
                 <ul>
-                    <CustomLink to="/signup">Join Now</CustomLink>
-                    <CustomLink to="login">Login</CustomLink>
+                    <Link to="/signup">Join Now</Link>
+                    {isAuthenticated
+                      ? <Link to='' onClick={logout}>Logout</Link>
+                      : <Link to="login">Login</Link>}
                 </ul>
             </div>
         </nav>
