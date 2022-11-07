@@ -1,13 +1,17 @@
 /* eslint-disable */
 import React from 'react';
+import { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import SignIn from './SignInForm'
 import {BrowserRouter as Router} from 'react-router-dom';
 
 test('Sign in page is rendered', () => {
+    const mockFunction = () => {
+        return;
+    }
     const {container} = render(
         <Router>
-            <SignIn/>
+            <SignIn isAuthenticated={false} setIsAuthenticated={mockFunction} />
         </Router>
     );
     const h2 = container.querySelector('h2')
@@ -15,9 +19,12 @@ test('Sign in page is rendered', () => {
 });
 
 test('Sign in email input is enabled', () => {
+    const mockFunction = () => {
+        return;
+    }
     const {container} = render(
         <Router>
-            <SignIn/>
+            <SignIn isAuthenticated={false} setIsAuthenticated={mockFunction} />
         </Router>
     )
     const input = container.querySelector('#sign-in-email')
@@ -25,9 +32,12 @@ test('Sign in email input is enabled', () => {
 });
 
 test('Sign in password input is enabled', () => {
+    const mockFunction = () => {
+        return;
+    }
     const {container} = render(
         <Router>
-            <SignIn/>
+            <SignIn isAuthenticated={false} setIsAuthenticated={mockFunction} />
         </Router>
     )
     const input = container.querySelector('#sign-in-password')
@@ -35,9 +45,12 @@ test('Sign in password input is enabled', () => {
 });
 
 test('Sign in button input is enabled', () => {
+    const mockFunction = () => {
+        return;
+    }
     const {container} = render(
         <Router>
-            <SignIn/>
+            <SignIn isAuthenticated={false} setIsAuthenticated={mockFunction} />
         </Router>
     )
     const input = container.querySelector('#sign-in-button')
@@ -45,9 +58,12 @@ test('Sign in button input is enabled', () => {
 });
 
 test('Sign in button input is enabled', () => {
+    const mockFunction = () => {
+        return;
+    }
     const {container} = render(
         <Router>
-            <SignIn/>
+            <SignIn isAuthenticated={false} setIsAuthenticated={mockFunction} />
         </Router>
     )
     const link = container.querySelector('#sign-in-registration-redirect')
