@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../globalStyle.css"
 import "./EditProfileForm.css"
-import { Profile, Gender, CommitmentLevel } from '../../types'
+import { Profile, Gender, CommitmentLevel, Genres, Instrument, ExperienceLevel } from '../../types'
 import Dropdown from 'react-dropdown'
 
 
@@ -51,8 +51,13 @@ function EditProfile() {
 
     const [genderOptions, setGenderOptions] = useState<Gender[]>([]);
     const [commitmentOptions, setCommitmentOptions] = useState<CommitmentLevel[]>([]);
-    const [genreOptions, setGenreOptions] = useState(null);
-    const [genreSelection, setGenreSelection] = useState([]);
+    const [genreOptions, setGenreOptions] = useState<Genres[]>([]);
+    const [genreSelection, setGenreSelection] = useState<any>([]);
+    const [instrumentOptions, setInstrumentOptions] = useState<Instrument[]>([]);
+    const [experienceLevelOptions, setExperienceLevelOptions] = useState<ExperienceLevel[]>([]);
+    const [instrument1, setInstrument1] = useState({});
+    const [instrument2, setInstrument2] = useState({});
+    const [instrument3, setInstrument3] = useState({});
 
     const handleChange = (event: any) => {
         event.preventDefault()
@@ -72,9 +77,22 @@ function EditProfile() {
         }
     }
 
-    const handleSubmit = (event:any) => {
+    const handleSubmit = async (event:any) => {
         event.preventDefault();
         console.log(profile);
+        const res = await fetch(`/api/profiles/${localStorage.getItem('loggedJamSessionUser')}`,{
+            method: 'PATCH',
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            },
+            body: JSON.stringify(profile)
+          })
+        console.log(res)
+
+        // const resJSON = await res.json()
+        // console.log(resJSON)
+
     }
     // const handleSubmit = async (event:any) => {
     //     event.preventDefault();
@@ -101,7 +119,6 @@ function EditProfile() {
     //     })
         
     //     const jsonRes = await res.json()
-    //     console.log(jsonRes);
         
     //     if (res.status >= 200 && res.status <= 299){
     //         window.localStorage.setItem('loggedJamSessionUser', JSON.stringify(jsonRes));
@@ -143,10 +160,88 @@ function EditProfile() {
         setProfile({...profile, "level_of_commitment": optionObject});
     }
 
+    const getGenreOptions = async () => {
+        const res = await fetch('/api/genres/', {
+            method: 'GET',
+            headers: {
+              'Content-type': 'application/json',
+              'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+          });
+        const resJSON = await res.json()
+        setGenreOptions(resJSON)
+    }
+
+    const addGenreSelection = (option:any) => {
+        if (!genreSelection.includes(option.value)) {
+            setGenreSelection([...genreSelection, option.value]);
+
+            const genreObject = genreOptions.filter(x => x.genre === option.value.charAt(0).toLowerCase() + option.value.slice(1))[0];
+            setProfile({...profile, "genres": [...profile.genres, genreObject]});
+        }
+    }
+
+    const getGenreSelections = () => {
+        let genreString = '';
+        profile.genres.map((x: Genres) => genreString += x.genre.charAt(0).toUpperCase() + x.genre.slice(1) + ', ');
+        genreString = genreString.slice(0, -2);
+        return genreString;
+    }
+
+    const clearGenreSelections = (e:any) => {
+        e.preventDefault()
+        setGenreSelection([]);
+        setProfile({...profile, "genres": []});
+    }
+
+    const getInstrumentOptions = async () => {
+        const res = await fetch('/api/instruments/', {
+            method: 'GET',
+            headers: {
+              'Content-type': 'application/json',
+              'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+          });
+        const resJSON = await res.json();
+        setInstrumentOptions(resJSON);
+    }
+
+    const getExperienceOptions = async () => {
+        const res = await fetch('/api/experience-levels/', {
+            method: 'GET',
+            headers: {
+              'Content-type': 'application/json',
+              'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+          });
+        const resJSON = await res.json();
+        setExperienceLevelOptions(resJSON);
+    }
+
+    const changeInstrument1 = (option:any) => {
+        const instrumentObject = instrumentOptions.filter(x => x.name === option.value.charAt(0).toLowerCase() + option.value.slice(1))[0]
+        const newInstObj = {...instrument1, "instrument": instrumentObject}
+        setInstrument1(newInstObj)
+        if (Object.keys(newInstObj).length === 2) {
+            setProfile({...profile, "instruments": [...profile.instruments, newInstObj]})
+        }
+        
+    }
+    const changeExperience1 = (option:any) => {
+        const experienceObject = experienceLevelOptions.filter(x => x.level === option.value)[0]
+        const newInstObj = {...instrument1, "experience_level": experienceObject}
+        setInstrument1(newInstObj)
+        if (Object.keys(newInstObj).length === 2) {
+            setProfile({...profile, "instruments": [...profile.instruments, newInstObj]})
+        }
+    }
+
     useEffect(() => {
         getGenderOptions();
         getCommitmentOptions();
-
+        getGenreOptions();
+        getInstrumentOptions();
+        getExperienceOptions();
     },[])
 
     return (
@@ -166,7 +261,6 @@ function EditProfile() {
             <div className="form-group">
                 <label htmlFor="gender">Gender</label>
                 <Dropdown options={genderOptions.map((g: Gender) => g.gender)} placeholder={profile?.gender.gender} onChange={changeGender}/>
-                {/* <input type='gender' name='gender' id='edit-profile-gender' onChange={handleChange}/> */}
             </div>
             <div className="form-group">
                 <label htmlFor="birth_date">Birth Date</label>
@@ -177,21 +271,40 @@ function EditProfile() {
                 <input type='zipcode' name='zipcode' id='edit-profile-zipcode' onChange={handleChange} value={profile.zipcode}/>
             </div>
             <div className="form-group">
+                {/* Added for spacing */}
+            </div>
+            <div className="form-group">
                 <label htmlFor="years_playing">Years playing music</label>
                 <input type='string' name='years_playing' id='edit-profile-years-playing' onChange={handleChange} value={profile.years_playing}/>
             </div>
             <div className="form-group">
                 <label htmlFor="level_of_commitment">Level of commitment</label>
                 <Dropdown options={commitmentOptions.map((c : CommitmentLevel) => c.level)} placeholder={profile?.level_of_commitment.level} onChange={changeCommitment}/>
-                {/* <input type='level_of_commitment' name='level_of_commitment' id='edit-profile-commitment' onChange={handleChange} value={profile.level_of_commitment.level}/> */}
-            </div>
-            {/* <div className="form-group">
-                <label htmlFor="birth_date">Birth Date</label>
-                <input type='date' name='birth_date' id='edit-profile-birth-date' onChange={handleChange}/>
             </div>
             <div className="form-group">
-                <label htmlFor="birth_date">Birth Date</label>
-                <input type='date' name='birth_date' id='edit-profile-birth-date' onChange={handleChange}/>
+                <label htmlFor="genres">Genre</label>
+                <Dropdown options={genreOptions.map((g: Genres) => (g.genre.charAt(0).toUpperCase() + g.genre.slice(1)))} onChange={addGenreSelection}/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="birth_date">Genre Selection</label>
+                <p>{getGenreSelections()}</p>
+                <button onClick={clearGenreSelections}>Clear Selections</button>
+            </div>
+            <div className="form-group">
+                <label htmlFor="instruments">Instruments</label>
+                <Dropdown options={instrumentOptions.map((i: Instrument) => i.name.charAt(0).toUpperCase() + i.name.slice(1))} placeholder={profile?.instruments[0].instrument.name.charAt(0).toUpperCase() + profile?.instruments[0].instrument.name.slice(1)} onChange={changeInstrument1}/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="experience_level">Experience Level</label>
+                <Dropdown  options={experienceLevelOptions.map((e: ExperienceLevel) => e.level)} placeholder={profile?.instruments[0].experience_level.level} onChange={changeExperience1} />
+            </div>
+            {/* <div className="form-group">
+                <label htmlFor="instruments">Instruments</label>
+                <Dropdown options={instrumentOptions.map((i: Instrument) => i.name.charAt(0).toUpperCase() + i.name.slice(1))} placeholder={profile?.instruments[0].instrument.name.charAt(0).toUpperCase() + profile?.instruments[0].instrument.name.slice(1)}/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="experience_level">Experience Level</label>
+                <Dropdown options={experienceLevelOptions.map((e: ExperienceLevel) => e.level)} placeholder={profile?.instruments[0].experience_level.level} />
             </div> */}
             <button id='save-changes-button'>Save Changes</button>
        
