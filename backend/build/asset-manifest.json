@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/static/css/main.cef43b8b.css",
-    "main.js": "/static/js/main.bc847bda.js",
+    "main.js": "/static/js/main.edd1a67d.js",
     "static/media/fsm.mp3": "/static/media/fsm.720f9156899d1205e3ac.mp3",
     "static/media/jamband-cropped.jpg": "/static/media/jamband-cropped.ed2d32e641a6772fedfd.jpg",
     "static/media/mixaund.mp3": "/static/media/mixaund.37bfe46da2e8487242b1.mp3",
     "index.html": "/index.html",
     "main.cef43b8b.css.map": "/static/css/main.cef43b8b.css.map",
-    "main.bc847bda.js.map": "/static/js/main.bc847bda.js.map"
+    "main.edd1a67d.js.map": "/static/js/main.edd1a67d.js.map"
   },
   "entrypoints": [
     "static/css/main.cef43b8b.css",
-    "static/js/main.bc847bda.js"
+    "static/js/main.edd1a67d.js"
   ]
 }

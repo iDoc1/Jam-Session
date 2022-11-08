@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../globalStyle.css"
 import "./SignUpForm.css"
 // import axios from "axios";
 
 const emailRegex = RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
 
-interface SignUpProps {
-    name?: any;
-    value?: any;
-}
+// interface SignUpProps {
+//     name?: any;
+//     value?: any;
+// }
 
-interface SignUpState {
-    email : string,
-    password : string,
-    repeatPassword : string,
-    errors : {
-        email : string,
-        password : string,
-        repeatPassword : string
-    },
-    success: boolean
-}
+// interface SignUpState {
+//     email : string,
+//     password : string,
+//     repeatPassword : string,
+//     errors : {
+//         email : string,
+//         password : string,
+//         repeatPassword : string
+//     },
+//     success: boolean
+// }
 // <SignUpProps, SignUpState>
 
 function SignUp() {
@@ -33,7 +33,7 @@ function SignUp() {
         repeatPassword : ''
     })
     const [success, setSuccess] = useState(false)
-    const [validated, setValidated] = useState(false)
+    // const [validated, setValidated] = useState(false)
     
     const handleChange = (event: any) => {
         event.preventDefault()
