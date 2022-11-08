@@ -110,7 +110,7 @@ export default function ProfilePage() {
                             <h3>Years playing music:</h3> 
                             <p>{profile?.years_playing}</p>
                             <h3>Level of commitment:</h3>
-                            <p>{profile?.level_of_commitment.level}</p>
+                            <p>{profile?.level_of_commitment? profile.level_of_commitment.level : ''}</p>
                             <h3>Member since:</h3>
                             <p>{profile?.join_date? formatDate(profile?.join_date) : ''}</p>
                         </div>

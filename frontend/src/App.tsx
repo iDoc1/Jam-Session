@@ -28,7 +28,7 @@ function App() {
           token: localStorage.getItem('access')
         })
       });
-
+      
       if (res.status === 200) {
         setIsAuthenticated(true);
       } else if (res.status === 401) {  // Access token expired, so must refresh it
@@ -45,14 +45,19 @@ function App() {
 
   // Attempts to get a new access token using the refresh token
   const refreshAccessToken = async () => {
-    const res = await fetch('/token/refresh/', {
+    let refresh = { 'refresh': localStorage.getItem('refresh')}
+    console.log('refresh:' , refresh);
+    
+    const res = await fetch('/auth/jwt/refresh/', {
       method: 'POST',
-      body: JSON.stringify({
-        refresh: localStorage.getItem('refresh')
-      })
+      body: JSON.stringify(refresh),
+      headers: {
+          'Content-type': 'application/json',
+      }
     });
     const data = await res.json();
-
+    console.log('test:', data);
+    
     if (res.status === 200) {  // Refresh token still valid
       setIsAuthenticated(true);
       localStorage.setItem('access', data.access);

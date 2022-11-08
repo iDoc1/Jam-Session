@@ -1,0 +1,40 @@
+.edit-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 680px;
+    max-width: 80%;
+    min-width: 100px;
+    min-height: 400px;
+    padding: 20px 40px;
+    border-radius: 6px;
+    box-shadow: 0px 8px 36px #222;
+    background-color: #fefefe;
+  }
+  
+  .edit-form-wrapper > h2 {
+    display: flex;
+    justify-content: space;
+    font-family: "Segoe UI", "Ubuntu", "Roboto", "Open Sans", "Helvetica Neue", sans-serif;
+    font-size: 2em;
+    font-weight: lighter;
+    margin-top: 0.25em;
+    color: #222;
+  }
+
+  .edit-form-wrapper form {
+    display: grid; /* to use css-grid */
+    grid-template-columns: 1fr 1fr; /* creates 2 columns */
+    gap: 20px; /* creates a gap between the columns and rows */
+  }
+  
+  .edit-form-wrapper form h2,
+  .edit-form-wrapper form p,
+  .edit-form-wrapper form button {
+    grid-column: span 2; /* lets those elements span both columns */
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    /* flexbox is sued to palce the label and input below each other and allows the input to fill out the entrie width */
+  }
