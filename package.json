@@ -24,7 +24,7 @@
         "web-vitals": "^2.1.4"
     },
     "scripts": {
-        "build": "npm run --prefix ./frontend build"
+        "build": "npm run --prefix ./frontend build && cp -r ./frontend/build ./backend/build"
     },
     "engines": {
         "node": "14.x"
