@@ -1,27 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../globalStyle.css"
 import "./SignUpForm.css"
-// import axios from "axios";
 
-const emailRegex = RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
-
-interface SignUpProps {
-    name?: any;
-    value?: any;
-}
-
-interface SignUpState {
-    email : string,
-    password : string,
-    repeatPassword : string,
-    errors : {
-        email : string,
-        password : string,
-        repeatPassword : string
-    },
-    success: boolean
-}
-// <SignUpProps, SignUpState>
+const emailRegex = RegExp(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/);
 
 function SignUp() {
     const [email, setEmail] = useState('');
@@ -33,7 +14,6 @@ function SignUp() {
         repeatPassword : ''
     })
     const [success, setSuccess] = useState(false)
-    const [validated, setValidated] = useState(false)
     
     const handleChange = (event: any) => {
         event.preventDefault()
@@ -53,9 +33,9 @@ function SignUp() {
                 break
             default:
                 break
-        }
-        
+        } 
     }
+
     const handleSubmit = async (event:any) => {
         event.preventDefault();
         const body = {
@@ -96,6 +76,7 @@ function SignUp() {
             }            
         }
     }
+    
     return (
         <div className='wrapper'>
         <div className='form-wrapper'>
