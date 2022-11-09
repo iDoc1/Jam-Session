@@ -46,3 +46,10 @@ export interface Profile {
     join_date: string,
     seeking:string
 }
+
+export interface SocialMedia {
+    id: number,
+    user: number,
+    social_media_site: string,
+    social_media_link: string
+}

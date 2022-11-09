@@ -29,6 +29,14 @@
 .left-side-banner button {
     font-size: 1rem;
 }
+
+.banner-socials {
+    margin-right: 1rem;
+}
+
+.banner-socials a {
+    margin-right:.25rem;
+}
 .user-about{
     margin-top: 1rem;
     background-color: #d9d9d9;

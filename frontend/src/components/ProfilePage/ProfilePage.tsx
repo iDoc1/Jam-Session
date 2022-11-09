@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import './ProfilePage.css'
 import ProfilePic from '../../assets/default-profile.png'
+import facebookIcon from '../../assets/icons/facebook.png'
+import twitterIcon from '../../assets/icons/twitter.png'
+import instagramIcon from '../../assets/icons/instagram.png'
+import bandcampIcon from '../../assets/icons/bandcamp.png'
 import Player from '../MusicPlayer/Player'
 import { useNavigate } from 'react-router-dom';
-import { Profile } from '../../types'
+import { Profile, SocialMedia } from '../../types'
 
 
 export default function ProfilePage() {
     const [profile, setProfile] = useState<Profile | undefined>(undefined);
+
+    const [facebookLink, setFacebookLink] = useState<string>('');
+    const [twitterLink, setTwitterLink] = useState<string>('');
+    const [instagramLink, setInstagramLink] = useState<string>('');
+    const [bandcampLink, setBandcampLink] = useState<string>('');
+
     const navigate = useNavigate();
 
     const getProfile = async () => {
@@ -65,6 +75,54 @@ export default function ProfilePage() {
 
         return instrumentString
     }
+
+    const getSocialLinks = async () => {
+        const res = await fetch('/api/social-media/', {
+            method: 'GET',
+            headers: {
+              'Content-type': 'application/json',
+              'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+          });
+        const resJSON = await res.json();
+
+        const facebookObject:SocialMedia = resJSON.filter((s:SocialMedia) => s.social_media_site === 'facebook')[0]
+        if (facebookObject) {
+            setFacebookLink(facebookObject.social_media_link);
+        }
+
+        const twitterObject:SocialMedia = resJSON.filter((s:SocialMedia) => s.social_media_site === 'twitter')[0]
+        if (twitterObject) {
+            setTwitterLink(twitterObject.social_media_link);
+        }
+
+        const instagramObject:SocialMedia = resJSON.filter((s:SocialMedia) => s.social_media_site === 'instagram')[0]
+        if (instagramObject) {
+            setInstagramLink(instagramObject.social_media_link);
+        }
+
+        const bandcampObject:SocialMedia = resJSON.filter((s:SocialMedia) => s.social_media_site === 'bandcamp')[0]
+        if (bandcampObject) {
+            setBandcampLink(bandcampObject.social_media_link);
+        }
+    }
+
+    const getCityState = async () => {
+        const xml = `<CityStateLookupRequest USERID="${process.env.REACT_APP_USPS_API_ID}"><ZipCode ID="0"><Zip5>${profile?.zipcode}</Zip5></ZipCode></CityStateLookupRequest>`
+        if (profile?.zipcode) {
+            const res = await fetch(`http://production.shippingapis.com/ShippingAPITest.dll?API=CityStateLookup&XML=${xml}`, {
+                method: 'GET',
+
+              });
+            const str = await res.text()
+            const data = new window.DOMParser().parseFromString(str, "text/xml")
+            console.log(data);
+            
+            
+            
+            
+        }
+    }
     useEffect(() => {
         const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
 
@@ -77,6 +135,8 @@ export default function ProfilePage() {
             const profileJSON = JSON.parse(loggedProfileString);
             setProfile(profileJSON)
         }
+        getSocialLinks();
+        getCityState();
     },[profile])
 
     return (
@@ -91,7 +151,34 @@ export default function ProfilePage() {
                         <button onClick={()=>navigate('/profile/edit')}>Edit Profile</button>
                     </div>
                     <div className="banner-socials">
-                        <h1>Socials</h1>
+                        {
+                            facebookLink?
+                                <a href={facebookLink}>
+                                    <img src={facebookIcon} alt="" />
+                                </a>
+                                :null
+                        }
+                        {
+                            twitterLink?
+                                <a href={twitterLink}>
+                                    <img src={twitterIcon} alt="" />
+                                </a>
+                                :null
+                        }
+                        {
+                            instagramLink?
+                                <a href={instagramLink}>
+                                    <img src={instagramIcon} alt="" />
+                                </a>
+                                :null
+                        }
+                        {
+                            bandcampLink?
+                                <a href={bandcampLink}>
+                                    <img src={bandcampIcon} alt="" />
+                                </a>
+                                :null
+                        }
                     </div>
                 </div>
                 <div className='user-about'>
