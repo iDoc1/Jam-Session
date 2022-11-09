@@ -16,6 +16,7 @@ def migrate_database():
     # shutil.move('./build', '../backend')
 
     # Apply database migrations
+    # os.chdir('../backend')
     os.chdir('./backend')
     os.system('python manage.py migrate')
 
