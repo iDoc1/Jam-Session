@@ -3,9 +3,12 @@
     "version": "1.0.0",
     "description": "Jam Session capstone project",
     "scripts": {
-        "build": "react-scripts build && cp -r build ../backend/build"
+        "build": "npm run --prefix ./frontend build"
     },
     "engines": {
-      "node": "14.x"
+        "node": "14.x"
+    },
+    "dependencies": {
+        "react-scripts": "^5.0.1"
     }
-  }
+}
