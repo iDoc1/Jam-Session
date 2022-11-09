@@ -8,6 +8,7 @@ import bandcampIcon from '../../assets/icons/bandcamp.png'
 import Player from '../MusicPlayer/Player'
 import { useNavigate } from 'react-router-dom';
 import { Profile, SocialMedia } from '../../types'
+import XMLParser from 'react-xml-parser';
 
 
 export default function ProfilePage() {
@@ -17,6 +18,7 @@ export default function ProfilePage() {
     const [twitterLink, setTwitterLink] = useState<string>('');
     const [instagramLink, setInstagramLink] = useState<string>('');
     const [bandcampLink, setBandcampLink] = useState<string>('');
+    const [cityState, setCityState] = useState<string>('');
 
     const navigate = useNavigate();
 
@@ -113,14 +115,12 @@ export default function ProfilePage() {
             const res = await fetch(`http://production.shippingapis.com/ShippingAPITest.dll?API=CityStateLookup&XML=${xml}`, {
                 method: 'GET',
 
-              });
-            const str = await res.text()
-            const data = new window.DOMParser().parseFromString(str, "text/xml")
-            console.log(data);
-            
-            
-            
-            
+              }).then(res => res.text())
+              .then(data => {
+                  var result = new XMLParser().parseFromString(data);
+                  setCityState(`${((result.children[0].children[1].value).toLowerCase()).charAt(0).toUpperCase() + (result.children[0].children[1].value).toLowerCase().slice(1)}, ${result.children[0].children[2].value}`)
+              })
+              .catch(err => console.log(err));
         }
     }
     useEffect(() => {
@@ -185,7 +185,7 @@ export default function ProfilePage() {
                     <img src={ProfilePic} alt="" className='profile-picture'/>
                     <div className="user-info">
                         <div>
-                            <h3>City, State, {profile?.zipcode}</h3>
+                            <h3>{cityState}, {profile?.zipcode}</h3>
                             <h3>Genres:</h3>
                             <p>{getGenres()}</p>
                             <h3>Instruments:</h3> 
