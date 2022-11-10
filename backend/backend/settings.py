@@ -113,7 +113,7 @@ DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 
 # Runs tests using sqlite instead of PostGres
 # Source: https://stackoverflow.com/questions/6353124/running-django-tests-with-sqlite
-if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
+if 'test' in sys.argv or 'test_coverage' in sys.argv:
     DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 
 
