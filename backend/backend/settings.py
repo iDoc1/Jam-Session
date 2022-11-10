@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 import dj_database_url
+import sys
 from corsheaders.defaults import default_headers
 from datetime import timedelta
 from dotenv import load_dotenv
@@ -109,6 +110,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # }
 DATABASES = {}
 DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+
+# Runs tests using sqlite instead of PostGres
+# Source: https://stackoverflow.com/questions/6353124/running-django-tests-with-sqlite
+if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
+    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 
 
 # Password validation
