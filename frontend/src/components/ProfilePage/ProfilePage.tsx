@@ -2,127 +2,13 @@ import React, { useEffect, useState } from 'react'
 import './ProfilePage.css'
 import ProfilePic from '../../assets/default-profile.png'
 import Player from '../MusicPlayer/Player'
-import { setInterval } from 'timers/promises'
+import { useNavigate } from 'react-router-dom';
+import { Profile } from '../../types'
 
-interface Gender {
-    id:number,
-    gender:string
-}
-
-interface Genres{
-    id:number,
-    genre:string
-}
-
-interface Instrument{
-    id:number,
-    name:string,
-    children?:any
-
-}
-interface ExperienceLevel {
-    id:number,
-    rank:number,
-    level:string
-}
-interface Instruments {
-    experience_level:ExperienceLevel
-    instrument:Instrument,
-    children?:any
-}
-interface CommitmentLevel{
-    id: number,
-    level: string,
-    rank:number
-}
-interface Profile {
-    id: number,
-    first_name: string,
-    last_name: string,
-    zipcode: string,
-    profile_picture_url: string | null,
-    birth_date: string,
-    gender: Gender,
-    genres: Genres[],
-    instruments: Instruments[],
-    level_of_commitment: CommitmentLevel,
-    years_playing: number,
-    join_date: string,
-    seeking:string
-}
 
 export default function ProfilePage() {
-    const [profile, setProfile] = useState<Profile | undefined>(
-            {
-                "id": 13,
-                "first_name": "Sample",
-                "last_name": "Account",
-                "gender": {
-                    "id": 1,
-                    "gender": "Man"
-                },
-                "birth_date": "1992-06-28",
-                "zipcode": "99999",
-                "profile_picture_url": null,
-                "join_date": "2022-10-22T21:30:45.042693Z",
-                "years_playing": 5,
-                "level_of_commitment": {
-                    "id": 1,
-                    "level": "Moderately serious",
-                    "rank": 2
-                },
-                "seeking": "Vocals, Guitar, Keys",
-                "instruments": [
-                    {
-                        "instrument": {
-                            "id": 5,
-                            "name": "drums"
-                        },
-                        "experience_level": {
-                            "id": 1,
-                            "level": "Moderately serious",
-                            "rank": 2
-                        }
-                    },
-                    {
-                        "instrument": {
-                            "id": 3,
-                            "name": "bass guitar"
-                        },
-                        "experience_level": {
-                            "id": 2,
-                            "level": "Intermediate",
-                            "rank": 3
-                        }
-                    },
-                    {
-                        "instrument": {
-                            "id": 4,
-                            "name": "backup vocals"
-                        },
-                        "experience_level": {
-                            "id": 3,
-                            "level": "Beginner",
-                            "rank": 4
-                        }
-                    }
-                ],
-                "genres": [
-                    {
-                        "id": 2,
-                        "genre": "rock"
-                    },
-                    {
-                        "id": 3,
-                        "genre": "metal"
-                    },
-                    {
-                        "id": 4,
-                        "genre": "r&b"
-                    }
-                ]
-            }
-    );
+    const [profile, setProfile] = useState<Profile | undefined>(undefined);
+    const navigate = useNavigate();
 
     const getProfile = async () => {
         const res = await fetch('/api/profiles/',{
@@ -138,11 +24,9 @@ export default function ProfilePage() {
                 setProfile(jsonRes[0]);
                 window.localStorage.setItem('loggedJamSessionProfile', JSON.stringify(jsonRes))
           }
-          
-
     }
 
-    const getAge = (dateString:any) => {
+    const getAge = (dateString:string) => {
         var today = new Date();
         var birthDate = new Date(dateString);
         var age = today.getFullYear() - birthDate.getFullYear();
@@ -153,7 +37,7 @@ export default function ProfilePage() {
         return age;
     }
 
-    const formatDate = (dateString:any) => {
+    const formatDate = (dateString:string) => {
       return new Date(dateString).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
     }
 
@@ -186,23 +70,25 @@ export default function ProfilePage() {
 
         if (!loggedProfileString) {
             getProfile();
+            return
         }
-        else {
-            
-            const profileJSON = JSON.parse(loggedProfileString);
-            setProfile(profileJSON[0])
-        }
-        
 
-    },[])
+        if (!profile) {
+            const profileJSON = JSON.parse(loggedProfileString);
+            setProfile(profileJSON)
+        }
+    },[profile])
 
     return (
         <div className='profile'>
             <div className="profile-container">
                 <div className='user-banner'>
-                    <div className="banner-name-city">
-                        <h1>{profile?.first_name} {profile?.last_name}</h1>
-                        <h3>Musician in {profile?.zipcode}</h3>
+                    <div className='left-side-banner'>
+                        <div className="banner-name-city">
+                            <h1>{profile?.first_name} {profile?.last_name}</h1>
+                            <h3>Musician in {profile?.zipcode}</h3>
+                        </div>
+                        <button onClick={()=>navigate('/profile/edit')}>Edit Profile</button>
                     </div>
                     <div className="banner-socials">
                         <h1>Socials</h1>
@@ -220,13 +106,13 @@ export default function ProfilePage() {
                             <button><a href={`mailto:${localStorage.getItem('loggedJamSessionEmail')}`}>Contact</a></button>
                         </div>
                         <div>
-                            <h3>{getAge(profile?.birth_date)} Year old {profile?.gender.gender}</h3>
+                            <h3>{profile?.birth_date? getAge(profile?.birth_date):''} Year old {profile?.gender.gender}</h3>
                             <h3>Years playing music:</h3> 
                             <p>{profile?.years_playing}</p>
                             <h3>Level of commitment:</h3>
                             <p>{profile?.level_of_commitment.level}</p>
                             <h3>Member since:</h3>
-                            <p>{formatDate(profile?.join_date)}</p>
+                            <p>{profile?.join_date? formatDate(profile?.join_date) : ''}</p>
                         </div>
                     </div>
                 </div>
