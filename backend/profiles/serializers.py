@@ -66,7 +66,6 @@ class UserProfileSerializer(NestedUpdateMixin, serializers.ModelSerializer):
     level_of_commitment = CommitmentLevelSerializer()
     social_media = SocialMediaLinkSerializer(source='socialmedia', many=True, read_only=True)
     music_samples = MusicSampleSerializer(source='user.music_sample', many=True, read_only=True)
-    age = serializers.IntegerField(source='get_age', read_only=True)
 
     try:
         profile_picture = ProfilePictureSerializer(source='user.profile_pic', read_only=True)
@@ -75,7 +74,8 @@ class UserProfileSerializer(NestedUpdateMixin, serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('id', 'first_name', 'last_name', 'gender', 'birth_date', 'age', 'zipcode',
-                  'profile_picture', 'join_date', 'years_playing', 'level_of_commitment',
-                  'seeking', 'instruments', 'genres', 'music_samples', 'social_media')
-        read_only_fields = ('join_date',)
+        fields = ('id', 'first_name', 'last_name', 'full_name', 'gender', 'birth_date', 'age', 
+                  'zipcode', 'city', 'state', 'profile_picture', 'join_date', 'years_playing', 
+                  'level_of_commitment', 'seeking', 'instruments', 'genres', 'music_samples', 
+                  'social_media')
+        read_only_fields = ('join_date', 'age', 'city', 'state', 'profile_picture')

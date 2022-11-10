@@ -6,7 +6,7 @@ from django.utils import timezone
 from rest_framework.test import APIClient
 from genres.models import Genre
 from instruments.models import Instrument
-from .models import CommitmentLevel, Gender, ExperienceLevel, get_year_diff
+from .models import CommitmentLevel, Gender, ExperienceLevel, UserProfile, get_year_diff
 
 
 class UserProfileTestCase(TestCase):
@@ -27,6 +27,40 @@ class UserProfileTestCase(TestCase):
         self.experience_level = ExperienceLevel.objects.create(level='Beginner', rank=1)
         self.instrument = Instrument.objects.create(name='guitar')
         self.genre = Genre.objects.create(genre='rock')
+
+    def test_profile_full_name(self):
+        """
+        User's full name is correct
+        """
+        UserProfile.objects.filter(user=self.user).update(
+            first_name='John', 
+            last_name='Doe'
+        )
+        profile = UserProfile.objects.get(user=self.user)
+
+        self.assertEqual(profile.full_name(), 'John Doe')
+
+    def test_profile_city(self):
+        """
+        User's city is correct
+        """
+        UserProfile.objects.filter(user=self.user).update(
+            zipcode='98105'
+        )
+        profile = UserProfile.objects.get(user=self.user)
+
+        self.assertEqual(profile.city(), 'Seattle')
+
+    def test_profile_state(self):
+        """
+        User's state is correct
+        """
+        UserProfile.objects.filter(user=self.user).update(
+            zipcode='98105'
+        )
+        profile = UserProfile.objects.get(user=self.user)
+
+        self.assertEqual(profile.state(), 'WA')
 
     def test_get_blank_user_profile(self):
         """
