@@ -4,7 +4,7 @@
     "description": "Jam Session capstone project",
 
     "scripts": {
-        "build": "npm --prefix ./frontend install && npm run --prefix ./frontend build && cp -r ./frontend/build ./backend/build"
+        "build": "cd ./frontend && npm install && npm run build && cp -r ./build ../backend/build"
     },
     "engines": {
         "node": "14.x"
