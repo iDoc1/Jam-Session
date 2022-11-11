@@ -3,6 +3,7 @@ from django.utils import timezone
 from backend.settings import AUTH_USER_MODEL
 from genres.models import Genre
 from instruments.models import Instrument
+from posts.zipcode_lookup import ZipCodeLookup
 
 
 class Gender(models.Model):
@@ -39,16 +40,36 @@ class UserProfile(models.Model):
     join_date = models.DateTimeField(auto_now=True)
     years_playing = models.SmallIntegerField(default=0)
     level_of_commitment = models.ForeignKey(CommitmentLevel, blank=True, null=True, on_delete=models.SET_NULL)
-    seeking = models.TextField(blank=True, default='')
+    seeking = models.ManyToManyField(Instrument, related_name='user_profile_seeking', blank=True)
     instruments = models.ManyToManyField(Instrument, blank=True, through='UserInstrument')
     genres = models.ManyToManyField(Genre, blank=True)
 
-    def get_full_name(self):
+    def full_name(self):
+        """
+        Returns user's first name and last name
+        """
         return self.first_name + " " + self.last_name
 
-    def get_age(self):
+    def age(self):
+        """
+        Calculates the age of the user based on their birth date
+        """
         if self.birth_date:
             return get_year_diff(self.birth_date, timezone.now())
+
+    def city(self):
+        """
+        Returns the city of the user based on their zipcode
+        """
+        zipcode_lookup = ZipCodeLookup(self.zipcode)
+        return zipcode_lookup.get_city()
+
+    def state(self):
+        """
+        Returns the state of the user based on their zipcode
+        """
+        zipcode_lookup = ZipCodeLookup(self.zipcode)
+        return zipcode_lookup.get_state()
 
     def __str__(self):
         return str(self.user) + " " + self.get_full_name()
