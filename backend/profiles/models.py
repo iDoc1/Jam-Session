@@ -40,7 +40,7 @@ class UserProfile(models.Model):
     join_date = models.DateTimeField(auto_now=True)
     years_playing = models.SmallIntegerField(default=0)
     level_of_commitment = models.ForeignKey(CommitmentLevel, blank=True, null=True, on_delete=models.SET_NULL)
-    seeking = models.TextField(blank=True, default='')
+    seeking = models.ManyToManyField(Instrument, related_name='user_profile_seeking', blank=True)
     instruments = models.ManyToManyField(Instrument, blank=True, through='UserInstrument')
     genres = models.ManyToManyField(Genre, blank=True)
 
