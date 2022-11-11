@@ -3,11 +3,12 @@
 # dependencies
 node_modules/
 .venv/
+.venv_wsl/
 /.pnp
 .pnp.js
 
 # production
-# build/
+build/
 
 # misc
 .DS_Store

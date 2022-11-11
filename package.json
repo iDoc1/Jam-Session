@@ -1,0 +1,12 @@
+{
+    "name": "jam-session",
+    "version": "1.0.0",
+    "description": "Jam Session capstone project",
+
+    "scripts": {
+        "build": "cd ./frontend && npm install && npm run build && cp -r ./build ../backend/build"
+    },
+    "engines": {
+        "node": "14.x"
+    }
+}

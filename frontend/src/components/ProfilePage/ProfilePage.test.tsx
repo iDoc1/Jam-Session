@@ -2,12 +2,18 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import ProfilePage from './ProfilePage'
+import {BrowserRouter as Router} from 'react-router-dom';
+
 
 describe('<ProfilePage/> component', () => {
   
     let container:any;
     beforeEach(() => {
-      container = render(<ProfilePage/>).container;
+      container = render(
+        <Router>
+            <ProfilePage/>
+        </Router>
+      ).container;
     })
 
     test('Profile page is rendered', () => {

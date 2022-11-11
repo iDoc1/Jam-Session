@@ -39,4 +39,4 @@ jobs:
         flake8 . --count --max-complexity=10 --max-line-length=127 --exclude=*/migrations/ --statistics
     - name: Run Django tests
       run: |
-        python backend/manage.py test
+        python backend/manage.py test backend/

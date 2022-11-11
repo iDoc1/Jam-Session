@@ -6,7 +6,7 @@ from django.utils import timezone
 from rest_framework.test import APIClient
 from genres.models import Genre
 from instruments.models import Instrument
-from .models import CommitmentLevel, Gender, ExperienceLevel, get_year_diff
+from .models import CommitmentLevel, Gender, ExperienceLevel, UserProfile, get_year_diff
 
 
 class UserProfileTestCase(TestCase):
@@ -28,6 +28,40 @@ class UserProfileTestCase(TestCase):
         self.instrument = Instrument.objects.create(name='guitar')
         self.genre = Genre.objects.create(genre='rock')
 
+    def test_profile_full_name(self):
+        """
+        User's full name is correct
+        """
+        UserProfile.objects.filter(user=self.user).update(
+            first_name='John',
+            last_name='Doe'
+        )
+        profile = UserProfile.objects.get(user=self.user)
+
+        self.assertEqual(profile.full_name(), 'John Doe')
+
+    def test_profile_city(self):
+        """
+        User's city is correct
+        """
+        UserProfile.objects.filter(user=self.user).update(
+            zipcode='98105'
+        )
+        profile = UserProfile.objects.get(user=self.user)
+
+        self.assertEqual(profile.city(), 'Seattle')
+
+    def test_profile_state(self):
+        """
+        User's state is correct
+        """
+        UserProfile.objects.filter(user=self.user).update(
+            zipcode='98105'
+        )
+        profile = UserProfile.objects.get(user=self.user)
+
+        self.assertEqual(profile.state(), 'WA')
+
     def test_get_blank_user_profile(self):
         """
         Retrieve currently authenticated user's profile
@@ -43,7 +77,7 @@ class UserProfileTestCase(TestCase):
         self.assertEqual(parser.parse(data['join_date']).date(), timezone.now().date())
         self.assertEqual(data['years_playing'], 0)
         self.assertIsNone(data['level_of_commitment'])
-        self.assertEqual(data['seeking'], '')
+        self.assertEqual(data['seeking'], [])
         self.assertEqual(data['instruments'], [])
         self.assertEqual(data['genres'], [])
 
@@ -57,7 +91,7 @@ class UserProfileTestCase(TestCase):
             'birth_date': datetime(1990, 1, 1).date(),
             'zipcode': '12345',
             'years_playing': 10,
-            'seeking': 'A really cool band to play with',
+            'seeking': [{'id': 1, 'name': 'guitar'}],
         }
 
         response = self.client.patch('/api/profiles/1/', data, format='json')
@@ -67,7 +101,7 @@ class UserProfileTestCase(TestCase):
         self.assertEqual(data['birth_date'], datetime(1990, 1, 1).date())
         self.assertEqual(data['zipcode'], '12345')
         self.assertEqual(data['years_playing'], 10)
-        self.assertEqual(data['seeking'], 'A really cool band to play with')
+        self.assertEqual(data['seeking'][0]['name'], 'guitar')
 
     def test_partial_update_user_profile(self):
         """
@@ -76,7 +110,7 @@ class UserProfileTestCase(TestCase):
         data = {
             'zipcode': '22222',
             'years_playing': 4,
-            'seeking': 'A neat band to play with',
+            'seeking': [{'id': 1, 'name': 'guitar'}],
         }
 
         response = self.client.patch('/api/profiles/1/', data, format='json')
@@ -84,7 +118,7 @@ class UserProfileTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['zipcode'], '22222')
         self.assertEqual(data['years_playing'], 4)
-        self.assertEqual(data['seeking'], 'A neat band to play with')
+        self.assertEqual(data['seeking'][0]['name'], 'guitar')
 
     def test_add_commitment_level_to_user_profile(self):
         """
