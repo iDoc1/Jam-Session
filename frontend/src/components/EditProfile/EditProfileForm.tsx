@@ -5,50 +5,74 @@ import { Profile, Gender, CommitmentLevel, Genres, Instrument, Instruments, Expe
 import Dropdown from 'react-dropdown'
 import { useNavigate } from 'react-router-dom';
 
-/*
-{
-    "first_name": "Ian",
-    "last_name": "Docherty",
+const sampleProfile = {
+    "first_name": "Sample",
+    "last_name": "Profile",
     "gender": {
-        "id": 2,
-        "gender": "Man"
+        "id": 1,
+        "gender": "Male"
     },
-    "birth_date": "1993-07-18",
+    "birth_date": "1969-06-28",
     "zipcode": "98102",
     "years_playing": 5,
     "level_of_commitment": {
-        "id": 2,
-        "level": "Moderately serious",
-        "rank": 2
+        "id": 6,
+        "level": "Just for Fun",
+        "rank": 5
     },
-    "seeking": "A cool band to play with",
+    "seeking": [
+        {
+            "id": 6,
+            "name": "vocals"
+        },
+        {
+            "id": 8,
+            "name": "guitar"
+        }
+    ],
     "instruments": [
         {
             "instrument": {
-                "id": 3,
-                "name": "cello"
+                "id": 5,
+                "name": "drums"
             },
             "experience_level": {
-                "id": 2,
-                "level": "Moderately serious",
+                "id": 5,
+                "level": "Advanced",
                 "rank": 2
+            }
+        },
+        {
+            "instrument": {
+                "id": 3,
+                "name": "bass guitar"
+            },
+            "experience_level": {
+                "id": 7,
+                "level": "Intermediate",
+                "rank": 4
             }
         }
     ],
     "genres": [
-        {
-            "id": 1,
-            "genre": "classical"
+       {
+            "id": 2,
+            "genre": "rock"
         }
     ]
 } 
-*/
+
 function EditProfile() {
     const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
-    const profileJSON = JSON.parse(loggedProfileString? loggedProfileString: '');
+    let profileJSON;
+
+    if (loggedProfileString) {
+        profileJSON = JSON.parse(loggedProfileString? loggedProfileString: '');
+    }
+
     const navigate = useNavigate();
 
-    const [profile, setProfile] = useState<Profile | any>(profileJSON);
+    const [profile, setProfile] = useState<Profile | any>(profileJSON? profileJSON: sampleProfile);
 
     const [genderOptions, setGenderOptions] = useState<Gender[]>([]);
     const [commitmentOptions, setCommitmentOptions] = useState<CommitmentLevel[]>([]);
@@ -539,7 +563,7 @@ function EditProfile() {
             </div>
             <div className="form-group">
                 <label htmlFor="gender">Gender</label>
-                <Dropdown options={genderOptions.map((g: Gender) => g.gender)} placeholder={profile?.gender.gender} onChange={changeGender}/>
+                <Dropdown className="edit-gender" options={genderOptions.map((g: Gender) => g.gender)} placeholder={profile?.gender.gender} onChange={changeGender}/>
             </div>
             <div className="form-group">
                 <label htmlFor="birth_date">Birth Date</label>
@@ -563,16 +587,16 @@ function EditProfile() {
             <div className="form-group">
                 <label htmlFor="genres">Genre</label>
                 <Dropdown options={genreOptions.map((g: Genres) => capitalize(g.genre))} onChange={addGenreSelection}/>
-                <p>Select up to 3 instruments below</p>
+                <p>Select top 3 instruments below</p>
             </div>
             <div className="form-group">
                 <label htmlFor="genre-selection">Genre Selection</label>
                 <p>{getGenreSelections()}</p>
-                <button onClick={clearGenreSelections}>Clear Selections</button>
+                <button id="genre-selections-button" onClick={clearGenreSelections}>Clear Selections</button>
             </div>
             <div className="form-group">
                 <label htmlFor="instruments">Instrument</label>
-                <Dropdown options={instrumentOptions.map((i: Instrument) => capitalize(i.name))} placeholder={profile?.instruments[0]? capitalize(profile?.instruments[0].instrument.name): 'Select...'} onChange={changeInstrument1}/>
+                <Dropdown className="edit-instrument-dropdown" options={instrumentOptions.map((i: Instrument) => capitalize(i.name))} placeholder={profile?.instruments[0]? capitalize(profile?.instruments[0].instrument.name): 'Select...'} onChange={changeInstrument1}/>
             </div>
             <div className="form-group">
                 <label htmlFor="experience_level">Experience Level</label>
