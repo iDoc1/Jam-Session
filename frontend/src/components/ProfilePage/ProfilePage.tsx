@@ -1,13 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import './ProfilePage.css'
 import ProfilePic from '../../assets/default-profile.png'
+import facebookIcon from '../../assets/icons/facebook.png'
+import twitterIcon from '../../assets/icons/twitter.png'
+import instagramIcon from '../../assets/icons/instagram.png'
+import bandcampIcon from '../../assets/icons/bandcamp.png'
 import Player from '../MusicPlayer/Player'
 import { useNavigate } from 'react-router-dom';
-import { Profile } from '../../types'
+import { Profile, SocialMedia } from '../../types'
 
 
 export default function ProfilePage() {
     const [profile, setProfile] = useState<Profile | undefined>(undefined);
+
+    const [facebookLink, setFacebookLink] = useState<string>('');
+    const [twitterLink, setTwitterLink] = useState<string>('');
+    const [instagramLink, setInstagramLink] = useState<string>('');
+    const [bandcampLink, setBandcampLink] = useState<string>('');
+
     const navigate = useNavigate();
 
     const getProfile = async () => {
@@ -65,11 +75,61 @@ export default function ProfilePage() {
 
         return instrumentString
     }
+
+    const getSeeking = () => {
+        let seekingString = '';
+
+        profile?.seeking.map(s => seekingString += (s.name.charAt(0).toUpperCase() + s.name.slice(1)) + ', ')
+        
+        if (seekingString.slice(-2) === ', '){
+            seekingString = seekingString.slice(0,-2)
+        }
+        
+        return seekingString
+    }
+
+    const getSocialLinks = useCallback(async () => {
+        const res = await fetch('/api/social-media/', {
+            method: 'GET',
+            headers: {
+              'Content-type': 'application/json',
+              'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+          });
+        const resJSON = await res.json();
+        console.log('profile page',resJSON);
+          
+        parseSocials(resJSON);
+    },[])
+
+    const parseSocials = (obj:any) => {
+        const facebookObject:SocialMedia = obj.filter((s:SocialMedia) => s?.social_media_site === 'facebook')[0]
+        if (facebookObject) {
+            setFacebookLink(facebookObject.social_media_link);
+        }
+
+        const twitterObject:SocialMedia = obj.filter((s:SocialMedia) => s?.social_media_site === 'twitter')[0]
+        if (twitterObject) {
+            setTwitterLink(twitterObject.social_media_link);
+        }
+
+        const instagramObject:SocialMedia = obj.filter((s:SocialMedia) => s?.social_media_site === 'instagram')[0]
+        if (instagramObject) {
+            setInstagramLink(instagramObject.social_media_link);
+        }
+
+        const bandcampObject:SocialMedia = obj.filter((s:SocialMedia) => s?.social_media_site === 'bandcamp')[0]
+        if (bandcampObject) {
+            setBandcampLink(bandcampObject.social_media_link);
+        }
+    }
     useEffect(() => {
         const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
 
         if (!loggedProfileString) {
             getProfile();
+            console.log('no string found?');
+            
             return
         }
 
@@ -77,7 +137,9 @@ export default function ProfilePage() {
             const profileJSON = JSON.parse(loggedProfileString);
             setProfile(profileJSON)
         }
-    },[profile])
+        
+        getSocialLinks();
+    },[profile, getSocialLinks])
 
     return (
         <div className='profile'>
@@ -91,14 +153,41 @@ export default function ProfilePage() {
                         <button onClick={()=>navigate('/profile/edit')}>Edit Profile</button>
                     </div>
                     <div className="banner-socials">
-                        <h1>Socials</h1>
+                        {
+                            facebookLink?
+                                <a href={facebookLink}>
+                                    <img src={facebookIcon} alt="" />
+                                </a>
+                                :null
+                        }
+                        {
+                            twitterLink?
+                                <a href={twitterLink}>
+                                    <img src={twitterIcon} alt="" />
+                                </a>
+                                :null
+                        }
+                        {
+                            instagramLink?
+                                <a href={instagramLink}>
+                                    <img src={instagramIcon} alt="" />
+                                </a>
+                                :null
+                        }
+                        {
+                            bandcampLink?
+                                <a href={bandcampLink}>
+                                    <img src={bandcampIcon} alt="" />
+                                </a>
+                                :null
+                        }
                     </div>
                 </div>
                 <div className='user-about'>
                     <img src={ProfilePic} alt="" className='profile-picture'/>
                     <div className="user-info">
                         <div>
-                            <h3>City, State, {profile?.zipcode}</h3>
+                            <h3>{`${profile?.city}, ${profile?.state}`}, {profile?.zipcode}</h3>
                             <h3>Genres:</h3>
                             <p>{getGenres()}</p>
                             <h3>Instruments:</h3> 
@@ -110,7 +199,7 @@ export default function ProfilePage() {
                             <h3>Years playing music:</h3> 
                             <p>{profile?.years_playing}</p>
                             <h3>Level of commitment:</h3>
-                            <p>{profile?.level_of_commitment.level}</p>
+                            <p>{profile?.level_of_commitment? profile.level_of_commitment.level : ''}</p>
                             <h3>Member since:</h3>
                             <p>{profile?.join_date? formatDate(profile?.join_date) : ''}</p>
                         </div>
@@ -124,7 +213,7 @@ export default function ProfilePage() {
                     <div className="music-info">
                         <div className="music-seeking">
                             <h3>Seeking</h3>
-                            <p>{profile?.seeking}</p>
+                            <p>{getSeeking()}</p>
                         </div>
                         <div className="music-instruments">
                             <h3>Instrument Experience</h3>

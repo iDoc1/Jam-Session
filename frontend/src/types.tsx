@@ -36,6 +36,8 @@ export interface Profile {
     first_name: string,
     last_name: string,
     zipcode: string,
+    city: string,
+    state: string,
     profile_picture_url: string | null,
     birth_date: string,
     gender: Gender,
@@ -44,5 +46,12 @@ export interface Profile {
     level_of_commitment: CommitmentLevel,
     years_playing: number,
     join_date: string,
-    seeking:string
+    seeking: Instrument[]
+}
+
+export interface SocialMedia {
+    id: number,
+    user: number,
+    social_media_site: string,
+    social_media_link: string
 }

@@ -16,6 +16,8 @@ export default function NavBar({isAuthenticated, setIsAuthenticated}: NavBarProp
       localStorage.removeItem('refresh');
       localStorage.removeItem('loggedJamSessionUser');
       localStorage.removeItem('loggedJamSessionEmail');
+      localStorage.removeItem('loggedJamSessionProfile');
+      localStorage.removeItem('loggedJamSessionSocials');
       navigate('/');
   }
 
