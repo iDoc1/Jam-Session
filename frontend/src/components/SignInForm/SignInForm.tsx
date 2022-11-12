@@ -46,6 +46,20 @@ function SignIn({isAuthenticated, setIsAuthenticated}: SignInProps) {
         }
       }
 
+    const getProfile = async () => {
+        const res = await fetch('/api/profiles/',{
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+          })
+          const jsonRes = await res.json()
+          
+          if (res.status === 200) {
+                window.localStorage.setItem('loggedJamSessionProfile', JSON.stringify(jsonRes))
+          }
+    }
     const handleSubmit = async (event:any) => {
         event.preventDefault();
         if (!email || !password) {           
@@ -78,6 +92,7 @@ function SignIn({isAuthenticated, setIsAuthenticated}: SignInProps) {
             localStorage.setItem('access', jsonRes.access);
             localStorage.setItem('refresh', jsonRes.refresh);
             getUserProfile();
+            getProfile();
             navigate('/');
         } else {
             setIsAuthenticated(true);

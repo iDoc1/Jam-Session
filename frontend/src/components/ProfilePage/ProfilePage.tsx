@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import './ProfilePage.css'
 import ProfilePic from '../../assets/default-profile.png'
 import facebookIcon from '../../assets/icons/facebook.png'
@@ -8,7 +8,6 @@ import bandcampIcon from '../../assets/icons/bandcamp.png'
 import Player from '../MusicPlayer/Player'
 import { useNavigate } from 'react-router-dom';
 import { Profile, SocialMedia } from '../../types'
-import XMLParser from 'react-xml-parser';
 
 
 export default function ProfilePage() {
@@ -18,7 +17,6 @@ export default function ProfilePage() {
     const [twitterLink, setTwitterLink] = useState<string>('');
     const [instagramLink, setInstagramLink] = useState<string>('');
     const [bandcampLink, setBandcampLink] = useState<string>('');
-    const [cityState, setCityState] = useState<string>('');
 
     const navigate = useNavigate();
 
@@ -78,7 +76,19 @@ export default function ProfilePage() {
         return instrumentString
     }
 
-    const getSocialLinks = async () => {
+    const getSeeking = () => {
+        let seekingString = '';
+
+        profile?.seeking.map(s => seekingString += (s.name.charAt(0).toUpperCase() + s.name.slice(1)) + ', ')
+        
+        if (seekingString.slice(-2) === ', '){
+            seekingString = seekingString.slice(0,-2)
+        }
+        
+        return seekingString
+    }
+
+    const getSocialLinks = useCallback(async () => {
         const res = await fetch('/api/social-media/', {
             method: 'GET',
             headers: {
@@ -87,40 +97,30 @@ export default function ProfilePage() {
             }
           });
         const resJSON = await res.json();
+        console.log('profile page',resJSON);
+          
+        parseSocials(resJSON);
+    },[])
 
-        const facebookObject:SocialMedia = resJSON.filter((s:SocialMedia) => s.social_media_site === 'facebook')[0]
+    const parseSocials = (obj:any) => {
+        const facebookObject:SocialMedia = obj.filter((s:SocialMedia) => s?.social_media_site === 'facebook')[0]
         if (facebookObject) {
             setFacebookLink(facebookObject.social_media_link);
         }
 
-        const twitterObject:SocialMedia = resJSON.filter((s:SocialMedia) => s.social_media_site === 'twitter')[0]
+        const twitterObject:SocialMedia = obj.filter((s:SocialMedia) => s?.social_media_site === 'twitter')[0]
         if (twitterObject) {
             setTwitterLink(twitterObject.social_media_link);
         }
 
-        const instagramObject:SocialMedia = resJSON.filter((s:SocialMedia) => s.social_media_site === 'instagram')[0]
+        const instagramObject:SocialMedia = obj.filter((s:SocialMedia) => s?.social_media_site === 'instagram')[0]
         if (instagramObject) {
             setInstagramLink(instagramObject.social_media_link);
         }
 
-        const bandcampObject:SocialMedia = resJSON.filter((s:SocialMedia) => s.social_media_site === 'bandcamp')[0]
+        const bandcampObject:SocialMedia = obj.filter((s:SocialMedia) => s?.social_media_site === 'bandcamp')[0]
         if (bandcampObject) {
             setBandcampLink(bandcampObject.social_media_link);
-        }
-    }
-
-    const getCityState = async () => {
-        const xml = `<CityStateLookupRequest USERID="${process.env.REACT_APP_USPS_API_ID}"><ZipCode ID="0"><Zip5>${profile?.zipcode}</Zip5></ZipCode></CityStateLookupRequest>`
-        if (profile?.zipcode) {
-            const res = await fetch(`http://production.shippingapis.com/ShippingAPITest.dll?API=CityStateLookup&XML=${xml}`, {
-                method: 'GET',
-
-              }).then(res => res.text())
-              .then(data => {
-                  var result = new XMLParser().parseFromString(data);
-                  setCityState(`${((result.children[0].children[1].value).toLowerCase()).charAt(0).toUpperCase() + (result.children[0].children[1].value).toLowerCase().slice(1)}, ${result.children[0].children[2].value}`)
-              })
-              .catch(err => console.log(err));
         }
     }
     useEffect(() => {
@@ -128,6 +128,8 @@ export default function ProfilePage() {
 
         if (!loggedProfileString) {
             getProfile();
+            console.log('no string found?');
+            
             return
         }
 
@@ -135,9 +137,9 @@ export default function ProfilePage() {
             const profileJSON = JSON.parse(loggedProfileString);
             setProfile(profileJSON)
         }
+        
         getSocialLinks();
-        getCityState();
-    },[profile])
+    },[profile, getSocialLinks])
 
     return (
         <div className='profile'>
@@ -185,7 +187,7 @@ export default function ProfilePage() {
                     <img src={ProfilePic} alt="" className='profile-picture'/>
                     <div className="user-info">
                         <div>
-                            <h3>{cityState}, {profile?.zipcode}</h3>
+                            <h3>{`${profile?.city}, ${profile?.state}`}, {profile?.zipcode}</h3>
                             <h3>Genres:</h3>
                             <p>{getGenres()}</p>
                             <h3>Instruments:</h3> 
@@ -211,7 +213,7 @@ export default function ProfilePage() {
                     <div className="music-info">
                         <div className="music-seeking">
                             <h3>Seeking</h3>
-                            <p>{profile?.seeking}</p>
+                            <p>{getSeeking()}</p>
                         </div>
                         <div className="music-instruments">
                             <h3>Instrument Experience</h3>

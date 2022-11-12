@@ -4,9 +4,6 @@ import "./EditProfileForm.css"
 import { Profile, Gender, CommitmentLevel, Genres, Instrument, Instruments, ExperienceLevel, SocialMedia } from '../../types'
 import Dropdown from 'react-dropdown'
 import { useNavigate } from 'react-router-dom';
-import { getValue } from "@testing-library/user-event/dist/utils";
-
-
 
 /*
 {
@@ -63,6 +60,7 @@ function EditProfile() {
     const [instrument2, setInstrument2] = useState(profile?.instruments[1]? profile?.instruments[1]: {});
     const [instrument3, setInstrument3] = useState(profile?.instruments[2]? profile?.instruments[2]: {});
 
+    const [seekingSelection, setSeekingSelection] = useState<Instrument[]>([])
     const [socialMediaLinks, setSocialMediaLinks] = useState([]);
 
     const [facebookLink, setFacebookLink] = useState<string>('');
@@ -101,12 +99,10 @@ function EditProfile() {
         const resJSON = await res.json()
 
         if (res.ok) {
-            saveSocialLinks();
+            await saveSocialLinks();
             localStorage.setItem('loggedJamSessionProfile', JSON.stringify(resJSON))
             navigate('/profile');
         }
-        // const resJSON = await res.json()
-        // console.log(resJSON)
     }
    
 
@@ -276,6 +272,28 @@ function EditProfile() {
         }
     }
 
+    const addSeekingSelection = (option:any) => {
+        if (!seekingSelection.includes(option.value)) {
+            setSeekingSelection([...seekingSelection, option.value]);
+
+            const seekingObject = instrumentOptions.filter(x => x.name === uncapitalize(option.value))[0];
+            setProfile({...profile, "seeking": [...profile.seeking, seekingObject]});
+        }
+    }
+
+    const getSeekingSelections = () => {
+        let seekingString = '';
+        profile.seeking.map((x: Instrument) => seekingString += capitalize(x.name) + ', ');
+        seekingString = seekingString.slice(0, -2);
+        return seekingString;
+    }
+
+    const clearSeekingSelections = (e:any) => {
+        e.preventDefault()
+        setSeekingSelection([]);
+        setProfile({...profile, "seeking": []});
+    }
+
     const getSocialLinks = async () => {
         const res = await fetch('/api/social-media/', {
             method: 'GET',
@@ -330,8 +348,6 @@ function EditProfile() {
     }
 
     const saveSocialLinks = async () => {
-        console.log(socialMediaLinks);
-        
         const facebookObject:SocialMedia = socialMediaLinks.filter((s:SocialMedia) => s.social_media_site === 'facebook')[0]
         const twitterObject:SocialMedia = socialMediaLinks.filter((s:SocialMedia) => s.social_media_site === 'twitter')[0]
         const instagramObject:SocialMedia = socialMediaLinks.filter((s:SocialMedia) => s.social_media_site === 'instagram')[0]
@@ -488,6 +504,15 @@ function EditProfile() {
                 body: JSON.stringify(body)
             });            
         }
+        const res = await fetch('/api/social-media/', {
+            method: 'GET',
+            headers: {
+              'Content-type': 'application/json',
+              'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+          });
+        const resJSON = await res.json();
+        setSocialMediaLinks(resJSON);
     }
 
     useEffect(() => {
@@ -541,13 +566,13 @@ function EditProfile() {
                 <p>Select up to 3 instruments below</p>
             </div>
             <div className="form-group">
-                <label htmlFor="birth_date">Genre Selection</label>
+                <label htmlFor="genre-selection">Genre Selection</label>
                 <p>{getGenreSelections()}</p>
                 <button onClick={clearGenreSelections}>Clear Selections</button>
             </div>
             <div className="form-group">
                 <label htmlFor="instruments">Instrument</label>
-                <Dropdown options={instrumentOptions.map((i: Instrument) => capitalize(i.name))} placeholder={profile?.instruments[0]? capitalize(profile?.instruments[0].instrument.name): ''} onChange={changeInstrument1}/>
+                <Dropdown options={instrumentOptions.map((i: Instrument) => capitalize(i.name))} placeholder={profile?.instruments[0]? capitalize(profile?.instruments[0].instrument.name): 'Select...'} onChange={changeInstrument1}/>
             </div>
             <div className="form-group">
                 <label htmlFor="experience_level">Experience Level</label>
@@ -568,6 +593,16 @@ function EditProfile() {
             <div className="form-group">
                 <label htmlFor="experience_level">Experience Level</label>
                 <Dropdown  options={experienceLevelOptions.map((e: ExperienceLevel) => e.level)} placeholder={profile?.instruments[2]? profile?.instruments[2].experience_level.level: 'Select...'} onChange={changeExperience3} />
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="seeking">Seeking</label>
+                <Dropdown options={instrumentOptions.map((i: Instrument) => capitalize(i.name))} onChange={addSeekingSelection}/>
+            </div>
+            <div className="form-group">
+                <label htmlFor="seeking-selection">Seeking Selection</label>
+                <p>{getSeekingSelections()}</p>
+                <button onClick={clearSeekingSelections}>Clear Selections</button>
             </div>
 
             <div className="form-group">
