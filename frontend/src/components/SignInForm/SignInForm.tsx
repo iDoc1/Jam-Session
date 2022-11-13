@@ -85,7 +85,7 @@ function SignIn({isAuthenticated, setIsAuthenticated}: SignInProps) {
         })
         
         const jsonRes = await res.json()
-        
+
         // Save tokens to local storage
         if (res.status === 200) {
             setIsAuthenticated(true);
@@ -95,7 +95,7 @@ function SignIn({isAuthenticated, setIsAuthenticated}: SignInProps) {
             getProfile();
             navigate('/');
         } else {
-            setIsAuthenticated(true);
+            setIsAuthenticated(false);
             setError('Username and/or password incorrect');
         }
 
