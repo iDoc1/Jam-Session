@@ -11,6 +11,8 @@ import ProfilePage from './components/ProfilePage/ProfilePage';
 import PrivateWrapper from './components/PrivateWrapper/PrivateWrapper';
 import { Route, Routes } from 'react-router-dom';
 
+import Modal from './components/ProfilePictureModal/ProfilePictureModal';
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<null | boolean>(null);
   const [loading, setLoading] = useState<boolean>(true);

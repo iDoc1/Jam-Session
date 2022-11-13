@@ -6,12 +6,14 @@ import twitterIcon from '../../assets/icons/twitter.png'
 import instagramIcon from '../../assets/icons/instagram.png'
 import bandcampIcon from '../../assets/icons/bandcamp.png'
 import Player from '../MusicPlayer/Player'
+import ProfilePictureModal from '../ProfilePictureModal/ProfilePictureModal'
 import { useNavigate } from 'react-router-dom';
 import { Profile, SocialMedia } from '../../types'
 
 
 export default function ProfilePage() {
     const [profile, setProfile] = useState<Profile | undefined>(undefined);
+    const [profilePicture, setProfilePicture] = useState('');
 
     const [facebookLink, setFacebookLink] = useState<string>('');
     const [twitterLink, setTwitterLink] = useState<string>('');
@@ -134,8 +136,9 @@ export default function ProfilePage() {
         }
 
         if (!profile) {
-            const profileJSON = JSON.parse(loggedProfileString);
-            setProfile(profileJSON)
+            const profileJSON:Profile = JSON.parse(loggedProfileString);
+            setProfile(profileJSON);
+            setProfilePicture(profileJSON.profile_picture? profileJSON.profile_picture.image_file: '');
         }
         
         getSocialLinks();
@@ -184,7 +187,19 @@ export default function ProfilePage() {
                     </div>
                 </div>
                 <div className='user-about'>
-                    <img src={ProfilePic} alt="" className='profile-picture'/>
+                    <div className='picture-container'>
+                        <ProfilePictureModal setPicture={setProfilePicture} />
+                        {
+                            profilePicture?
+                                <div className="profile-picture-container">
+                                    <img src={profilePicture} alt="" className='profile-picture'/>
+                                </div>
+                            :
+                                <img src={ProfilePic} alt="" className='profile-picture'/>
+
+                        }
+                    </div>
+
                     <div className="user-info">
                         <div>
                             <h3>{`${profile?.city}, ${profile?.state}`}, {profile?.zipcode}</h3>

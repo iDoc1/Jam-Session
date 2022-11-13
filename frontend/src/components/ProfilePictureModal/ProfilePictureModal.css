@@ -5,8 +5,11 @@ body.active-modal {
 .btn-modal {
     padding: 10px 20px;
     display: block;
-    margin: 100px auto 0;
+    position: absolute;
+    margin-left: 2.5rem;
+    margin-top: 250px;
     font-size: 18px;
+    
 }
 
 .modal, .overlay {

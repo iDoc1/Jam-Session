@@ -31,6 +31,12 @@ export interface CommitmentLevel{
     level: string,
     rank:number
 }
+export interface ProfilePicture {
+    id: number,
+    user: number,
+    created_date: string,
+    image_file: string,
+}
 export interface Profile {
     id: number,
     first_name: string,
@@ -38,7 +44,7 @@ export interface Profile {
     zipcode: string,
     city: string,
     state: string,
-    profile_picture_url: string | null,
+    profile_picture: ProfilePicture,
     birth_date: string,
     gender: Gender,
     genres: Genres[],
