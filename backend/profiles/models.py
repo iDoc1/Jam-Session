@@ -72,7 +72,7 @@ class UserProfile(models.Model):
         return zipcode_lookup.get_state()
 
     def __str__(self):
-        return str(self.user) + " " + self.get_full_name()
+        return str(self.user) + " " + self.full_name()
 
 
 def get_year_diff(start_date, end_date):
@@ -105,7 +105,7 @@ class UserInstrument(models.Model):
     experience_level = models.ForeignKey(ExperienceLevel, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return self.user_profile.get_full_name() + " " + str(self.instrument)
+        return self.user_profile.full_name() + " " + str(self.instrument)
 
 
 class SocialMediaLink(models.Model):
