@@ -85,6 +85,6 @@ class UserProfileViewSet(ModelViewSet):
         Returns a single UserProfile when a list is requested
         """
         user = request.user
-        profile = UserProfile.objects.get(id=user.id)
+        profile = UserProfile.objects.get(user=user)
         serializer = UserProfileSerializer(profile)
         return Response(serializer.data)

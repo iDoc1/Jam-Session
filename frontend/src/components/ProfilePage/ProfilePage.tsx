@@ -208,7 +208,7 @@ export default function ProfilePage() {
                             <button><a href={`mailto:${localStorage.getItem('loggedJamSessionEmail')}`}>Contact</a></button>
                         </div>
                         <div>
-                            <h3>{profile?.birth_date? getAge(profile?.birth_date):''} Year old {profile?.gender.gender}</h3>
+                            <h3>{profile?.birth_date? getAge(profile?.birth_date):''} Year old {profile?.gender?.gender}</h3>
                             <h3>Years playing music:</h3> 
                             <p>{profile?.years_playing}</p>
                             <h3>Level of commitment:</h3>

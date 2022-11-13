@@ -46,10 +46,10 @@ export interface Profile {
     state: string,
     profile_picture: ProfilePicture,
     birth_date: string,
-    gender: Gender,
+    gender: Gender | null,
     genres: Genres[],
     instruments: Instruments[],
-    level_of_commitment: CommitmentLevel,
+    level_of_commitment: CommitmentLevel | null,
     years_playing: number,
     join_date: string,
     seeking: Instrument[]
