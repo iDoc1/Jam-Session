@@ -2,6 +2,10 @@ body.active-modal {
     overflow-y: hidden;
 }
 
+.upload-file-button {
+    margin-left: 1rem;
+}
+
 .btn-modal {
     padding: 10px 20px;
     display: block;

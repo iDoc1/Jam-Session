@@ -83,7 +83,7 @@ const ProfilePictureModal = ({setPicture}:any) => {
                     <div className="modal-content">
                         <h2>Upload a profile picture</h2>
                         <input type="file" onChange={handleFileChange} id="upload-picture-file"/>
-                        <button onClick={handleFileUpload}>Upload</button>
+                        <button onClick={handleFileUpload} className='upload-file-button'>Upload</button>
                         <button className="close-modal" onClick={toggleModal}>
                             Close
                         </button>
