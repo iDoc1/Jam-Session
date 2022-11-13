@@ -53,7 +53,6 @@ function SignUp() {
         })
         
         const jsonRes = await res.json()
-        // console.log(jsonRes);
         
         if (res.status >= 200 && res.status <= 299){
             setSuccess(true)

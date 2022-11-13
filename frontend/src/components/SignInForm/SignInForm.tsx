@@ -58,6 +58,7 @@ function SignIn({isAuthenticated, setIsAuthenticated}: SignInProps) {
           
           if (res.status === 200) {
                 window.localStorage.setItem('loggedJamSessionProfile', JSON.stringify(jsonRes))
+                window.localStorage.setItem('loggedJamSessionProfileID', jsonRes.id)
           }
     }
     const handleSubmit = async (event:any) => {

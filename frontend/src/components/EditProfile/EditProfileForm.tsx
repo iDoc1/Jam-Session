@@ -112,7 +112,8 @@ function EditProfile() {
 
     const handleSubmit = async (event:any) => {
         event.preventDefault();
-        const res = await fetch(`/api/profiles/${localStorage.getItem('loggedJamSessionUser')}/`,{
+
+        const res = await fetch(`/api/profiles/${localStorage.getItem('loggedJamSessionProfileID')}/`,{
             method: 'PATCH',
             headers: {
                 'Content-type': 'application/json',
@@ -563,7 +564,7 @@ function EditProfile() {
             </div>
             <div className="form-group">
                 <label htmlFor="gender">Gender</label>
-                <Dropdown className="edit-gender" options={genderOptions.map((g: Gender) => g.gender)} placeholder={profile?.gender.gender} onChange={changeGender}/>
+                <Dropdown className="edit-gender" options={genderOptions.map((g: Gender) => g.gender)} placeholder={profile?.gender?.gender} onChange={changeGender}/>
             </div>
             <div className="form-group">
                 <label htmlFor="birth_date">Birth Date</label>
@@ -582,7 +583,7 @@ function EditProfile() {
             </div>
             <div className="form-group">
                 <label htmlFor="level_of_commitment">Level of commitment</label>
-                <Dropdown options={commitmentOptions.map((c : CommitmentLevel) => c.level)} placeholder={profile?.level_of_commitment.level} onChange={changeCommitment}/>
+                <Dropdown options={commitmentOptions.map((c : CommitmentLevel) => c.level)} placeholder={profile?.level_of_commitment?.level} onChange={changeCommitment}/>
             </div>
             <div className="form-group">
                 <label htmlFor="genres">Genre</label>
