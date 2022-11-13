@@ -74,7 +74,7 @@ const ProfilePictureModal = ({setPicture}:any) => {
     }
     return (
         <>
-            <button className="btn-modal" onClick={toggleModal}>
+            <button className="btn-modal" onClick={toggleModal} id="edit-profile-picture-button">
                 Edit
             </button>
             {modal && (
@@ -82,7 +82,7 @@ const ProfilePictureModal = ({setPicture}:any) => {
                     <div className="overlay" onClick={toggleModal}></div>
                     <div className="modal-content">
                         <h2>Upload a profile picture</h2>
-                        <input type="file" onChange={handleFileChange}/>
+                        <input type="file" onChange={handleFileChange} id="upload-picture-file"/>
                         <button onClick={handleFileUpload}>Upload</button>
                         <button className="close-modal" onClick={toggleModal}>
                             Close

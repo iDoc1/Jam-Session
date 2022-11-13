@@ -130,8 +130,6 @@ export default function ProfilePage() {
 
         if (!loggedProfileString) {
             getProfile();
-            console.log('no string found?');
-            
             return
         }
 
