@@ -2,8 +2,17 @@ body.active-modal {
     overflow-y: hidden;
 }
 
-.music-upload-file-button {
+.music-upload-file-button, .music-upload-delete-all {
     width: 100%;
+    font-size: 15px;
+}
+
+.music-upload-delete-all {
+    background-color: red;
+}
+
+.music-upload-delete-all:hover {
+    background-color: darkred;
 }
 
 .btn-music-modal {

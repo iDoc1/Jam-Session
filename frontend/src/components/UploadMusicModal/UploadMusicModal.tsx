@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Profile } from '../../types';
 import './UploadMusicModal.css'
 
-const UploadMusicModal = ({setPicture}:any) => {
+const UploadMusicModal = ({playlist, setPlaylist}:any) => {
     const [modal, setModal] = useState(false);
-    const [currentProfileMusic, setCurrentProfileMusic] = useState([]);
     const [musicSample, setMusicSample] = useState<any>(null);
-    const [success, setSuccess] = useState(false);
+    const [success, setSuccess] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
 
     const toggleModal = () => {
         setModal(!modal)
@@ -35,15 +34,9 @@ const UploadMusicModal = ({setPicture}:any) => {
     }
 
     const handleFileUpload = async () => {
-        // console.log('sample 1:', musicSample1,'sample 2:', musicSample2,'sample 3:', musicSample3);
-        console.log(currentProfileMusic);
-        
         if (!musicSample) return;
-
-        // const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
-        // let profileJSON:Profile = JSON.parse(loggedProfileString? loggedProfileString: '')
         
-        const songMatch = currentProfileMusic.filter((x:any) => x.title === musicSample.name)
+        const songMatch = playlist.filter((x:any) => x.title === musicSample.name)
 
         if (songMatch.length > 0) {
             setErrorMessage('Song already exists in your samples')
@@ -64,17 +57,24 @@ const UploadMusicModal = ({setPicture}:any) => {
                 'Authorization': `JWT ${localStorage.getItem('access')}`
             }
         })
-        const resJSON = await res.json()
-        console.log(resJSON);
 
         if (res.ok){
-            setSuccess(true)
+            setSuccess('File successfully uploaded')
             
             setTimeout(() => {
-                setSuccess(false)
+                setSuccess('')
             }, 5000)
             
         }
+
+        const currentMusic = await fetch('/api/music-samples/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        })
+        const currentMusicJSON = await currentMusic.json()
+        setPlaylist(currentMusicJSON)
         setMusicSample(null);
         await getProfile();
     }
@@ -86,18 +86,54 @@ const UploadMusicModal = ({setPicture}:any) => {
         document.body.classList.remove('active-modal')
     }
 
-    const getCurrentMusic = useCallback(() => {
-        const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
-        let profileJSON:Profile = JSON.parse(loggedProfileString? loggedProfileString: '')
-        if (profileJSON?.music_samples.length > 0){
-            setCurrentProfileMusic(profileJSON?.music_samples)
-        }
+    const getCurrentMusic = useCallback(async () => {
+        const currentMusic = await fetch('/api/music-samples/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+        })
+        const currentMusicJSON = await currentMusic.json()
+        setPlaylist(currentMusicJSON)
 
-    },[])
+    },[setPlaylist])
+
+    const handleDeleteMusic = async () => {
+        if (window.confirm("Are you sure? This will delete all current music samples")){
+            let noErrors = true;
+            playlist.map(async (x:any) => {
+                const res = await fetch(`/api/music-samples/${x.id}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `JWT ${localStorage.getItem('access')}`
+                    }
+                })
+                if (res.ok) {
+                    noErrors = noErrors && true
+                }
+                else {
+                    noErrors = false
+                }
+            });
+
+            if (noErrors) {
+                setSuccess('Files successfully deleted')
+            
+                setTimeout(() => {
+                    setSuccess('')
+                }, 5000)
+       
+                setPlaylist([])
+                await getProfile();
+                setMusicSample(null);
+            }    
+        }
+    }
 
     useEffect(() => {
       getCurrentMusic();
     },[getCurrentMusic])
+
     return (
         <>
             <button className="btn-music-modal" onClick={toggleModal} id="edit-profile-picture-button">
@@ -107,15 +143,16 @@ const UploadMusicModal = ({setPicture}:any) => {
                 <div className="music-modal">
                     <div className="overlay" onClick={toggleModal}></div>
                     <div className="modal-content">
-                        <h2>Upload music samples</h2>
+                        <h2>Edit music samples</h2>
                         <div className="music-inputs">
                             <input name="music-sample-1" type="file" onChange={handleFileChange} id="upload-picture-file"/>
                         </div>
                         <div className='music-modal-message'>
-                            {success? <span className='success-message'>File successfully uploaded</span>:<></>}
+                            {success? <span className='success-message'>{success}</span>:<></>}
                             {errorMessage? <span className='error-message'>{errorMessage}</span>:<></>}
                         </div>
                         <button onClick={handleFileUpload} className='music-upload-file-button'>Upload</button>
+                        <button className='music-upload-delete-all' onClick={handleDeleteMusic}>Delete all samples</button>
                         <button className="close-modal" onClick={toggleModal}>
                             Close
                         </button>

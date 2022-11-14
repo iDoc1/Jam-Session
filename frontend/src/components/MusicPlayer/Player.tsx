@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { styled, Typography, Slider, Paper, Stack, Box} from '@mui/material'
-import { Profile } from '../../types'
 
 import VolumeDownIcon from '@mui/icons-material/VolumeDown'
 import VolumeUpIcon from '@mui/icons-material/VolumeUp'
@@ -36,33 +35,19 @@ const PSlider:any = styled(Slider)(({theme, ...props}:any) => ({
         display: props.thumbless === 1 ? 'none': 'block'
     }
 }))
-const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
-let profileJSON:Profile = JSON.parse(loggedProfileString? loggedProfileString: '')
 
-
-let playlist = profileJSON? profileJSON.music_samples.map((x:any) => x.music_file): [];
-
-const Player = () => {
+const Player = ({playlist}:any) => {
     const audioPlayer = useRef<any>(null);
     const [index, setIndex] = useState(0);
 
-    const [currentSong, setcurrentSong] = useState(playlist? playlist[index]: '');
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(30);
     const [mute, setMute] = useState(false);
 
     const [elapsed, setElapsed] = useState(0);
     const [duration, setDuration] = useState(0);
-    
-
-    const getCurrentMusic = useCallback(async () => {
-        const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
-        let profileJSON:Profile = await JSON.parse(loggedProfileString? loggedProfileString: '')
-        playlist = profileJSON.music_samples? profileJSON.music_samples.map((x:any) => x.music_file): [];
-    },[])
 
     useEffect(() => { 
-        getCurrentMusic();
       if (audioPlayer) {
         audioPlayer.current.volume = volume / 100;
       }
@@ -76,9 +61,7 @@ const Player = () => {
             setElapsed(_elapsed);
         }, 100)
       }
-     
-
-    }, [volume, isPlaying, getCurrentMusic])
+    }, [volume, isPlaying])
 
     const formatTime = (time:any) => {
         if (time && !isNaN(time)){
@@ -114,11 +97,11 @@ const Player = () => {
     const toggleSkipForward = () => {
       if(index >= playlist.length - 1) {
         setIndex(0)
-        audioPlayer.current.src = playlist[0]
+        audioPlayer.current.src = playlist[0]? playlist[0].music_file: '';
       }
       else {
         setIndex(prev => prev + 1)
-        audioPlayer.current.src = playlist[index+1]
+        audioPlayer.current.src = playlist[index+1]? playlist[index+1].music_file: '';
     }
     if (isPlaying) {
         audioPlayer.current.play()
@@ -128,7 +111,7 @@ const Player = () => {
     const toggleSkipBackward = () => {
         if(index > 0) {
             setIndex(prev => prev - 1)
-            audioPlayer.current.src = playlist[index-1]
+            audioPlayer.current.src = playlist[index-1]? playlist[index-1].music_file: '';
           }
         if (isPlaying) {
             audioPlayer.current.play()
@@ -141,9 +124,17 @@ const Player = () => {
         : volume <= 75 ? <VolumeDownIcon sx={{color: 'silver', '&:hover': {color: 'white'}}} onClick={()=> setMute(!mute)} />
         : <VolumeUpIcon sx={{color: 'silver', '&:hover': {color: 'white'}}} onClick={()=> setMute(!mute)} />
     }
+
+    const getCurrentSong = () => {
+        if (playlist.length > 0 && playlist[index]){
+            return playlist[index].music_file
+        } else {
+            return ''
+        }
+    }
     return(
         <Div>
-        <audio src={currentSong} ref={audioPlayer} muted={mute} />
+        <audio src={getCurrentSong()} ref={audioPlayer} muted={mute} />
         <CustomPaper>   
             <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
 
@@ -163,8 +154,6 @@ const Player = () => {
                         : <PauseIcon fontSize={'large'} sx={{color: 'silver', '&:hover': {color: 'white'}}} onClick={togglePlay} />
                          
                     }
-                    
-
                     <FastForwardIcon sx={{color: 'silver', '&:hover': {color: 'white'}}} onClick={toggleForward} />
                     <SkipNextIcon sx={{color: 'silver', '&:hover': {color: 'white'}}} onClick={toggleSkipForward} />
                 </Stack>

@@ -20,6 +20,7 @@ export default function ProfilePage() {
     const [twitterLink, setTwitterLink] = useState<string>('');
     const [instagramLink, setInstagramLink] = useState<string>('');
     const [bandcampLink, setBandcampLink] = useState<string>('');
+    const [playlist, setPlaylist] = useState([]);
 
     const navigate = useNavigate();
 
@@ -35,6 +36,7 @@ export default function ProfilePage() {
           
           if (res.status === 200) {
                 setProfile(jsonRes[0]);
+                setPlaylist(jsonRes.music_samples)
                 window.localStorage.setItem('loggedJamSessionProfile', JSON.stringify(jsonRes))
           }
     }
@@ -137,6 +139,7 @@ export default function ProfilePage() {
             const profileJSON:Profile = JSON.parse(loggedProfileString);
             setProfile(profileJSON);
             setProfilePicture(profileJSON.profile_picture? profileJSON.profile_picture.image_file: '');
+            setPlaylist(profileJSON.music_samples);
         }
         
         getSocialLinks();
@@ -222,9 +225,9 @@ export default function ProfilePage() {
                     <div className="music-player">
                         <div className='music-sample-title'>
                             <h2>Music Sample</h2>
-                            <UploadMusicModal/>
+                            <UploadMusicModal playlist={playlist} setPlaylist={setPlaylist}/>
                         </div>
-                        <Player />
+                        <Player playlist={playlist} />
                     </div>
                     <div className="music-info">
                         <div className="music-seeking">
