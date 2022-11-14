@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { styled, Typography, Slider, Paper, Stack, Box} from '@mui/material'
-
-import fsm from '../../assets/music/fsm.mp3'
-import mixaund from '../../assets/music/mixaund.mp3'
+import { Profile } from '../../types'
 
 import VolumeDownIcon from '@mui/icons-material/VolumeDown'
 import VolumeUpIcon from '@mui/icons-material/VolumeUp'
@@ -15,6 +13,7 @@ import FastForwardIcon from '@mui/icons-material/FastForward'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
+
 
 const Div = styled('div')(({theme}) => ({
     width: '100%',
@@ -37,22 +36,33 @@ const PSlider:any = styled(Slider)(({theme, ...props}:any) => ({
         display: props.thumbless === 1 ? 'none': 'block'
     }
 }))
+const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
+let profileJSON:Profile = JSON.parse(loggedProfileString? loggedProfileString: '')
 
-const playlist = [fsm, mixaund]
+
+let playlist = profileJSON? profileJSON.music_samples.map((x:any) => x.music_file): [];
 
 const Player = () => {
     const audioPlayer = useRef<any>(null);
     const [index, setIndex] = useState(0);
 
-    const [currentSong, setcurrentSong] = useState(playlist[index]);
+    const [currentSong, setcurrentSong] = useState(playlist? playlist[index]: '');
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(30);
     const [mute, setMute] = useState(false);
 
     const [elapsed, setElapsed] = useState(0);
     const [duration, setDuration] = useState(0);
+    
 
-    useEffect(() => {
+    const getCurrentMusic = useCallback(async () => {
+        const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
+        let profileJSON:Profile = await JSON.parse(loggedProfileString? loggedProfileString: '')
+        playlist = profileJSON.music_samples? profileJSON.music_samples.map((x:any) => x.music_file): [];
+    },[])
+
+    useEffect(() => { 
+        getCurrentMusic();
       if (audioPlayer) {
         audioPlayer.current.volume = volume / 100;
       }
@@ -66,8 +76,9 @@ const Player = () => {
             setElapsed(_elapsed);
         }, 100)
       }
+     
 
-    }, [volume, isPlaying])
+    }, [volume, isPlaying, getCurrentMusic])
 
     const formatTime = (time:any) => {
         if (time && !isNaN(time)){
@@ -82,6 +93,7 @@ const Player = () => {
       }
 
     const togglePlay = () => {
+        if (!playlist) return
         if (!isPlaying) {
             audioPlayer.current.play();
         }
@@ -171,7 +183,7 @@ const Player = () => {
                     }}
             >
                 <Typography sx={{color: 'silver'}}>{formatTime(elapsed)}</Typography>
-                <PSlider thumbless={1} value={elapsed} max={duration}/>
+                <PSlider thumbless={1} value={elapsed? elapsed: 0} max={duration? duration: 0}/>
                 <Typography sx={{color: 'silver'}}>{formatTime(duration - elapsed)}</Typography>
             </Stack>
             <Stack direction='row' spacing={1} 

@@ -45,6 +45,7 @@ export interface Profile {
     city: string,
     state: string,
     profile_picture: ProfilePicture,
+    music_samples: any,
     birth_date: string,
     gender: Gender | null,
     genres: Genres[],

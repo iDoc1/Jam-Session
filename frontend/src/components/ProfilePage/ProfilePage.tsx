@@ -7,6 +7,7 @@ import instagramIcon from '../../assets/icons/instagram.png'
 import bandcampIcon from '../../assets/icons/bandcamp.png'
 import Player from '../MusicPlayer/Player'
 import ProfilePictureModal from '../ProfilePictureModal/ProfilePictureModal'
+import UploadMusicModal from '../UploadMusicModal/UploadMusicModal'
 import { useNavigate } from 'react-router-dom';
 import { Profile, SocialMedia } from '../../types'
 
@@ -99,8 +100,7 @@ export default function ProfilePage() {
             }
           });
         const resJSON = await res.json();
-        console.log('profile page',resJSON);
-          
+
         parseSocials(resJSON);
     },[])
 
@@ -220,7 +220,10 @@ export default function ProfilePage() {
                 </div>
                 <div className="user-music">
                     <div className="music-player">
-                        <h2>Music Sample</h2>
+                        <div className='music-sample-title'>
+                            <h2>Music Sample</h2>
+                            <UploadMusicModal/>
+                        </div>
                         <Player />
                     </div>
                     <div className="music-info">
