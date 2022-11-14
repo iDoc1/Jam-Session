@@ -136,16 +136,16 @@ const UploadMusicModal = ({playlist, setPlaylist}:any) => {
 
     return (
         <>
-            <button className="btn-music-modal" onClick={toggleModal} id="edit-profile-picture-button">
+            <button className="btn-music-modal" onClick={toggleModal} id="edit-music-button">
                 Edit
             </button>
             {modal && (
                 <div className="music-modal">
                     <div className="overlay" onClick={toggleModal}></div>
-                    <div className="modal-content">
+                    <div className="music-modal-content">
                         <h2>Edit music samples</h2>
                         <div className="music-inputs">
-                            <input name="music-sample-1" type="file" onChange={handleFileChange} id="upload-picture-file"/>
+                            <input name="music-sample-1" type="file" onChange={handleFileChange} id="upload-music-file"/>
                         </div>
                         <div className='music-modal-message'>
                             {success? <span className='success-message'>{success}</span>:<></>}
