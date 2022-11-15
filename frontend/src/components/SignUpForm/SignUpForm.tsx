@@ -84,17 +84,17 @@ function SignUp() {
                 <div className='email' data-jest="sign-up-email">
                     <label htmlFor="email">Email</label>
                     <input type='email' name='email' id='sign-up-email' onChange={handleChange}/>
-                    {email.length > 0 && <span style={{color: 'red'}}>{errors.email}</span>}
+                    {email.length > 0 && <span className='error-message'>{errors.email}</span>}
                 </div>
                 <div className='password'>
                     <label htmlFor="password">Password</label>
                     <input type='password' name='password' id='sign-up-password' onChange={handleChange}/>
-                    {password.length > 0 && <span style={{color: 'red'}}>{errors.password}</span>}
+                    {password.length > 0 && <span className='error-message'>{errors.password}</span>}
                 </div>              
                 <div className='repeatPassword'>
                     <label htmlFor="repeatPassword">Repeat Password</label>
                     <input type='password' name='repeatPassword' id='sign-up-repeat-password' onChange={handleChange}/>
-                    {repeatPassword.length > 0 && errors.password !== errors.repeatPassword && <span style={{color: 'red'}}>{errors.repeatPassword}</span>}
+                    {repeatPassword.length > 0 && errors.password !== errors.repeatPassword && <span className='error-message'>{errors.repeatPassword}</span>}
                 </div>              
                 <div className='submit'>
                     <button id='sign-up-button'>Register Me</button>

@@ -7,6 +7,7 @@ import instagramIcon from '../../assets/icons/instagram.png'
 import bandcampIcon from '../../assets/icons/bandcamp.png'
 import Player from '../MusicPlayer/Player'
 import ProfilePictureModal from '../ProfilePictureModal/ProfilePictureModal'
+import UploadMusicModal from '../UploadMusicModal/UploadMusicModal'
 import { useNavigate } from 'react-router-dom';
 import { Profile, SocialMedia } from '../../types'
 
@@ -19,6 +20,7 @@ export default function ProfilePage() {
     const [twitterLink, setTwitterLink] = useState<string>('');
     const [instagramLink, setInstagramLink] = useState<string>('');
     const [bandcampLink, setBandcampLink] = useState<string>('');
+    const [playlist, setPlaylist] = useState([]);
 
     const navigate = useNavigate();
 
@@ -34,6 +36,7 @@ export default function ProfilePage() {
           
           if (res.status === 200) {
                 setProfile(jsonRes[0]);
+                setPlaylist(jsonRes.music_samples)
                 window.localStorage.setItem('loggedJamSessionProfile', JSON.stringify(jsonRes))
           }
     }
@@ -99,8 +102,7 @@ export default function ProfilePage() {
             }
           });
         const resJSON = await res.json();
-        console.log('profile page',resJSON);
-          
+
         parseSocials(resJSON);
     },[])
 
@@ -137,6 +139,7 @@ export default function ProfilePage() {
             const profileJSON:Profile = JSON.parse(loggedProfileString);
             setProfile(profileJSON);
             setProfilePicture(profileJSON.profile_picture? profileJSON.profile_picture.image_file: '');
+            setPlaylist(profileJSON.music_samples);
         }
         
         getSocialLinks();
@@ -220,8 +223,11 @@ export default function ProfilePage() {
                 </div>
                 <div className="user-music">
                     <div className="music-player">
-                        <h2>Music Sample</h2>
-                        <Player />
+                        <div className='music-sample-title'>
+                            <h2>Music Sample</h2>
+                            <UploadMusicModal playlist={playlist} setPlaylist={setPlaylist}/>
+                        </div>
+                        <Player playlist={playlist} />
                     </div>
                     <div className="music-info">
                         <div className="music-seeking">

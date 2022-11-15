@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { styled, Typography, Slider, Paper, Stack, Box} from '@mui/material'
 
-import fsm from '../../assets/music/fsm.mp3'
-import mixaund from '../../assets/music/mixaund.mp3'
-
 import VolumeDownIcon from '@mui/icons-material/VolumeDown'
 import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 import VolumeOffIcon from '@mui/icons-material/VolumeOff'
@@ -15,6 +12,7 @@ import FastForwardIcon from '@mui/icons-material/FastForward'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
+
 
 const Div = styled('div')(({theme}) => ({
     width: '100%',
@@ -38,13 +36,10 @@ const PSlider:any = styled(Slider)(({theme, ...props}:any) => ({
     }
 }))
 
-const playlist = [fsm, mixaund]
-
-const Player = () => {
+const Player = ({playlist}:any) => {
     const audioPlayer = useRef<any>(null);
     const [index, setIndex] = useState(0);
 
-    const [currentSong, setcurrentSong] = useState(playlist[index]);
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(30);
     const [mute, setMute] = useState(false);
@@ -52,7 +47,7 @@ const Player = () => {
     const [elapsed, setElapsed] = useState(0);
     const [duration, setDuration] = useState(0);
 
-    useEffect(() => {
+    useEffect(() => { 
       if (audioPlayer) {
         audioPlayer.current.volume = volume / 100;
       }
@@ -66,7 +61,6 @@ const Player = () => {
             setElapsed(_elapsed);
         }, 100)
       }
-
     }, [volume, isPlaying])
 
     const formatTime = (time:any) => {
@@ -82,6 +76,7 @@ const Player = () => {
       }
 
     const togglePlay = () => {
+        if (!playlist) return
         if (!isPlaying) {
             audioPlayer.current.play();
         }
@@ -102,11 +97,11 @@ const Player = () => {
     const toggleSkipForward = () => {
       if(index >= playlist.length - 1) {
         setIndex(0)
-        audioPlayer.current.src = playlist[0]
+        audioPlayer.current.src = playlist[0]? playlist[0].music_file: '';
       }
       else {
         setIndex(prev => prev + 1)
-        audioPlayer.current.src = playlist[index+1]
+        audioPlayer.current.src = playlist[index+1]? playlist[index+1].music_file: '';
     }
     if (isPlaying) {
         audioPlayer.current.play()
@@ -116,7 +111,7 @@ const Player = () => {
     const toggleSkipBackward = () => {
         if(index > 0) {
             setIndex(prev => prev - 1)
-            audioPlayer.current.src = playlist[index-1]
+            audioPlayer.current.src = playlist[index-1]? playlist[index-1].music_file: '';
           }
         if (isPlaying) {
             audioPlayer.current.play()
@@ -129,9 +124,17 @@ const Player = () => {
         : volume <= 75 ? <VolumeDownIcon sx={{color: 'silver', '&:hover': {color: 'white'}}} onClick={()=> setMute(!mute)} />
         : <VolumeUpIcon sx={{color: 'silver', '&:hover': {color: 'white'}}} onClick={()=> setMute(!mute)} />
     }
+
+    const getCurrentSong = () => {
+        if (playlist.length > 0 && playlist[index]){
+            return playlist[index].music_file
+        } else {
+            return ''
+        }
+    }
     return(
         <Div>
-        <audio src={currentSong} ref={audioPlayer} muted={mute} />
+        <audio src={getCurrentSong()} ref={audioPlayer} muted={mute} />
         <CustomPaper>   
             <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
 
@@ -151,8 +154,6 @@ const Player = () => {
                         : <PauseIcon fontSize={'large'} sx={{color: 'silver', '&:hover': {color: 'white'}}} onClick={togglePlay} />
                          
                     }
-                    
-
                     <FastForwardIcon sx={{color: 'silver', '&:hover': {color: 'white'}}} onClick={toggleForward} />
                     <SkipNextIcon sx={{color: 'silver', '&:hover': {color: 'white'}}} onClick={toggleSkipForward} />
                 </Stack>
@@ -171,7 +172,7 @@ const Player = () => {
                     }}
             >
                 <Typography sx={{color: 'silver'}}>{formatTime(elapsed)}</Typography>
-                <PSlider thumbless={1} value={elapsed} max={duration}/>
+                <PSlider thumbless={1} value={elapsed? elapsed: 0} max={duration? duration: 0}/>
                 <Typography sx={{color: 'silver'}}>{formatTime(duration - elapsed)}</Typography>
             </Stack>
             <Stack direction='row' spacing={1} 
