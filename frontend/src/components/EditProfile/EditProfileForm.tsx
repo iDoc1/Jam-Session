@@ -556,11 +556,11 @@ function EditProfile() {
             <h2>Edit Profile</h2>
             <div className="form-group">
                 <label htmlFor="first_name">First Name</label>
-                <input type='first_name' name='first_name' id='edit-profile-first' onChange={handleChange} value={profile.first_name} />
+                <input type='first_name' name='first_name' id='edit-profile-first' required onChange={handleChange} value={profile.first_name} />
             </div>
             <div className="form-group">
                 <label htmlFor="last_name">Last Name</label>
-                <input type='last_name' name='last_name' id='edit-profile-last' onChange={handleChange} value={profile.last_name}/>
+                <input type='last_name' name='last_name' id='edit-profile-last' required onChange={handleChange} value={profile.last_name}/>
             </div>
             <div className="form-group">
                 <label htmlFor="gender">Gender</label>
@@ -572,7 +572,7 @@ function EditProfile() {
             </div>
             <div className="form-group">
                 <label htmlFor="zipcode">Zipcode</label>
-                <input type='zipcode' name='zipcode' id='edit-profile-zipcode' onChange={handleChange} value={profile.zipcode}/>
+                <input type='zipcode' name='zipcode' id='edit-profile-zipcode' required onChange={handleChange} value={profile.zipcode}/>
             </div>
             <div className="form-group">
                 {/* Added for spacing */}

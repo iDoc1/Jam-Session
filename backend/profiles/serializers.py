@@ -80,3 +80,27 @@ class UserProfileSerializer(NestedUpdateMixin, serializers.ModelSerializer):
                   'level_of_commitment', 'seeking', 'instruments', 'genres', 'music_samples',
                   'social_media')
         read_only_fields = ('join_date', 'age', 'city', 'state', 'profile_picture')
+
+
+class PublicUserProfileSerializer(serializers.ModelSerializer):
+    """
+    This serializer shows only the UserProfile fields that are public to other users
+    """
+    genres = GenreSerializer(many=True)
+    seeking = InstrumentSerializer(many=True)
+    instruments = UserInstrumentSerializer(source='userinstruments', many=True)
+    gender = GenderSerializer()
+    level_of_commitment = CommitmentLevelSerializer()
+    social_media = SocialMediaLinkSerializer(source='socialmedia', many=True, read_only=True)
+    music_samples = MusicSampleSerializer(source='user.music_sample', many=True, read_only=True)
+
+    try:
+        profile_picture = ProfilePictureSerializer(source='user.profile_pic', read_only=True)
+    except ObjectDoesNotExist:
+        profile_picture = None
+
+    class Meta:
+        model = UserProfile
+        fields = ('id', 'first_name', 'last_name', 'full_name', 'gender', 'zipcode', 'city', 'age',
+                  'state', 'profile_picture', 'years_playing', 'level_of_commitment', 'seeking',
+                  'instruments', 'genres', 'music_samples', 'social_media')
