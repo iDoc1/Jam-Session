@@ -56,6 +56,14 @@ export default function ProfilePage() {
       return new Date(dateString).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
     }
 
+    const getLocation = () => {
+        if (profile?.city === null || profile?.state === null) {
+            return '';
+        }
+        
+        return `${profile?.city}, ${profile?.state}, ${profile?.zipcode}`
+    }
+
     const getGenres = () => {
         let genreString = '';
 
@@ -127,6 +135,18 @@ export default function ProfilePage() {
             setBandcampLink(bandcampObject.social_media_link);
         }
     }
+
+    const getProfilePicture = async () => {
+        const res = await fetch('/api/profile-pics/', {
+            method: 'GET',
+            headers: {
+              'Content-type': 'application/json',
+              'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+          });
+        const resJSON = await res.json();
+        setProfilePicture(resJSON.image_file)
+    }
     useEffect(() => {
         const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
 
@@ -143,6 +163,7 @@ export default function ProfilePage() {
         }
         
         getSocialLinks();
+        getProfilePicture();
     },[profile, getSocialLinks])
 
     return (
@@ -203,7 +224,7 @@ export default function ProfilePage() {
 
                     <div className="user-info">
                         <div>
-                            <h3>{`${profile?.city}, ${profile?.state}`}, {profile?.zipcode}</h3>
+                            <h3>{getLocation()}</h3>
                             <h3>Genres:</h3>
                             <p>{getGenres()}</p>
                             <h3>Instruments:</h3> 
