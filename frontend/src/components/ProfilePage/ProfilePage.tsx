@@ -127,6 +127,18 @@ export default function ProfilePage() {
             setBandcampLink(bandcampObject.social_media_link);
         }
     }
+
+    const getProfilePicture = async () => {
+        const res = await fetch('/api/profile-pics/', {
+            method: 'GET',
+            headers: {
+              'Content-type': 'application/json',
+              'Authorization': `JWT ${localStorage.getItem('access')}`
+            }
+          });
+        const resJSON = await res.json();
+        setProfilePicture(resJSON.image_file)
+    }
     useEffect(() => {
         const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
 
@@ -143,6 +155,7 @@ export default function ProfilePage() {
         }
         
         getSocialLinks();
+        getProfilePicture();
     },[profile, getSocialLinks])
 
     return (
