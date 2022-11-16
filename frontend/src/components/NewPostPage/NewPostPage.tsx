@@ -48,7 +48,7 @@ function NewPostPage() {
             "instruments": seeking === 'Musicians'? profile.seeking: profile.instruments,
             "genres": profile.genres
         }
-        const res = await fetch(`/api/posts/`,{
+        await fetch(`/api/posts/`,{
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -56,8 +56,7 @@ function NewPostPage() {
             },
             body: JSON.stringify(data)
           })
-        const resJSON = await res.json()
-        console.log(resJSON)
+
     }
 
     const handleError = (errMsg:string) => {
@@ -103,10 +102,6 @@ function NewPostPage() {
 
         // Profile is valid
         return true
-    }
-
-    const capitalize = (string: string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1)
     }
 
     const uncapitalize = (string: string) => {
