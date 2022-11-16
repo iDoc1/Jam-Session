@@ -28,7 +28,10 @@ export default function NavBar({isAuthenticated, setIsAuthenticated}: NavBarProp
                     <li><Link to="/" className="site-title" id='site-title'>Jam Session</Link></li>
                     <Link to="/search">Search</Link>
                     {isAuthenticated
-                      ? <Link to="/profile">Profile</Link>
+                      ? <>
+                            <Link to="/profile">Profile</Link>
+                            <Link to="/new-post">New Post</Link>
+                        </>
                       : null
                     }
                 </ul>
