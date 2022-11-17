@@ -145,6 +145,7 @@ export default function ProfilePage() {
             }
           });
         const resJSON = await res.json();
+        
         setProfilePicture(resJSON.image_file)
     }
     useEffect(() => {
