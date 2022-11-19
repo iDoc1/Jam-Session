@@ -122,7 +122,7 @@ function SignIn({isAuthenticated, setIsAuthenticated}: SignInProps) {
                 </div>              
                 <div className='submit'>
                     <button id='sign-in-button'>Sign In</button>
-                    {error.length > 0 && <span style={{color: "red"}}>{error}</span>}
+                    {error.length > 0 && <span id='error-message' style={{color: "red"}}>{error}</span>}
                 </div>
                 <div className='needAccount'>
                 <p>Need an account? <br/></p>
