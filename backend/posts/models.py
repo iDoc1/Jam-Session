@@ -2,6 +2,7 @@ from django.db import models
 from backend.settings import AUTH_USER_MODEL
 from genres.models import Genre
 from instruments.models import Instrument
+from .zipcode_lookup import ZipCodeLookup
 
 
 class Post(models.Model):
@@ -13,6 +14,20 @@ class Post(models.Model):
     posted_date = models.DateTimeField(auto_now=True)
     instruments = models.ManyToManyField(Instrument)
     genres = models.ManyToManyField(Genre)
+
+    def city(self):
+        """
+        Returns the city of the post based on the zipcode
+        """
+        zipcode_lookup = ZipCodeLookup(self.zipcode)
+        return zipcode_lookup.get_city()
+
+    def state(self):
+        """
+        Returns the state of the post based on the zipcode
+        """
+        zipcode_lookup = ZipCodeLookup(self.zipcode)
+        return zipcode_lookup.get_state()
 
     def __str__(self):
         return str(self.user) + " " + self.title
