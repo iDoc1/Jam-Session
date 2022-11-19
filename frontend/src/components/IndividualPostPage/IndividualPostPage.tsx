@@ -42,10 +42,6 @@ function IndividualPostPage() {
         return string.charAt(0).toUpperCase() + string.slice(1)
     }
 
-    const uncapitalize = (string: string) => {
-        return string.charAt(0).toLowerCase() + string.slice(1)
-    }
-
     const getGenreSelections = (genres:Genres[]) => {
         if (!genres) return
         let genreString = '';
@@ -88,25 +84,8 @@ function IndividualPostPage() {
         }
         
     }
-    const retrievePost = async () => {
-        const res = await fetch(`/api/posts/?zipcode=99204&radius=5`,{
-            method: 'GET',
-            headers: {
-                'Content-type': 'application/json',
-                'Authorization': `JWT ${localStorage.getItem('access')}`
-            }
-        })
-        const resJSON = await res.json()
-        if (res.ok && resJSON.length > 0) {
-            setPost(resJSON[0])
-            setCommentsList(resJSON[0].comments)
-        }
 
-        // console.log(resJSON[0]);
-        
-    }
     useEffect(() => {
-        // retrievePost();
       getPost();
     }, [getPost])
     
