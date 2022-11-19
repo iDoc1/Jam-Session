@@ -62,3 +62,16 @@ export interface SocialMedia {
     social_media_site: string,
     social_media_link: string
 }
+
+export interface Post {
+    comments: any,
+    content: string,
+    genres: Genres[],
+    id: number,
+    instruments: Instruments[],
+    posted_date: string,
+    seeking: string,
+    title: string,
+    user: number,
+    zipcode: string
+}
