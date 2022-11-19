@@ -8,34 +8,75 @@ import { useLocation } from 'react-router-dom';
 
 
 const defaultPost = {
-    "comments": [],
-    "content" : "",
-    "genres": [],
+    "comments": [
+        {
+            "id": 0,
+            "user": 0,
+            "user_profile_id": 0,
+            "user_first_name": "Commenter",
+            "user_last_name": "Name",
+            "post": 0,
+            "content": "Sample Comment",
+            "comment_date": "2022-11-19T05:14:36.053206Z"
+        }
+    ],
+    "content" : "Sample content body",
+    "genres": [
+        {
+            "id": 2,
+            "genre": "rock"
+        },
+        {
+            "id": 3,
+            "genre": "metal"
+        },
+        {
+            "id": 4,
+            "genre": "r&b"
+        }
+    ],
     "id": 0,
     "owner_user_id": 0,
     "owner_profile_id": 0,
-    "owner_first_name": "",
-    "owner_last_name": "",
-    "instruments": [],
-    "posted_date": "",
-    "seeking": "",
-    "title": "",
+    "owner_first_name": "Sample",
+    "owner_last_name": "Name",
+    "instruments": [
+        {
+            "id": 6,
+            "name": "vocals"
+        },
+        {
+            "id": 8,
+            "name": "guitar"
+        },
+        {
+            "id": 11,
+            "name": "brass"
+        }
+    ],
+    "posted_date": "2022-11-19T05:13:44.853348Z",
+    "seeking": "musicians",
+    "title": "Sample Post Title",
     "user": 0,
-    "zipcode": "",
-    "city": "",
-    "state": ""
+    "zipcode": "99999",
+    "city": "City",
+    "state": "State"
 }
 
 function IndividualPostPage() {
     const { state } = useLocation();
-    const [post, setPost] = useState<Post>(defaultPost);
-    const [commentsList, setCommentsList] = useState<any>([]);
+    const [post, setPost] = useState<Post | any>(defaultPost);
+    console.log(post)
+    const [commentsList, setCommentsList] = useState<any>(defaultPost.comments);
     const [comment, setComment] = useState('');
 
     const getPost =  useCallback(() => {
         const { resJSON } = state || {};
-        setPost(resJSON)
-        setCommentsList(resJSON.comments)
+        if (resJSON) {
+            setPost(resJSON)
+            setCommentsList(resJSON.comments)
+        }
+  
     },[state])
 
     const capitalize = (string: string) => {
