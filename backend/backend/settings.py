@@ -220,7 +220,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',  # Must be authenticated for all views
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication'
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
     ],
 }
 

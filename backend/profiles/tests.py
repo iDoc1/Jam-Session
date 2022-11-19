@@ -4,6 +4,7 @@ from dateutil import parser
 from django.test import TestCase
 from django.utils import timezone
 from rest_framework.test import APIClient
+from rest_framework_simplejwt.tokens import RefreshToken
 from genres.models import Genre
 from instruments.models import Instrument
 from .models import CommitmentLevel, Gender, ExperienceLevel, UserProfile, get_year_diff
@@ -18,9 +19,12 @@ class UserProfileTestCase(TestCase):
         """
         Create authenticated test user and test objects
         """
-        self.client = APIClient()
         self.user = UserAccount.objects.create(email='testemail@test.com')
-        self.client.force_authenticate(user=self.user)
+
+        # Create access token for user
+        access_token = RefreshToken.for_user(self.user).access_token
+        self.client = APIClient()
+        self.client.credentials(HTTP_AUTHORIZATION='JWT ' + str(access_token))
 
         self.commitment_level = CommitmentLevel(level='Just for fun', rank=1)
         self.gender = Gender.objects.create(gender='Man')
@@ -61,6 +65,28 @@ class UserProfileTestCase(TestCase):
         profile = UserProfile.objects.get(user=self.user)
 
         self.assertEqual(profile.state(), 'WA')
+
+    def get_nonexistant_profile(self):
+        """
+        Attempt to get profile that does not exist
+        """
+        response = self.client.get('/api/profiles/111/')
+        data = response.json()
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data['detail'], 'requested profile does not exist')
+
+    def test_get_public_user_profile(self):
+        """
+        Get another user's profile with the public fields only (no birth or join dates)
+        """
+        UserAccount.objects.create(email='testemail2@test.com')  # user number two
+
+        response = self.client.get('/api/profiles/2/')
+        data = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('birth_date', data)
+        self.assertNotIn('join_date', data)
 
     def test_get_blank_user_profile(self):
         """
@@ -119,6 +145,21 @@ class UserProfileTestCase(TestCase):
         self.assertEqual(data['zipcode'], '22222')
         self.assertEqual(data['years_playing'], 4)
         self.assertEqual(data['seeking'][0]['name'], 'guitar')
+
+    def test_update_profile_unauthorized(self):
+        """
+        Attempt to update a different user's profile
+        """
+        UserAccount.objects.create(email='testemail2@test.com')  # user number two
+        data = {
+            'first_name': 'Jane',
+            'last_name': 'Doe'
+        }
+
+        response = self.client.patch('/api/profiles/2/', data, format='json')
+        data = response.json()
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(data['detail'], 'requestor is not authorized to edit profile that is not their own')
 
     def test_add_commitment_level_to_user_profile(self):
         """
@@ -203,7 +244,6 @@ class UserProfileTestCase(TestCase):
         response = self.client.patch('/api/profiles/1/', data, format='json')  # Add
         removed_data = {'genres': []}
         response = self.client.patch('/api/profiles/1/', removed_data, format='json')  # Remove
-
         data = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['genres'], [])
