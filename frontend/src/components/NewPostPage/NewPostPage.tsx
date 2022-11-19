@@ -61,8 +61,9 @@ function NewPostPage() {
           })
         const resJSON = await res.json();
         // console.log(resJSON);
-        
-        navigate(`/post/${resJSON.id}`, {state: {resJSON}});
+        if (res.ok){
+            navigate(`/post/${resJSON.id}`, {state: {resJSON}});
+        }
     }
 
     const handleError = (errMsg:string) => {
