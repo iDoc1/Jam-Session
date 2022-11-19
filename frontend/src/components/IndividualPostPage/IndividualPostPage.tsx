@@ -2,30 +2,40 @@ import './IndividualPostPage.css'
 
 import React, { useEffect, useState, useCallback } from 'react'
 import Comment from '../Comment/Comment';
-import { Genres, Post } from '../../types'
+import { Genres, Post, IndividualComment } from '../../types'
 import { useLocation } from 'react-router-dom';
+
 
 
 const defaultPost = {
     "comments": [],
-    "content" : "I would like this to be able to show multiple lines.\n\nHopefully, this is on a second line!",
+    "content" : "",
     "genres": [],
-    "id": 3,
+    "id": 0,
+    "owner_user_id": 0,
+    "owner_profile_id": 0,
+    "owner_first_name": "",
+    "owner_last_name": "",
     "instruments": [],
-    "posted_date": "2022-11-18T04:51:39.010024Z",
-    "seeking": "musicians",
-    "title": "Test post for styling",
-    "user": 13,
-    "zipcode": "98382"
+    "posted_date": "",
+    "seeking": "",
+    "title": "",
+    "user": 0,
+    "zipcode": "",
+    "city": "",
+    "state": ""
 }
+
 function IndividualPostPage() {
     const { state } = useLocation();
     const [post, setPost] = useState<Post>(defaultPost);
+    const [commentsList, setCommentsList] = useState<any>([]);
     const [comment, setComment] = useState('');
 
     const getPost =  useCallback(() => {
         const { resJSON } = state || {};
         setPost(resJSON)
+        setCommentsList(resJSON.comments)
     },[state])
 
     const capitalize = (string: string) => {
@@ -56,7 +66,7 @@ function IndividualPostPage() {
         setComment(event.target.value)
     }
 
-    const handleSubmitPost = async () => {
+    const handleSubmitComment = async () => {
         const data = {
             "post": post.id,
             "content": comment
@@ -72,9 +82,14 @@ function IndividualPostPage() {
         const resJSON = await res.json()
         console.log(resJSON);
         
+        if (res.ok){
+            setCommentsList([...commentsList, resJSON])
+            setComment('')
+        }
+        
     }
     const retrievePost = async () => {
-        const res = await fetch(`/api/posts/?zipcode=98382&radius=5`,{
+        const res = await fetch(`/api/posts/?zipcode=99204&radius=5`,{
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
@@ -82,13 +97,17 @@ function IndividualPostPage() {
             }
         })
         const resJSON = await res.json()
-        setPost(resJSON[0])
+        if (res.ok && resJSON.length > 0) {
+            setPost(resJSON[0])
+            setCommentsList(resJSON[0].comments)
+        }
+
         // console.log(resJSON[0]);
         
     }
     useEffect(() => {
-        retrievePost();
-    //   getPost();
+        // retrievePost();
+      getPost();
     }, [getPost])
     
     return (
@@ -96,8 +115,8 @@ function IndividualPostPage() {
             <div className="post-banner">
                 <h2>{post.title}</h2>
                 <div className="post-name-location">
-                    <h2>Nick Bowden</h2>
-                    <h4><span className='normal-weight'>Sequim, WA 98382</span></h4>
+                    <h2>{post.owner_first_name} {post.owner_last_name}</h2>
+                    <h4><span className='normal-weight'>{post.city}, {post.state} {post.zipcode}</span></h4>
                 </div>
             </div>
             <hr />
@@ -112,12 +131,12 @@ function IndividualPostPage() {
                 <div className="comments">
                     <h3>Comments</h3>
                     <hr />
-                    <textarea name="" id="" cols={30} rows={3} onChange={handleComment}></textarea>
-                    <button className="post-comment" onClick={handleSubmitPost}>Post</button>
+                    <textarea name="" id="" cols={30} rows={3} value={comment} onChange={handleComment}></textarea>
+                    <button className="post-comment" onClick={handleSubmitComment}>Post</button>
                 </div>
                 <div className="comment-section">
                         {
-                            post.comments.map((c:any) => {
+                            commentsList.map((c:IndividualComment) => {
                                 return (
                                 <React.Fragment key={c.id}>
                                     <Comment comment={c} />
