@@ -10,6 +10,7 @@ import EditProfile from './components/EditProfile/EditProfileForm';
 import ProfilePage from './components/ProfilePage/ProfilePage';
 import PrivateWrapper from './components/PrivateWrapper/PrivateWrapper';
 import NewPostPage from './components/NewPostPage/NewPostPage';
+import IndividualPostPage from './components/IndividualPostPage/IndividualPostPage';
 import { Route, Routes } from 'react-router-dom';
 
 
@@ -88,6 +89,7 @@ function App() {
         <Route path='/login' element={
           <SignIn isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />} 
         />
+        <Route path='post/:id' element={<IndividualPostPage />}/>
         <Route element={<PrivateWrapper isAuthenticated={isAuthenticated} loading={loading} />}>
           <Route path='/profile' element={<ProfilePage />} />
           <Route path='/profile/edit' element={<EditProfile />} />
