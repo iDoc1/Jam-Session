@@ -1,0 +1,46 @@
+.search-banner, .search-results {
+    max-width: 1000px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #d9d9d9;
+    margin-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.search-banner h2 {
+    margin: 0;
+}
+.search-banner {
+    padding: 1rem;
+}
+
+.card-placeholder{
+    background-color: white;
+    width: 65%;
+    margin: 1rem;
+}
+
+.search-options {
+    background-color: white;
+    margin: 1rem 1rem 1rem 0;
+    padding-bottom: 1rem;
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-control {
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+.search-results{
+    display: flex;
+}
+
+.update-search-button {
+    font-weight: bold;
+}

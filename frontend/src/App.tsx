@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import SignUp from './components/SignUpForm/SignUpForm';
 import SignIn from './components/SignInForm/SignInForm';
-import Search from './components/SearchPage/Search';
+import SearchPage from './components/SearchPage/SearchPage';
 import LandingPage from './components/LandingPage/LandingPage';
 import NavBar from './components/NavBar/NavBar';
 import Activate from './components/ActivatePage/ActivatePage';
@@ -83,7 +83,7 @@ function App() {
       <NavBar isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
       <Routes>
         <Route path='/' element={<LandingPage />} />
-        <Route path='/search' element={<Search />} />
+        <Route path='/search' element={<SearchPage />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/activate/:uid/:token' element={<Activate />} />
         <Route path='/login' element={
