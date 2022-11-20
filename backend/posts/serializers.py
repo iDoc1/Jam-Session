@@ -45,12 +45,17 @@ class PostSerializer(NestedUpdateMixin, serializers.ModelSerializer):
     instruments = InstrumentSerializer(many=True)
     genres = GenreSerializer(many=True)
     comments = CommentSerializer(source='comment', many=True, read_only=True)
+    owner_user_id = serializers.IntegerField(source='user.id', read_only=True)
+    owner_profile_id = serializers.IntegerField(source='user.user_profile.id', read_only=True)
+    owner_first_name = serializers.CharField(source='user.user_profile.first_name', read_only=True)
+    owner_last_name = serializers.CharField(source='user.user_profile.last_name', read_only=True)
 
     class Meta:
         model = Post
-        fields = ('id', 'user', 'title', 'seeking', 'content', 'zipcode',
-                  'posted_date', 'instruments', 'genres', 'comments')
-        read_only_fields = ('user',)
+        fields = ('id', 'owner_user_id', 'owner_profile_id', 'owner_first_name', 'owner_last_name',
+                  'title', 'seeking', 'content', 'zipcode', 'city', 'state', 'posted_date',
+                  'instruments', 'genres', 'comments')
+        read_only_fields = ('city', 'state', 'posted_date')
 
     def create(self, validated_data):
         """

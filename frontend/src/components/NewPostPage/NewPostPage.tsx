@@ -2,6 +2,7 @@ import React, { useState, useRef, ChangeEvent, useEffect } from 'react'
 import "../globalStyle.css"
 import './NewPostPage.css'
 import { Profile } from '../../types'
+import { useNavigate } from 'react-router-dom'
 
 import Dropdown from 'react-dropdown'
 
@@ -13,6 +14,8 @@ function NewPostPage() {
     const [postContent, setPostContent] = useState('');
     const [profile, setProfile] = useState<Profile | any>(null);
     const [errorMessage, setErrorMessage] = useState('');
+
+    const navigate = useNavigate();
 
     const handleInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
         if (ref.current) {
@@ -48,7 +51,7 @@ function NewPostPage() {
             "instruments": seeking === 'Musicians'? profile.seeking: profile.instruments,
             "genres": profile.genres
         }
-        await fetch(`/api/posts/`,{
+        const res = await fetch(`/api/posts/`,{
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -56,7 +59,11 @@ function NewPostPage() {
             },
             body: JSON.stringify(data)
           })
-
+        const resJSON = await res.json();
+        // console.log(resJSON);
+        if (res.ok){
+            navigate(`/post/${resJSON.id}`, {state: {resJSON}});
+        }
     }
 
     const handleError = (errMsg:string) => {
