@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './SearchPage.css'
 import Dropdown from 'react-dropdown'
+import PostCard from '../PostCard/PostCard'
 
 
 
@@ -59,8 +60,8 @@ const Search = () => {
           <span>99999 | 50 mi</span>
       </div>
       <div className="search-results">
-        <div className="card-placeholder">
-          card
+        <div className="card-view">
+          <PostCard/>
         </div>
         <div className="search-options">
           <h3>Search Options</h3>

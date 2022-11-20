@@ -15,8 +15,7 @@
     padding: 1rem;
 }
 
-.card-placeholder{
-    background-color: white;
+.card-view{
     width: 65%;
     margin: 1rem;
 }
@@ -33,7 +32,7 @@
 
 .search-control {
     width: 100%;
-    padding: 1rem;
+    padding: 0 1.5rem 1rem 1.5rem;
     display: flex;
     flex-direction: column;
 }

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 import Dropdown from 'react-dropdown'
 
-function NewPostPage() {
+const NewPostPage = () => {
     const ref = useRef<HTMLTextAreaElement>(null);
 
     const [postTitle, setPostTitle] = useState('');
