@@ -29,8 +29,8 @@ export default function NavBar({isAuthenticated, setIsAuthenticated}: NavBarProp
                     <Link to="/search">Search</Link>
                     {isAuthenticated
                       ? <>
-                            <Link to="/profile">Profile</Link>
-                            <Link to="/new-post">New Post</Link>
+                            <Link id='profile-link' to="/profile">Profile</Link>
+                            <Link id='new-post-link' to="/new-post">New Post</Link>
                         </>
                       : null
                     }
@@ -39,8 +39,8 @@ export default function NavBar({isAuthenticated, setIsAuthenticated}: NavBarProp
                     {isAuthenticated
                       ? <Link to='' onClick={logout}>Logout</Link>
                       : <>
-                            <Link to="/signup">Join Now</Link>
-                            <Link to="login">Login</Link>
+                            <Link id='signup-link' to="/signup">Join Now</Link>
+                            <Link id='login-link' to="login">Login</Link>
                         </>
                     }
                 </ul>

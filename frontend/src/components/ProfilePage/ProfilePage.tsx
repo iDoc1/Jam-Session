@@ -176,7 +176,7 @@ export default function ProfilePage() {
                             <h1>{profile?.first_name} {profile?.last_name}</h1>
                             <h3>Musician in {profile?.zipcode}</h3>
                         </div>
-                        <button onClick={()=>navigate('/profile/edit')}>Edit Profile</button>
+                        <button id='edit-profile-button' onClick={()=>navigate('/profile/edit')}>Edit Profile</button>
                     </div>
                     <div className="banner-socials">
                         {

@@ -583,7 +583,7 @@ function EditProfile() {
             </div>
             <div className="form-group">
                 <label htmlFor="level_of_commitment">Level of commitment</label>
-                <Dropdown options={commitmentOptions.map((c : CommitmentLevel) => c.level)} placeholder={profile?.level_of_commitment?.level} onChange={changeCommitment}/>
+                <Dropdown className="edit-commitment-level" options={commitmentOptions.map((c : CommitmentLevel) => c.level)} placeholder={profile?.level_of_commitment?.level} onChange={changeCommitment}/>
             </div>
             <div className="form-group">
                 <label htmlFor="genres">Genre</label>
@@ -601,7 +601,7 @@ function EditProfile() {
             </div>
             <div className="form-group">
                 <label htmlFor="experience_level">Experience Level</label>
-                <Dropdown  options={experienceLevelOptions.map((e: ExperienceLevel) => e.level)} placeholder={profile?.instruments[0]? profile?.instruments[0].experience_level.level: 'Select...'} onChange={changeExperience1} />
+                <Dropdown className="edit-experience-level" options={experienceLevelOptions.map((e: ExperienceLevel) => e.level)} placeholder={profile?.instruments[0]? profile?.instruments[0].experience_level.level: 'Select...'} onChange={changeExperience1} />
             </div>
             <div className="form-group">
                 <label htmlFor="instruments">Instrument</label>
@@ -622,7 +622,7 @@ function EditProfile() {
 
             <div className="form-group">
                 <label htmlFor="seeking">Seeking</label>
-                <Dropdown options={instrumentOptions.map((i: Instrument) => capitalize(i.name))} onChange={addSeekingSelection}/>
+                <Dropdown className="edit-seeking-dropdown" options={instrumentOptions.map((i: Instrument) => capitalize(i.name))} onChange={addSeekingSelection}/>
             </div>
             <div className="form-group">
                 <label htmlFor="seeking-selection">Seeking Selection</label>
