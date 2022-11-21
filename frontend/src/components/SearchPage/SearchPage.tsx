@@ -4,8 +4,6 @@ import Dropdown from 'react-dropdown'
 import PostCard from '../PostCard/PostCard'
 import { useLocation } from 'react-router-dom'
 
-
-
 const Search = () => {
   const [instrumentOptions, setInstrumentOptions] = useState([]);
   const [genreOptions, setGenreOptions] = useState([]);
@@ -16,15 +14,20 @@ const Search = () => {
   const [searchRadius, setSearchRadius] = useState('25');
   const [searchParams, setSearchParams] = useState('');
   const [posts, setPosts] = useState<any>([]);
+  const [error, setError] = useState('');
   const { state } = useLocation();
 
+  const seekingOptions = [
+    'Musician looking for band',
+    'Band looking for members'
+  ]
+  
   const getPosts =  useCallback(() => {
     const { resJSON, searchParams } = state || {};
     if (resJSON) {
         setPosts(resJSON)
         setSearchParams(searchParams)
     }
-    console.log('search results posts: ', resJSON)
   },[state])
 
   const getInstrumentOptions = async () => {
@@ -59,6 +62,50 @@ const Search = () => {
       return string.charAt(0).toLowerCase() + string.slice(1)
   }
 
+  const handleUpdateSearch = async () => {
+    if (!zipcode) {
+      setError('Zip code is required!')
+      setTimeout(() =>{
+          setError('');
+      }, 4000)
+      return
+  }
+    let url = `/api/posts/?zipcode=${zipcode}&radius=${searchRadius}`
+    if (seeking) {
+        url += `&seeking=${seeking === seekingOptions[0]? 'musicians': 'bands'}`
+    }
+
+    if (instrument) {
+        url += `&instrument=${instrument}`
+    }
+    
+    if (genre) {
+      url += `&genre=${genre}`
+    }
+    const res = await fetch( url,{
+      method: 'GET',
+      headers: {
+          'Content-type': 'application/json',
+          'Authorization': `JWT ${localStorage.getItem('access')}`
+      }
+  })
+  const resJSON = await res.json()
+
+  if (res.ok) {
+    setPosts(resJSON)
+    setSearchParams(`${zipcode} | ${searchRadius} ${searchRadius === '1'? 'mile': 'miles'}`)
+  }
+
+  
+  if (res.status === 400) {
+      setError(capitalize(resJSON.detail))
+      setTimeout(() =>{
+          setError('');
+      }, 4000)
+  }
+    
+  }
+
   useEffect(() => {
     getInstrumentOptions();
     getGenreOptions();
@@ -83,8 +130,8 @@ const Search = () => {
         <div className="search-options">
           <h3>Search Options</h3>
           <div className="search-control">
-            <label htmlFor="search-seeking">I'm Looking For:</label>
-            <Dropdown options={['Musicians', 'Band to Join']} onChange={({value}) => setSeeking(uncapitalize(value))}/>
+            <label htmlFor="search-seeking">I am:</label>
+            <Dropdown options={seekingOptions} onChange={({value}) => setSeeking(value)}/>
           </div>
           <div className="search-control">
             <label htmlFor="search-seeking">Genre:</label>
@@ -102,7 +149,10 @@ const Search = () => {
             <label htmlFor="search-area">Radius: {searchRadius} {searchRadius === '1'? 'mile': 'miles'}</label>
             <Dropdown options={['1','5', '10','25','50','75','100']} onChange={({value}) => setSearchRadius(value)} />
           </div>
-          <button className='update-search-button' onClick={() => console.log(posts)}>Update Search</button>
+
+          {error? <span className='error-message'>{error}</span>: ''}
+
+          <button className='update-search-button' onClick={handleUpdateSearch}>Search</button>
         </div>
       </div>
     </>

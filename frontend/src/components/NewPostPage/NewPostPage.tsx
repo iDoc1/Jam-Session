@@ -36,7 +36,7 @@ const NewPostPage = () => {
     }
 
     const handleSeekingChange = (option:any) => {
-        setSeeking(option.value);
+        setSeeking(option.value === 'musicians'? 'musicians': 'bands');
     }
 
     const handleSubmit = async (event:any) => {
@@ -48,9 +48,11 @@ const NewPostPage = () => {
             "seeking": uncapitalize(seeking),
             "content": postContent,
             "zipcode": profile.zipcode,
-            "instruments": seeking === 'Musicians'? profile.seeking: profile.instruments,
+            "instruments": seeking === 'musicians'? profile.seeking: profile.instruments.map((inst:any) => inst.instrument),
             "genres": profile.genres
         }
+        console.log(data);
+        
         const res = await fetch(`/api/posts/`,{
             method: 'POST',
             headers: {
