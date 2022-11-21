@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import './SearchPage.css'
 import Dropdown from 'react-dropdown'
 import PostCard from '../PostCard/PostCard'
+import { useLocation } from 'react-router-dom'
 
 
 
@@ -12,9 +13,19 @@ const Search = () => {
   const [genre, setGenre] = useState('');
   const [zipcode, setZipcode] = useState('');
   const [instrument, setInstrument] = useState('');
-  const [searchRadius, setSearchRadius] = useState(25);
+  const [searchRadius, setSearchRadius] = useState('25');
+  const [searchParams, setSearchParams] = useState('');
+  const [posts, setPosts] = useState<any>([]);
+  const { state } = useLocation();
 
-
+  const getPosts =  useCallback(() => {
+    const { resJSON, searchParams } = state || {};
+    if (resJSON) {
+        setPosts(resJSON)
+        setSearchParams(searchParams)
+    }
+    console.log('search results posts: ', resJSON)
+  },[state])
 
   const getInstrumentOptions = async () => {
     const res = await fetch('/api/instruments/', {
@@ -51,17 +62,23 @@ const Search = () => {
   useEffect(() => {
     getInstrumentOptions();
     getGenreOptions();
-  },[])
+    getPosts()
+  },[getPosts])
 
   return (
     <>
       <div className='search-banner'>
           <h2>Search Results</h2>
-          <span>99999 | 50 mi</span>
+          <span>{searchParams? searchParams: ''}</span>
       </div>
       <div className="search-results">
         <div className="card-view">
-          <PostCard/>
+          {posts.length > 0? posts.map((post:any) => 
+            <React.Fragment key={post.id}>
+              <PostCard post={post} />
+            </React.Fragment>
+          ): <div className='no-results'>No Results Found!</div>}
+
         </div>
         <div className="search-options">
           <h3>Search Options</h3>
@@ -78,14 +95,14 @@ const Search = () => {
             <Dropdown options={instrumentOptions? instrumentOptions.map((i:any) => capitalize(i.name)): []} onChange={({value}) => setInstrument(uncapitalize(value))}/>
           </div>
           <div className="search-control">
-            <label htmlFor="search-zipcode">Location</label>
-            <input type="text" placeholder='Zip Code' onChange={(event) => setZipcode(event.target.value)}/>
+            <label htmlFor="search-zipcode">Zip Code:</label>
+            <input type="text" placeholder='e.g., 99999' onChange={(event) => setZipcode(event.target.value)}/>
           </div>
           <div className="search-control">
-            <label htmlFor="search-area">Radius: {searchRadius} Miles</label>
-            <Dropdown options={['1','5', '10','25','50','75','100']} onChange={({value}) => setSearchRadius(parseInt(value))} />
+            <label htmlFor="search-area">Radius: {searchRadius} {searchRadius === '1'? 'mile': 'miles'}</label>
+            <Dropdown options={['1','5', '10','25','50','75','100']} onChange={({value}) => setSearchRadius(value)} />
           </div>
-          <button className='update-search-button' onClick={() => console.log(seeking, genre, instrument, zipcode, searchRadius)}>Update Search</button>
+          <button className='update-search-button' onClick={() => console.log(posts)}>Update Search</button>
         </div>
       </div>
     </>

@@ -22,6 +22,10 @@
     flex-direction: column;
 }
 
+.landing-seeking {
+    min-width: 10rem;
+}
+
 .landing-inputs div label {
     color:white;
 }
@@ -35,4 +39,13 @@
     height: 50%;
     display: flex;
     justify-content: center;
+}
+
+.search-error {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
 }
