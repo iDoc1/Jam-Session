@@ -14,6 +14,10 @@ const Search = () => {
   const [searchRadius, setSearchRadius] = useState('25');
   const [searchParams, setSearchParams] = useState('');
   const [posts, setPosts] = useState<any>([]);
+  
+  const offset = 10;
+  const [pageOffset, setPageOffset] = useState(offset)
+  const [pagesButtons, setPagesButtons] = useState<any>([]);
   const [error, setError] = useState('');
   const { state } = useLocation();
 
@@ -21,7 +25,7 @@ const Search = () => {
     'Musician looking for band',
     'Band looking for members'
   ]
-  
+
   const getPosts =  useCallback(() => {
     const { resJSON, searchParams } = state || {};
     if (resJSON) {
@@ -94,6 +98,7 @@ const Search = () => {
   if (res.ok) {
     setPosts(resJSON)
     setSearchParams(`${zipcode} | ${searchRadius} ${searchRadius === '1'? 'mile': 'miles'}`)
+    getPages(resJSON.length);
   }
 
   
@@ -104,6 +109,17 @@ const Search = () => {
       }, 4000)
   }
     
+  }
+
+  const getPages = (length:any) => {
+    const totalPages = Math.ceil(length / offset);
+    const result = [];
+
+    for (let i = 0; i < totalPages; i++) {
+      result.push(<button key={`page ${i+1}`} onClick={()=> setPageOffset((i+1)*offset)}>{i+1}</button>)
+    }
+
+    setPagesButtons(result)
   }
 
   useEffect(() => {
@@ -118,9 +134,14 @@ const Search = () => {
           <h2>Search Results</h2>
           <span>{searchParams? searchParams: ''}</span>
       </div>
+      <div className="search-page-buttons">
+        <button onClick={()=>setPageOffset(Math.max(10, pageOffset-10))}>&#8592;</button>
+        {pagesButtons.map((page:any) => page)}
+        <button onClick={()=>{setPageOffset(pageOffset < posts.length? pageOffset+10: pageOffset)}}>&#8594;</button>
+      </div>
       <div className="search-results">
         <div className="card-view">
-          {posts.length > 0? posts.map((post:any) => 
+          {posts.length > 0? posts.slice(pageOffset-offset, pageOffset).map((post:any) => 
             <React.Fragment key={post.id}>
               <PostCard post={post} />
             </React.Fragment>

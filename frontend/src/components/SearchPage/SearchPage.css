@@ -4,7 +4,7 @@
     margin-left: auto;
     margin-right: auto;
     background-color: #d9d9d9;
-    margin-top: 1rem;
+
 }
 
 .search-banner h2 {
@@ -12,6 +12,7 @@
 }
 .search-banner {
     padding: 1rem;
+    margin-top: 1rem;
 }
 
 .card-view{
@@ -39,11 +40,27 @@
 }
 .search-results{
     display: flex;
+    margin-top: .5rem;
 }
 
 .update-search-button {
     font-weight: bold;
     margin-top: 1rem;
+    background-color: #008CC8;
+}
+
+.update-search-button:hover, .search-page-buttons button:hover {
+    background-color: #0877a7;
+}
+.search-page-buttons {
+    max-width: 1000px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-page-buttons button {
+    background-color: #008CC8;
 }
 
 .no-results {
