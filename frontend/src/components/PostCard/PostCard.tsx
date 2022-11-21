@@ -8,10 +8,6 @@ const PostCard = ({ post }:any) => {
     const capitalize = (string: string) => {
         return string.charAt(0).toUpperCase() + string.slice(1)
     }
-    
-      const uncapitalize = (string: string) => {
-          return string.charAt(0).toLowerCase() + string.slice(1)
-      }
     const getGenreSelections = (genres:any) => {
         let genreString = '';
         genres.map((x: Genres) => genreString += capitalize(x.genre) + ', ');
@@ -25,7 +21,6 @@ const PostCard = ({ post }:any) => {
         instrumentString = instrumentString.slice(0, -2);
         return instrumentString;
     }
-
     
     return (
         <div className='post-card' onClick={()=> navigate(`/post/${post.id}`, {state: {'resJSON': post}})}>
