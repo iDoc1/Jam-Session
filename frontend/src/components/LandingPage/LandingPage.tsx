@@ -38,8 +38,6 @@ export default function LandingPage() {
             url += `&instrument=${instrument}`
         }
         
-        // console.log(url);
-        
         const res = await fetch( url,{
             method: 'GET',
             headers: {

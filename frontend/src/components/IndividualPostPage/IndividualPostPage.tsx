@@ -127,7 +127,6 @@ function IndividualPostPage() {
             body: JSON.stringify(data)
         })
         const resJSON = await res.json()
-        console.log(resJSON);
         
         if (res.ok){
             setCommentsList([...commentsList, resJSON])

@@ -46,7 +46,6 @@ const ProfilePictureModal = ({setPicture}:any) => {
                 }
             })
             const resJSON = await res.json()
-            console.log(resJSON);
             setPicture(resJSON.image_file);
         }
         if (profileJSON && !profileJSON.profile_picture){
@@ -59,7 +58,6 @@ const ProfilePictureModal = ({setPicture}:any) => {
             })
             
             const resJSON = await res.json()
-            console.log(resJSON);
             setPicture(resJSON.image_file);
         }
         await getProfile();

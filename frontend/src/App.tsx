@@ -50,8 +50,7 @@ function App() {
   // Attempts to get a new access token using the refresh token
   const refreshAccessToken = async () => {
     let refresh = { 'refresh': localStorage.getItem('refresh')}
-    console.log('refresh:' , refresh);
-    
+  
     const res = await fetch('/auth/jwt/refresh/', {
       method: 'POST',
       body: JSON.stringify(refresh),
@@ -60,7 +59,6 @@ function App() {
       }
     });
     const data = await res.json();
-    console.log('test:', data);
     
     if (res.status === 200) {  // Refresh token still valid
       setIsAuthenticated(true);
