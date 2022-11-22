@@ -40,7 +40,7 @@
     flex-direction: column;
 }
 
-.Dropdown-control, .search-control input  {
+.search-control .Dropdown-control, .search-control input  {
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
 }
 
@@ -81,8 +81,6 @@
     background-color: #008CC8;
     font-weight: bolder;
 }
-
-
 
 .no-results {
     font-size: 30px;

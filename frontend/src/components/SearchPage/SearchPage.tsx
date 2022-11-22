@@ -137,9 +137,9 @@ const Search = () => {
           <span>{searchParams? searchParams: ''}</span>
       </div>
       <div className="search-page-buttons">
-        <button onClick={()=>setPageOffset(Math.max(10, pageOffset-10))} className='arrow-buttons'>&#8678;</button>
+        <button onClick={()=>setPageOffset(Math.max(10, pageOffset-10))} className='arrow-buttons' id='left-arrow'>&#8678;</button>
         {pagesButtons.map((page:any) => page)}
-        <button onClick={()=>{setPageOffset(pageOffset < posts.length? pageOffset+10: pageOffset)}} className='arrow-buttons'>&#8680;</button>
+        <button onClick={()=>{setPageOffset(pageOffset < posts.length? pageOffset+10: pageOffset)}} className='arrow-buttons' id='right-arrow'>&#8680;</button>
       </div>
       <div className="search-results">
         <div className="card-view">
@@ -154,10 +154,10 @@ const Search = () => {
           <h3>Search Options</h3>
           <div className="search-control">
             <label htmlFor="search-seeking">I am:</label>
-            <Dropdown options={seekingOptions} onChange={({value}) => setSeeking(value)}/>
+            <Dropdown className='search-seeking-dropdown' options={seekingOptions} onChange={({value}) => setSeeking(value)}/>
           </div>
           <div className="search-control">
-            <label htmlFor="search-seeking">Genre:</label>
+            <label htmlFor="search-genre">Genre:</label>
             <Dropdown options={genreOptions? genreOptions.map((i:any) => capitalize(i.genre)): []} onChange={({value}) => setGenre(uncapitalize(value))}/>
           </div>
           <div className="search-control">
@@ -166,7 +166,7 @@ const Search = () => {
           </div>
           <div className="search-control">
             <label htmlFor="search-zipcode">Zip Code:</label>
-            <input type="text" placeholder='e.g., 99999' onChange={(event) => setZipcode(event.target.value)}/>
+            <input className='search-zipcode-input' type="text" placeholder='e.g., 99999' onChange={(event) => setZipcode(event.target.value)}/>
           </div>
           <div className="search-control">
             <label htmlFor="search-area">Radius: {searchRadius} {searchRadius === '1'? 'mile': 'miles'}</label>

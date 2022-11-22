@@ -33,7 +33,7 @@ const PostCard = ({ post }:any) => {
                 <div className="post-card-content-left">
                     <span>Genres: {getGenreSelections(post.genres)}</span>
                     <span>Instruments: {getInstrumentSelections(post.instruments)}</span>
-                    <span>Seeking: {capitalize(post.seeking)}</span>
+                    <span id='card-content-seeking'>Seeking: {capitalize(post.seeking)}</span>
                 </div>
                 <div className="post-card-content-right">
                     <span>{post.city}, {post.state} {post.zipcode}</span>
