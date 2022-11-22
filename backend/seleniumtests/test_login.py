@@ -35,7 +35,7 @@ class LoginTestCase(StaticLiveServerTestCase):
 
         password_input = driver.find_element(By.ID, 'sign-in-password')
         password_input.send_keys('testpassword123')
-        
+
         driver.find_element(By.ID, 'sign-in-button').click()
 
         # Wait for landing page to load
@@ -57,10 +57,9 @@ class LoginTestCase(StaticLiveServerTestCase):
 
         password_input = driver.find_element(By.ID, 'sign-in-password')
         password_input.send_keys('wrongpassword')
-        
+
         driver.find_element(By.ID, 'sign-in-button').click()
         error_text = driver.find_element(By.ID, 'error-message')
 
         self.assertEqual(driver.current_url, self.live_server_url + '/login')
         self.assertEqual(error_text.text, 'Username and/or password incorrect')
-

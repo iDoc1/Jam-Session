@@ -3,7 +3,6 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
 from accounts.models import UserAccount
 from instruments.models import Instrument
 from genres.models import Genre
@@ -35,7 +34,7 @@ class ProfileTestCase(StaticLiveServerTestCase):
 
     def test_enter_profile_details(self):
         """
-        User logs in, navigates to proflied edit page, enters their profile details, 
+        User logs in, navigates to proflied edit page, enters their profile details,
         then submits. Check that user is navigated back to profile page after successful
         submission.
         """
@@ -47,7 +46,7 @@ class ProfileTestCase(StaticLiveServerTestCase):
 
         password_input = driver.find_element(By.ID, 'sign-in-password')
         password_input.send_keys('testpassword123')
-        
+
         driver.find_element(By.ID, 'sign-in-button').click()
 
         # Wait for landing page to load
@@ -89,7 +88,7 @@ class ProfileTestCase(StaticLiveServerTestCase):
         driver.find_element(By.XPATH, "//div[@class='Dropdown-option' and text()='Guitar']").click()
         driver.find_element(By.CSS_SELECTOR, 'div.edit-experience-level').click()
         driver.find_element(By.XPATH, "//div[@class='Dropdown-option' and text()='Beginner']").click()
-        
+
         # Select seeking instrument
         driver.find_element(By.CSS_SELECTOR, 'div.edit-seeking-dropdown').click()
         driver.find_element(By.XPATH, "//div[@class='Dropdown-option' and text()='Guitar']").click()
