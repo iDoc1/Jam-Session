@@ -36,7 +36,7 @@ const NewPostPage = () => {
     }
 
     const handleSeekingChange = (option:any) => {
-        setSeeking(option.value === 'musicians'? 'musicians': 'bands');
+        setSeeking(option.value === 'Musicians'? 'musicians': 'bands');
     }
 
     const handleSubmit = async (event:any) => {

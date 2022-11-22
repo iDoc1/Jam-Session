@@ -2,12 +2,18 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import LandingPage from './LandingPage'
+import {BrowserRouter as Router} from 'react-router-dom';
+
 
 describe('<LandingPage/> component', () => {
   
     let container:any;
     beforeEach(() => {
-      container = render(<LandingPage/>).container;
+      container = render(
+        <Router>
+           <LandingPage/> 
+        </Router>
+      ).container;
     })
     
     test('Landing page is rendered', () => {

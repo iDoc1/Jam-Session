@@ -31,6 +31,7 @@ const Search = () => {
     if (resJSON) {
         setPosts(resJSON)
         setSearchParams(searchParams)
+        getPages(resJSON.length)
     }
   },[state])
 
@@ -99,6 +100,7 @@ const Search = () => {
     setPosts(resJSON)
     setSearchParams(`${zipcode} | ${searchRadius} ${searchRadius === '1'? 'mile': 'miles'}`)
     getPages(resJSON.length);
+    setPageOffset(offset);
   }
 
   
@@ -116,7 +118,7 @@ const Search = () => {
     const result = [];
 
     for (let i = 0; i < totalPages; i++) {
-      result.push(<button key={`page ${i+1}`} onClick={()=> setPageOffset((i+1)*offset)}>{i+1}</button>)
+      result.push(<button className='number-buttons' key={`page ${i+1}`} onClick={()=> setPageOffset((i+1)*offset)}>{i+1}</button>)
     }
 
     setPagesButtons(result)
@@ -135,9 +137,9 @@ const Search = () => {
           <span>{searchParams? searchParams: ''}</span>
       </div>
       <div className="search-page-buttons">
-        <button onClick={()=>setPageOffset(Math.max(10, pageOffset-10))}>&#8592;</button>
+        <button onClick={()=>setPageOffset(Math.max(10, pageOffset-10))} className='arrow-buttons'>&#8678;</button>
         {pagesButtons.map((page:any) => page)}
-        <button onClick={()=>{setPageOffset(pageOffset < posts.length? pageOffset+10: pageOffset)}}>&#8594;</button>
+        <button onClick={()=>{setPageOffset(pageOffset < posts.length? pageOffset+10: pageOffset)}} className='arrow-buttons'>&#8680;</button>
       </div>
       <div className="search-results">
         <div className="card-view">
