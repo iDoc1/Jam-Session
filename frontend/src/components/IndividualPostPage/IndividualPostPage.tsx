@@ -3,7 +3,7 @@ import './IndividualPostPage.css'
 import React, { useEffect, useState, useCallback } from 'react'
 import Comment from '../Comment/Comment';
 import { Genres, Post, IndividualComment } from '../../types'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 
@@ -65,18 +65,28 @@ const defaultPost = {
 
 function IndividualPostPage() {
     const { state } = useLocation();
+    const navigate = useNavigate();
     const [post, setPost] = useState<Post | any>(defaultPost);
-    console.log(post)
     const [commentsList, setCommentsList] = useState<any>(defaultPost.comments);
     const [comment, setComment] = useState('');
+    const [currentUserID, setCurrentUserID] = useState(null);
 
-    const getPost =  useCallback(() => {
+    const getPost =  useCallback(async () => {
         const { resJSON } = state || {};
-        if (resJSON) {
-            setPost(resJSON)
-            setCommentsList(resJSON.comments)
-        }
-  
+        if (!resJSON) return
+        
+        setPost(resJSON)
+        setCommentsList(resJSON.comments)
+
+        const res = await fetch(`/auth/users/me/`,{
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            },
+        })        
+        const currentUser = await res.json()
+        setCurrentUserID(currentUser.id)
     },[state])
 
     const capitalize = (string: string) => {
@@ -126,6 +136,21 @@ function IndividualPostPage() {
         
     }
 
+    const handleDelete = async () => {
+        if (window.confirm('Are you sure you want to delete this post?')){
+            const res = await fetch(`/api/posts/${post.id}/`,{
+                method: 'DELETE',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': `JWT ${localStorage.getItem('access')}`
+                },
+            })
+            if (res.ok) {
+                navigate('/search');
+            } 
+        }
+    }
+
     useEffect(() => {
       getPost();
     }, [getPost])
@@ -147,6 +172,7 @@ function IndividualPostPage() {
                 </div>
                 <div className="post-content-body">
                     <span className='content-body'>{post.content}</span>
+                    {post.owner_user_id === currentUserID? <button className='post-delete-button' onClick={handleDelete}>Delete</button>: null}
                 </div>
                 <div className="comments">
                     <h3>Comments</h3>
