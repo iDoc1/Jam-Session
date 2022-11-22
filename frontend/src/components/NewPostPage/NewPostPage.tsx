@@ -51,7 +51,6 @@ const NewPostPage = () => {
             "instruments": seeking === 'musicians'? profile.seeking: profile.instruments.map((inst:any) => inst.instrument),
             "genres": profile.genres
         }
-        console.log(data);
         
         const res = await fetch(`/api/posts/`,{
             method: 'POST',
@@ -62,7 +61,6 @@ const NewPostPage = () => {
             body: JSON.stringify(data)
           })
         const resJSON = await res.json();
-        // console.log(resJSON);
         if (res.ok){
             navigate(`/post/${resJSON.id}`, {state: {resJSON}});
         }
