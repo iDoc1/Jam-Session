@@ -2,12 +2,11 @@ import React from 'react'
 import './PostCard.css'
 import { Genres } from '../../types'
 import { useNavigate } from 'react-router-dom'
+import { capitalize } from '../../helpers/helpers'
 
 const PostCard = ({ post }:any) => {
     const navigate = useNavigate();
-    const capitalize = (string: string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1)
-    }
+
     const getGenreSelections = (genres:any) => {
         let genreString = '';
         genres.map((x: Genres) => genreString += capitalize(x.genre) + ', ');

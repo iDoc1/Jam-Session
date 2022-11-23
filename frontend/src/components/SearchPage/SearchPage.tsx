@@ -3,6 +3,7 @@ import './SearchPage.css'
 import Dropdown from 'react-dropdown'
 import PostCard from '../PostCard/PostCard'
 import { useLocation } from 'react-router-dom'
+import { seekingOptions, capitalize, uncapitalize } from '../../helpers/helpers'
 
 const Search = () => {
   const [instrumentOptions, setInstrumentOptions] = useState([]);
@@ -20,11 +21,6 @@ const Search = () => {
   const [pagesButtons, setPagesButtons] = useState<any>([]);
   const [error, setError] = useState('');
   const { state } = useLocation();
-
-  const seekingOptions = [
-    'Musician looking for band',
-    'Band looking for members'
-  ]
 
   const getPosts =  useCallback(() => {
     const { resJSON, searchParams } = state || {};
@@ -57,14 +53,6 @@ const Search = () => {
       });
     const resJSON = await res.json();
     setGenreOptions(resJSON);
-  }
-
-  const capitalize = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1)
-}
-
-  const uncapitalize = (string: string) => {
-      return string.charAt(0).toLowerCase() + string.slice(1)
   }
 
   const handleUpdateSearch = async () => {

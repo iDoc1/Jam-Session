@@ -3,6 +3,7 @@ import "../globalStyle.css"
 import './NewPostPage.css'
 import { Profile } from '../../types'
 import { useNavigate } from 'react-router-dom'
+import { uncapitalize } from '../../helpers/helpers'
 
 import Dropdown from 'react-dropdown'
 
@@ -109,10 +110,6 @@ const NewPostPage = () => {
 
         // Profile is valid
         return true
-    }
-
-    const uncapitalize = (string: string) => {
-        return string.charAt(0).toLowerCase() + string.slice(1)
     }
 
     const retrieveProfile = () => {

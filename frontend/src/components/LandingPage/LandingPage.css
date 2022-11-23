@@ -49,3 +49,8 @@
     font-size: 18px;
     font-weight: bold;
 }
+
+.landing-page-attribution, .landing-page-attribution a {
+    color: white;
+    font-size: 12px;
+}

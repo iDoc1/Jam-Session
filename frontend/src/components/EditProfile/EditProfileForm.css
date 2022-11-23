@@ -36,5 +36,15 @@
   .form-group {
     display: flex;
     flex-direction: column;
-    /* flexbox is sued to palce the label and input below each other and allows the input to fill out the entrie width */
+  }
+
+  .form-group label {
+    font-weight: bold;
+  }
+
+  .top-instruments-text {
+    margin-top: 3rem;
+    margin-bottom: 0;
+    font-size: 20px;
+    font-weight: bold;
   }

@@ -3,20 +3,20 @@ import { useState, useEffect } from 'react';
 import './LandingPage.css'
 import Dropdown from 'react-dropdown'
 import 'react-dropdown/style.css';
+import { capitalize, uncapitalize, seekingOptions } from '../../helpers/helpers';
 
 import { useNavigate } from 'react-router-dom';
 
 export default function LandingPage() {
-    const seekingOptions = [
-        'Musician looking for band',
-        'Band looking for members'
-    ]
+
     
     const [instrumentOptions, setInstrumentOptions] = useState([]);
+
     const [seeking, setSeeking] = useState('');
     const [instrument, setInstrument] = useState('');
     const [zipcode, setZipcode] = useState('');
     const [searchRadius, setSearchRadius] = useState('25');
+
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
@@ -73,20 +73,17 @@ export default function LandingPage() {
         setInstrumentOptions(resJSON);
       }
 
-      const capitalize = (string: string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1)
-    }
-    
-      const uncapitalize = (string: string) => {
-          return string.charAt(0).toLowerCase() + string.slice(1)
-      }
-
     useEffect(() => {
       getInstrumentOptions();
     },[])
+
     return (
         <div className="container">
-            <img src={JamBand} alt="" className='landing-image' />
+            <div>
+                <img src={JamBand} alt="" className='landing-image' />
+                <span className='landing-page-attribution'>Photo by <a href="https://unsplash.com/@markomons?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Marco Mons</a> on <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></span>
+
+            </div>
             <h3 className='landing-slogan'>Connect with fellow musicians</h3>
             <div className='landing-inputs'>
                 <div>
