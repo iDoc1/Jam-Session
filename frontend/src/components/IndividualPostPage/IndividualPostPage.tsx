@@ -4,71 +4,17 @@ import React, { useEffect, useState, useCallback } from 'react'
 import Comment from '../Comment/Comment';
 import { Genres, Post, IndividualComment } from '../../types'
 import { useLocation, useNavigate } from 'react-router-dom';
-
-
-
-const defaultPost = {
-    "comments": [
-        {
-            "id": 0,
-            "user": 0,
-            "user_profile_id": 0,
-            "user_first_name": "Commenter",
-            "user_last_name": "Name",
-            "post": 0,
-            "content": "Sample Comment",
-            "comment_date": "2022-11-19T05:14:36.053206Z"
-        }
-    ],
-    "content" : "Sample content body",
-    "genres": [
-        {
-            "id": 2,
-            "genre": "rock"
-        },
-        {
-            "id": 3,
-            "genre": "metal"
-        },
-        {
-            "id": 4,
-            "genre": "r&b"
-        }
-    ],
-    "id": 0,
-    "owner_user_id": 0,
-    "owner_profile_id": 0,
-    "owner_first_name": "Sample",
-    "owner_last_name": "Name",
-    "instruments": [
-        {
-            "id": 6,
-            "name": "vocals"
-        },
-        {
-            "id": 8,
-            "name": "guitar"
-        },
-        {
-            "id": 11,
-            "name": "brass"
-        }
-    ],
-    "posted_date": "2022-11-19T05:13:44.853348Z",
-    "seeking": "musicians",
-    "title": "Sample Post Title",
-    "user": 0,
-    "zipcode": "99999",
-    "city": "City",
-    "state": "State"
-}
+import { capitalize, defaultPost } from '../../helpers/helpers';
 
 function IndividualPostPage() {
     const { state } = useLocation();
     const navigate = useNavigate();
+
     const [post, setPost] = useState<Post | any>(defaultPost);
     const [commentsList, setCommentsList] = useState<any>(defaultPost.comments);
+
     const [comment, setComment] = useState('');
+    
     const [currentUserID, setCurrentUserID] = useState(null);
 
     const getPost =  useCallback(async () => {
@@ -88,10 +34,6 @@ function IndividualPostPage() {
         const currentUser = await res.json()
         setCurrentUserID(currentUser.id)
     },[state])
-
-    const capitalize = (string: string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1)
-    }
 
     const getGenreSelections = (genres:Genres[]) => {
         if (!genres) return

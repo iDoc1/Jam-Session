@@ -22,8 +22,9 @@ export default function Activate() {
                     'Content-type': 'application/json; charset=UTF-8',
                 }
             })
-            
-            setValidated(true)
+            if (res.ok) {
+                setValidated(true)
+            }
         }
         
     }
