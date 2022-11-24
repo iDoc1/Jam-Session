@@ -4,10 +4,13 @@
 name: Python application
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
+  workflow_run:
+    workflows: ["Node.js CI"]
+    types: [completed]
 
 permissions:
   contents: read
