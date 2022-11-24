@@ -65,7 +65,7 @@ class UserProfileSerializer(NestedUpdateMixin, serializers.ModelSerializer):
     instruments = UserInstrumentSerializer(source='userinstruments', many=True)
     gender = GenderSerializer()
     level_of_commitment = CommitmentLevelSerializer()
-    social_media = SocialMediaLinkSerializer(source='socialmedia', many=True, read_only=True)
+    social_media = SocialMediaLinkSerializer(source='user.social_media', many=True, read_only=True)
     music_samples = MusicSampleSerializer(source='user.music_sample', many=True, read_only=True)
 
     try:
@@ -75,7 +75,7 @@ class UserProfileSerializer(NestedUpdateMixin, serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('id', 'first_name', 'last_name', 'full_name', 'gender', 'birth_date', 'age',
+        fields = ('id', 'user', 'first_name', 'last_name', 'full_name', 'gender', 'birth_date', 'age',
                   'zipcode', 'city', 'state', 'profile_picture', 'join_date', 'years_playing',
                   'level_of_commitment', 'seeking', 'instruments', 'genres', 'music_samples',
                   'social_media')
@@ -91,7 +91,7 @@ class PublicUserProfileSerializer(serializers.ModelSerializer):
     instruments = UserInstrumentSerializer(source='userinstruments', many=True)
     gender = GenderSerializer()
     level_of_commitment = CommitmentLevelSerializer()
-    social_media = SocialMediaLinkSerializer(source='socialmedia', many=True, read_only=True)
+    social_media = SocialMediaLinkSerializer(source='user.social_media', many=True, read_only=True)
     music_samples = MusicSampleSerializer(source='user.music_sample', many=True, read_only=True)
 
     try:
