@@ -10,7 +10,8 @@ on:
   #   branches: [ "main" ]
   workflow_run:
     workflows: ["Node.js CI"]
-    types: [completed]
+    types:
+      - completed
 
 permissions:
   contents: read
@@ -19,7 +20,7 @@ env:
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
 jobs:
-  build:
+  notify:
 
     runs-on: ubuntu-latest
 
