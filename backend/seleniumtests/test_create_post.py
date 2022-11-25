@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from unittest import skip
 from accounts.models import UserAccount
 from instruments.models import Instrument
 from genres.models import Genre
@@ -45,6 +46,7 @@ class CreatePostTestCase(StaticLiveServerTestCase):
     def tearDown(self):
         self.driver.quit()
 
+    @skip('Do not include selenium tests in pipeline')
     def test_add_post(self):
         """
         Navigate to new post page then add a new post
