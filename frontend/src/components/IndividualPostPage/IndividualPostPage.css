@@ -40,6 +40,8 @@ hr {
 
 .post-content-body { 
     margin: 3rem 4rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .content-body {
@@ -47,6 +49,22 @@ hr {
     font-size: 18px;
 
 }
+
+.post-delete-button {
+    background-color: red;
+    width: 5rem;
+    margin-top: 2rem;
+}
+
+.post-delete-button:hover {
+    background-color: darkred;
+}
+
+.post-user-name:hover {
+    cursor:pointer;
+    text-decoration: underline;
+}
+
 .comments h3 {
     margin: 0rem 3rem .5rem;
 }

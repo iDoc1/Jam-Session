@@ -3,10 +3,11 @@ import "../globalStyle.css"
 import './NewPostPage.css'
 import { Profile } from '../../types'
 import { useNavigate } from 'react-router-dom'
+import { uncapitalize } from '../../helpers/helpers'
 
 import Dropdown from 'react-dropdown'
 
-function NewPostPage() {
+const NewPostPage = () => {
     const ref = useRef<HTMLTextAreaElement>(null);
 
     const [postTitle, setPostTitle] = useState('');
@@ -36,7 +37,7 @@ function NewPostPage() {
     }
 
     const handleSeekingChange = (option:any) => {
-        setSeeking(option.value);
+        setSeeking(option.value === 'Musicians'? 'musicians': 'bands');
     }
 
     const handleSubmit = async (event:any) => {
@@ -48,9 +49,10 @@ function NewPostPage() {
             "seeking": uncapitalize(seeking),
             "content": postContent,
             "zipcode": profile.zipcode,
-            "instruments": seeking === 'Musicians'? profile.seeking: profile.instruments,
+            "instruments": seeking === 'musicians'? profile.seeking: profile.instruments.map((inst:any) => inst.instrument),
             "genres": profile.genres
         }
+        
         const res = await fetch(`/api/posts/`,{
             method: 'POST',
             headers: {
@@ -60,7 +62,6 @@ function NewPostPage() {
             body: JSON.stringify(data)
           })
         const resJSON = await res.json();
-        // console.log(resJSON);
         if (res.ok){
             navigate(`/post/${resJSON.id}`, {state: {resJSON}});
         }
@@ -109,10 +110,6 @@ function NewPostPage() {
 
         // Profile is valid
         return true
-    }
-
-    const uncapitalize = (string: string) => {
-        return string.charAt(0).toLowerCase() + string.slice(1)
     }
 
     const retrieveProfile = () => {
