@@ -21,6 +21,10 @@
     margin-top: 1rem;
 }
 
+.post-card-title h3:hover, .post-card-title h4:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
 .post-card hr {
     width: 100%;
 }

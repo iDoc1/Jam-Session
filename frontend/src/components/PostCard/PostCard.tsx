@@ -6,7 +6,7 @@ import { capitalize } from '../../helpers/helpers'
 
 const PostCard = ({ post }:any) => {
     const navigate = useNavigate();
-
+    
     const getGenreSelections = (genres:any) => {
         let genreString = '';
         genres.map((x: Genres) => genreString += capitalize(x.genre) + ', ');
@@ -21,11 +21,25 @@ const PostCard = ({ post }:any) => {
         return instrumentString;
     }
     
+    const handleNavigateProfile = async () => {
+        const res = await fetch( `/api/profiles/${post.owner_user_id}/`,{
+           method: 'GET',
+           headers: {
+               'Content-type': 'application/json',
+               'Authorization': `JWT ${localStorage.getItem('access')}`
+           }
+       })
+       const resJSON = await res.json()
+       
+       navigate(`/profile/${post.owner_user_id}`, {state: {resJSON}});
+       
+   }
+
     return (
-        <div className='post-card' onClick={()=> navigate(`/post/${post.id}`, {state: {'resJSON': post}})}>
+        <div className='post-card' >
             <div className="post-card-title">
-                <h3>{post.title}</h3>
-                <h4>{post.owner_first_name} {post.owner_last_name}</h4>
+                <h3 onClick={()=> navigate(`/post/${post.id}`, {state: {'resJSON': post}})}>{post.title}</h3>
+                <h4 onClick={handleNavigateProfile}>{post.owner_first_name} {post.owner_last_name}</h4>
             </div>
             <hr />
             <div className="post-card-content">

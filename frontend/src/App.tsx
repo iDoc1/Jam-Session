@@ -90,6 +90,7 @@ function App() {
         <Route path='post/:id' element={<IndividualPostPage />}/>
         <Route element={<PrivateWrapper isAuthenticated={isAuthenticated} loading={loading} />}>
           <Route path='/profile' element={<ProfilePage />} />
+          <Route path='/profile/:id' element={<ProfilePage />} />
           <Route path='/profile/edit' element={<EditProfile />} />
           <Route path='/new-post' element={<NewPostPage />} />
         </Route>

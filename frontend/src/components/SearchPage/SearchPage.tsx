@@ -35,8 +35,7 @@ const Search = () => {
     const res = await fetch('/api/instruments/', {
         method: 'GET',
         headers: {
-          'Content-type': 'application/json',
-          'Authorization': `JWT ${localStorage.getItem('access')}`
+          'Content-type': 'application/json'
         }
       });
     const resJSON = await res.json();
@@ -47,8 +46,7 @@ const Search = () => {
     const res = await fetch('/api/genres/', {
         method: 'GET',
         headers: {
-          'Content-type': 'application/json',
-          'Authorization': `JWT ${localStorage.getItem('access')}`
+          'Content-type': 'application/json'
         }
       });
     const resJSON = await res.json();

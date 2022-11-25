@@ -92,6 +92,20 @@ function IndividualPostPage() {
         }
     }
 
+    const handleNavigateProfile = async () => {
+        const res = await fetch( `/api/profiles/${post.owner_user_id}/`,{
+           method: 'GET',
+           headers: {
+               'Content-type': 'application/json',
+               'Authorization': `JWT ${localStorage.getItem('access')}`
+           }
+       })
+       const resJSON = await res.json()
+       
+       navigate(`/profile/${post.owner_user_id}`, {state: {resJSON}});
+       
+   }
+
     useEffect(() => {
       getPost();
     }, [getPost])
@@ -101,7 +115,7 @@ function IndividualPostPage() {
             <div className="post-banner">
                 <h2>{post.title}</h2>
                 <div className="post-name-location">
-                    <h2>{post.owner_first_name} {post.owner_last_name}</h2>
+                    <h2 className = 'post-user-name' onClick={handleNavigateProfile}>{post.owner_first_name} {post.owner_last_name}</h2>
                     <h4><span className='normal-weight'>{post.city}, {post.state} {post.zipcode}</span></h4>
                 </div>
             </div>

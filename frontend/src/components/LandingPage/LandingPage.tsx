@@ -66,7 +66,6 @@ export default function LandingPage() {
             method: 'GET',
             headers: {
               'Content-type': 'application/json',
-              'Authorization': `JWT ${localStorage.getItem('access')}`
             }
           });
         const resJSON = await res.json();
