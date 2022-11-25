@@ -27,7 +27,7 @@ export default function ProfilePage() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const getProfile = async () => {
+    const getProfile = useCallback(async () => {
         const res = await fetch('/api/profiles/',{
             method: 'GET',
             headers: {
@@ -40,9 +40,10 @@ export default function ProfilePage() {
           if (res.status === 200) {
                 setProfile(jsonRes[0]);
                 setPlaylist(jsonRes.music_samples)
+                parseSocials(jsonRes.social_media)
                 window.localStorage.setItem('loggedJamSessionProfile', JSON.stringify(jsonRes))
           }
-    }
+    },[])
 
     const getAge = (dateString:string) => {
         var today = new Date();
@@ -104,19 +105,6 @@ export default function ProfilePage() {
         return seekingString
     }
 
-    const getSocialLinks = useCallback(async () => {
-        const res = await fetch('/api/social-media/', {
-            method: 'GET',
-            headers: {
-              'Content-type': 'application/json',
-              'Authorization': `JWT ${localStorage.getItem('access')}`
-            }
-          });
-        const resJSON = await res.json();
-
-        parseSocials(resJSON);
-    },[])
-
     const parseSocials = (obj:any) => {
         const facebookObject:SocialMedia = obj.filter((s:SocialMedia) => s?.social_media_site === 'facebook')[0]
         if (facebookObject) {
@@ -177,6 +165,7 @@ export default function ProfilePage() {
             setProfile(resJSON);
             setProfilePicture(resJSON.profile_picture? resJSON.profile_picture.image_file: DefaultProfilePic);
             setPlaylist(resJSON.music_samples);
+            parseSocials(resJSON.social_media)
             return
             
         } 
@@ -196,14 +185,14 @@ export default function ProfilePage() {
             setProfile(profileJSON);
             setProfilePicture(profileJSON.profile_picture? profileJSON.profile_picture.image_file: '');
             setPlaylist(profileJSON.music_samples);
+            parseSocials(profileJSON.social_media)
         }
         console.log('4');
         
-        getSocialLinks();
         getProfilePicture();
         console.log('5');
         
-    },[profile, getSocialLinks, getUserID, id, state])
+    },[profile, currentUserID, getUserID, getProfile, id, state])
 
     return (
         <div className='profile'>
