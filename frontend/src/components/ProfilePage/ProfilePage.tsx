@@ -12,7 +12,7 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { Profile, SocialMedia } from '../../types'
 
 
-export default function ProfilePage() {
+export default function ProfilePage({testing = false}:any) {
     const [profile, setProfile] = useState<Profile | undefined>(undefined);
     const [profilePicture, setProfilePicture] = useState('');
     const [currentUserID, setCurrentUserID] = useState(null);
@@ -155,12 +155,10 @@ export default function ProfilePage() {
     },[])
 
     useEffect(() => {
-        console.log(id);
         
         getUserID();
         const { resJSON } = state || {};
         if (resJSON && id) {
-            console.log('state parse');
             
             setProfile(resJSON);
             setProfilePicture(resJSON.profile_picture? resJSON.profile_picture.image_file: DefaultProfilePic);
@@ -170,27 +168,21 @@ export default function ProfilePage() {
             
         } 
         const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
-        console.log('1');
         
         if (!loggedProfileString) {
             getProfile();
             return
         }
-        console.log('2');
         
         if (profile?.id !== currentUserID) {
-            console.log('3');
-            
             const profileJSON:Profile = JSON.parse(loggedProfileString);
             setProfile(profileJSON);
             setProfilePicture(profileJSON.profile_picture? profileJSON.profile_picture.image_file: '');
             setPlaylist(profileJSON.music_samples);
             parseSocials(profileJSON.social_media)
         }
-        console.log('4');
         
         getProfilePicture();
-        console.log('5');
         
     },[profile, currentUserID, getUserID, getProfile, id, state])
 
@@ -203,7 +195,7 @@ export default function ProfilePage() {
                             <h1>{profile?.first_name} {profile?.last_name}</h1>
                             <h3>Musician in {profile?.zipcode}</h3>
                         </div>
-                        {currentUserID === profile?.id?<button onClick={()=>navigate('/profile/edit')}>Edit Profile</button>:null}
+                        {testing || currentUserID === profile?.id?<button onClick={()=>navigate('/profile/edit')}>Edit Profile</button>:null}
                     </div>
                     <div className="banner-socials">
                         {
@@ -238,7 +230,7 @@ export default function ProfilePage() {
                 </div>
                 <div className='user-about'>
                     <div className='picture-container'>
-                        {currentUserID === profile?.id?<ProfilePictureModal setPicture={setProfilePicture} />:null}
+                        {testing || currentUserID === profile?.id?<ProfilePictureModal setPicture={setProfilePicture} />:null}
                         {
                             profilePicture?
                                 <div className="profile-picture-container">
@@ -274,7 +266,7 @@ export default function ProfilePage() {
                     <div className="music-player">
                         <div className='music-sample-title'>
                             <h2>Music Sample</h2>
-                            {currentUserID === profile?.id?<UploadMusicModal playlist={playlist} setPlaylist={setPlaylist}/>:null}
+                            {testing || currentUserID === profile?.id?<UploadMusicModal playlist={playlist} setPlaylist={setPlaylist}/>:null}
                         </div>
                         <Player playlist={playlist} />
                     </div>
