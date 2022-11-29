@@ -3,7 +3,6 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from unittest import skip
 from accounts.models import UserAccount
 
 
@@ -24,7 +23,6 @@ class LoginTestCase(StaticLiveServerTestCase):
     def tearDown(self):
         self.driver.quit()
 
-    @skip('Do not include selenium tests in pipeline')
     def test_login(self):
         """
         Logs an existing user in and routes to home screen
@@ -47,7 +45,6 @@ class LoginTestCase(StaticLiveServerTestCase):
 
         self.assertEqual(driver.current_url, self.live_server_url + '/')
 
-    @skip('Do not include selenium tests in pipeline')
     def test_login_fail(self):
         """
         Attempts to log user in user wrong password
