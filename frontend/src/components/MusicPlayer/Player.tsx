@@ -1,3 +1,16 @@
+/*
+This component was created by following a YouTube tutorial. It has been adapted to be used 
+with TypeScript and adjusted for use in this application
+
+*    Title: audio-player
+*    Author: mathieumedia
+*    Date: June 15th 2022
+*    Availability: 
+        GitHub - https://github.com/mathieumedia/audio-player
+        YouTube - https://www.youtube.com/watch?v=CH2FmLzWKr4
+
+*/
+
 import React, { useState, useEffect, useRef } from 'react'
 import { styled, Typography, Slider, Paper, Stack, Box} from '@mui/material'
 

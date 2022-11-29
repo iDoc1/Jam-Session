@@ -4,63 +4,8 @@ import "./EditProfileForm.css"
 import { Profile, Gender, CommitmentLevel, Genres, Instrument, Instruments, ExperienceLevel, SocialMedia } from '../../types'
 import Dropdown from 'react-dropdown'
 import { useNavigate } from 'react-router-dom';
+import { capitalize, uncapitalize, sampleProfile } from "../../helpers/helpers";
 
-const sampleProfile = {
-    "first_name": "Sample",
-    "last_name": "Profile",
-    "gender": {
-        "id": 1,
-        "gender": "Male"
-    },
-    "birth_date": "1969-06-28",
-    "zipcode": "98102",
-    "years_playing": 5,
-    "level_of_commitment": {
-        "id": 6,
-        "level": "Just for Fun",
-        "rank": 5
-    },
-    "seeking": [
-        {
-            "id": 6,
-            "name": "vocals"
-        },
-        {
-            "id": 8,
-            "name": "guitar"
-        }
-    ],
-    "instruments": [
-        {
-            "instrument": {
-                "id": 5,
-                "name": "drums"
-            },
-            "experience_level": {
-                "id": 5,
-                "level": "Advanced",
-                "rank": 2
-            }
-        },
-        {
-            "instrument": {
-                "id": 3,
-                "name": "bass guitar"
-            },
-            "experience_level": {
-                "id": 7,
-                "level": "Intermediate",
-                "rank": 4
-            }
-        }
-    ],
-    "genres": [
-       {
-            "id": 2,
-            "genre": "rock"
-        }
-    ]
-} 
 
 function EditProfile() {
     const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
@@ -75,9 +20,12 @@ function EditProfile() {
     const [profile, setProfile] = useState<Profile | any>(profileJSON? profileJSON: sampleProfile);
 
     const [genderOptions, setGenderOptions] = useState<Gender[]>([]);
+
     const [commitmentOptions, setCommitmentOptions] = useState<CommitmentLevel[]>([]);
+
     const [genreOptions, setGenreOptions] = useState<Genres[]>([]);
     const [genreSelection, setGenreSelection] = useState<any>([]);
+
     const [instrumentOptions, setInstrumentOptions] = useState<Instrument[]>([]);
     const [experienceLevelOptions, setExperienceLevelOptions] = useState<ExperienceLevel[]>([]);
     const [instrument1, setInstrument1] = useState(profile?.instruments[0]? profile?.instruments[0]: {});
@@ -130,15 +78,6 @@ function EditProfile() {
         }
     }
    
-
-    const capitalize = (string: string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1)
-    }
-
-    const uncapitalize = (string: string) => {
-        return string.charAt(0).toLowerCase() + string.slice(1)
-    }
-
     const getGenderOptions = async () => {
         const res = await fetch('/api/genders/', {
             method: 'GET',
@@ -241,8 +180,8 @@ function EditProfile() {
             const removeDuplicateInstruments = removeOldChoice.filter((i: Instruments) => i.instrument.name !== newInstObj.instrument.name)
             setProfile({...profile, "instruments": [...removeDuplicateInstruments, newInstObj]})
         }
-        
     }
+
     const changeExperience1 = (option:any) => {
         const experienceObject = experienceLevelOptions.filter(x => x.level === option.value)[0]
         const newInstObj = {...instrument1, "experience_level": experienceObject}
@@ -263,8 +202,8 @@ function EditProfile() {
             const removeDuplicateInstruments = removeOldChoice.filter((i: Instruments) => i.instrument.name !== newInstObj.instrument.name)
             setProfile({...profile, "instruments": [...removeDuplicateInstruments, newInstObj]})
         }
-        
     }
+
     const changeExperience2 = (option:any) => {
         const experienceObject = experienceLevelOptions.filter(x => x.level === option.value)[0]
         const newInstObj = {...instrument2, "experience_level": experienceObject}
@@ -285,8 +224,8 @@ function EditProfile() {
             const removeDuplicateInstruments = removeOldChoice.filter((i: Instruments) => i.instrument.name !== newInstObj.instrument.name)
             setProfile({...profile, "instruments": [...removeDuplicateInstruments, newInstObj]})
         }
-        
     }
+
     const changeExperience3 = (option:any) => {
         const experienceObject = experienceLevelOptions.filter(x => x.level === option.value)[0]
         const newInstObj = {...instrument3, "experience_level": experienceObject}
@@ -588,7 +527,7 @@ function EditProfile() {
             <div className="form-group">
                 <label htmlFor="genres">Genre</label>
                 <Dropdown options={genreOptions.map((g: Genres) => capitalize(g.genre))} onChange={addGenreSelection}/>
-                <p>Select top 3 instruments below</p>
+                <p className="top-instruments-text">Select top 3 instruments below</p>
             </div>
             <div className="form-group">
                 <label htmlFor="genre-selection">Genre Selection</label>
@@ -652,4 +591,5 @@ function EditProfile() {
     </div>
     );
 };
+
 export default EditProfile

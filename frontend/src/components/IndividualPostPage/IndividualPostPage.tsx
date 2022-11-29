@@ -3,85 +3,37 @@ import './IndividualPostPage.css'
 import React, { useEffect, useState, useCallback } from 'react'
 import Comment from '../Comment/Comment';
 import { Genres, Post, IndividualComment } from '../../types'
-import { useLocation } from 'react-router-dom';
-
-
-
-const defaultPost = {
-    "comments": [
-        {
-            "id": 0,
-            "user": 0,
-            "user_profile_id": 0,
-            "user_first_name": "Commenter",
-            "user_last_name": "Name",
-            "post": 0,
-            "content": "Sample Comment",
-            "comment_date": "2022-11-19T05:14:36.053206Z"
-        }
-    ],
-    "content" : "Sample content body",
-    "genres": [
-        {
-            "id": 2,
-            "genre": "rock"
-        },
-        {
-            "id": 3,
-            "genre": "metal"
-        },
-        {
-            "id": 4,
-            "genre": "r&b"
-        }
-    ],
-    "id": 0,
-    "owner_user_id": 0,
-    "owner_profile_id": 0,
-    "owner_first_name": "Sample",
-    "owner_last_name": "Name",
-    "instruments": [
-        {
-            "id": 6,
-            "name": "vocals"
-        },
-        {
-            "id": 8,
-            "name": "guitar"
-        },
-        {
-            "id": 11,
-            "name": "brass"
-        }
-    ],
-    "posted_date": "2022-11-19T05:13:44.853348Z",
-    "seeking": "musicians",
-    "title": "Sample Post Title",
-    "user": 0,
-    "zipcode": "99999",
-    "city": "City",
-    "state": "State"
-}
+import { useLocation, useNavigate } from 'react-router-dom';
+import { capitalize, defaultPost } from '../../helpers/helpers';
 
 function IndividualPostPage() {
     const { state } = useLocation();
+    const navigate = useNavigate();
+
     const [post, setPost] = useState<Post | any>(defaultPost);
-    console.log(post)
     const [commentsList, setCommentsList] = useState<any>(defaultPost.comments);
+
     const [comment, setComment] = useState('');
+    
+    const [currentUserID, setCurrentUserID] = useState(null);
 
-    const getPost =  useCallback(() => {
+    const getPost =  useCallback(async () => {
         const { resJSON } = state || {};
-        if (resJSON) {
-            setPost(resJSON)
-            setCommentsList(resJSON.comments)
-        }
-  
-    },[state])
+        if (!resJSON) return
+        
+        setPost(resJSON)
+        setCommentsList(resJSON.comments)
 
-    const capitalize = (string: string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1)
-    }
+        const res = await fetch(`/auth/users/me/`,{
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            },
+        })        
+        const currentUser = await res.json()
+        setCurrentUserID(currentUser.id)
+    },[state])
 
     const getGenreSelections = (genres:Genres[]) => {
         if (!genres) return
@@ -117,7 +69,6 @@ function IndividualPostPage() {
             body: JSON.stringify(data)
         })
         const resJSON = await res.json()
-        console.log(resJSON);
         
         if (res.ok){
             setCommentsList([...commentsList, resJSON])
@@ -125,6 +76,35 @@ function IndividualPostPage() {
         }
         
     }
+
+    const handleDelete = async () => {
+        if (window.confirm('Are you sure you want to delete this post?')){
+            const res = await fetch(`/api/posts/${post.id}/`,{
+                method: 'DELETE',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': `JWT ${localStorage.getItem('access')}`
+                },
+            })
+            if (res.ok) {
+                navigate('/search');
+            } 
+        }
+    }
+
+    const handleNavigateProfile = async () => {
+        const res = await fetch( `/api/profiles/${post.owner_user_id}/`,{
+           method: 'GET',
+           headers: {
+               'Content-type': 'application/json',
+               'Authorization': `JWT ${localStorage.getItem('access')}`
+           }
+       })
+       const resJSON = await res.json()
+       
+       navigate(`/profile/${post.owner_user_id}`, {state: {resJSON}});
+       
+   }
 
     useEffect(() => {
       getPost();
@@ -135,7 +115,7 @@ function IndividualPostPage() {
             <div className="post-banner">
                 <h2>{post.title}</h2>
                 <div className="post-name-location">
-                    <h2>{post.owner_first_name} {post.owner_last_name}</h2>
+                    <h2 className = 'post-user-name' onClick={handleNavigateProfile}>{post.owner_first_name} {post.owner_last_name}</h2>
                     <h4><span className='normal-weight'>{post.city}, {post.state} {post.zipcode}</span></h4>
                 </div>
             </div>
@@ -147,6 +127,7 @@ function IndividualPostPage() {
                 </div>
                 <div className="post-content-body">
                     <span className='content-body'>{post.content}</span>
+                    {post.owner_user_id === currentUserID? <button className='post-delete-button' onClick={handleDelete}>Delete</button>: null}
                 </div>
                 <div className="comments">
                     <h3>Comments</h3>

@@ -53,7 +53,8 @@ export interface Profile {
     level_of_commitment: CommitmentLevel | null,
     years_playing: number,
     join_date: string,
-    seeking: Instrument[]
+    seeking: Instrument[],
+    social_media: any
 }
 
 export interface SocialMedia {

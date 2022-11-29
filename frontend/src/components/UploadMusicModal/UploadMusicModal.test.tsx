@@ -11,7 +11,7 @@ describe('<ProfilePage/> component', () => {
     beforeEach(() => {
       container = render(
         <Router>
-            <ProfilePage/>
+            <ProfilePage testing={true} />
         </Router>
       ).container;
     })

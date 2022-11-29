@@ -11,11 +11,12 @@ class CommentSerializer(serializers.ModelSerializer):
     user_profile_id = serializers.IntegerField(source='user.user_profile.id', read_only=True)
     user_first_name = serializers.CharField(source='user.user_profile.first_name', read_only=True)
     user_last_name = serializers.CharField(source='user.user_profile.last_name', read_only=True)
+    profile_pic = serializers.FileField(source='user.profile_pic.image_file', read_only=True)
 
     class Meta:
         model = Comment
-        fields = ('id', 'user', 'user_profile_id', 'user_first_name',
-                  'user_last_name', 'post', 'content', 'comment_date')
+        fields = ('id', 'user', 'user_profile_id', 'user_first_name', 'user_last_name',
+                  'post', 'content', 'comment_date', 'profile_pic')
         read_only_fields = ('user', 'comment_date')
 
     def create(self, validated_data):

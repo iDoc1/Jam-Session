@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import './ProfilePage.css'
-import ProfilePic from '../../assets/default-profile.png'
+import DefaultProfilePic from '../../assets/default-profile.png'
 import facebookIcon from '../../assets/icons/facebook.png'
 import twitterIcon from '../../assets/icons/twitter.png'
 import instagramIcon from '../../assets/icons/instagram.png'
@@ -8,13 +8,14 @@ import bandcampIcon from '../../assets/icons/bandcamp.png'
 import Player from '../MusicPlayer/Player'
 import ProfilePictureModal from '../ProfilePictureModal/ProfilePictureModal'
 import UploadMusicModal from '../UploadMusicModal/UploadMusicModal'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { Profile, SocialMedia } from '../../types'
 
 
-export default function ProfilePage() {
+export default function ProfilePage({testing = false}:any) {
     const [profile, setProfile] = useState<Profile | undefined>(undefined);
     const [profilePicture, setProfilePicture] = useState('');
+    const [currentUserID, setCurrentUserID] = useState(null);
 
     const [facebookLink, setFacebookLink] = useState<string>('');
     const [twitterLink, setTwitterLink] = useState<string>('');
@@ -22,9 +23,11 @@ export default function ProfilePage() {
     const [bandcampLink, setBandcampLink] = useState<string>('');
     const [playlist, setPlaylist] = useState([]);
 
+    const { state } = useLocation();
+    const { id } = useParams();
     const navigate = useNavigate();
 
-    const getProfile = async () => {
+    const getProfile = useCallback(async () => {
         const res = await fetch('/api/profiles/',{
             method: 'GET',
             headers: {
@@ -37,9 +40,10 @@ export default function ProfilePage() {
           if (res.status === 200) {
                 setProfile(jsonRes[0]);
                 setPlaylist(jsonRes.music_samples)
+                parseSocials(jsonRes.social_media)
                 window.localStorage.setItem('loggedJamSessionProfile', JSON.stringify(jsonRes))
           }
-    }
+    },[])
 
     const getAge = (dateString:string) => {
         var today = new Date();
@@ -101,19 +105,6 @@ export default function ProfilePage() {
         return seekingString
     }
 
-    const getSocialLinks = useCallback(async () => {
-        const res = await fetch('/api/social-media/', {
-            method: 'GET',
-            headers: {
-              'Content-type': 'application/json',
-              'Authorization': `JWT ${localStorage.getItem('access')}`
-            }
-          });
-        const resJSON = await res.json();
-
-        parseSocials(resJSON);
-    },[])
-
     const parseSocials = (obj:any) => {
         const facebookObject:SocialMedia = obj.filter((s:SocialMedia) => s?.social_media_site === 'facebook')[0]
         if (facebookObject) {
@@ -148,24 +139,52 @@ export default function ProfilePage() {
         
         setProfilePicture(resJSON.image_file)
     }
-    useEffect(() => {
-        const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
 
+    const getUserID = useCallback(async () => {
+        const res = await fetch(`/auth/users/me/`,{
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`
+            },
+        })        
+        const currentUser = await res.json();
+        
+        setCurrentUserID(currentUser.id);
+
+    },[])
+
+    useEffect(() => {
+        
+        getUserID();
+        const { resJSON } = state || {};
+        if (resJSON && id) {
+            
+            setProfile(resJSON);
+            setProfilePicture(resJSON.profile_picture? resJSON.profile_picture.image_file: DefaultProfilePic);
+            setPlaylist(resJSON.music_samples);
+            parseSocials(resJSON.social_media)
+            return
+            
+        } 
+        const loggedProfileString = window.localStorage.getItem('loggedJamSessionProfile');
+        
         if (!loggedProfileString) {
             getProfile();
             return
         }
-
-        if (!profile) {
+        
+        if (profile?.id !== currentUserID) {
             const profileJSON:Profile = JSON.parse(loggedProfileString);
             setProfile(profileJSON);
             setProfilePicture(profileJSON.profile_picture? profileJSON.profile_picture.image_file: '');
             setPlaylist(profileJSON.music_samples);
+            parseSocials(profileJSON.social_media)
         }
         
-        getSocialLinks();
         getProfilePicture();
-    },[profile, getSocialLinks])
+        
+    },[profile, currentUserID, getUserID, getProfile, id, state])
 
     return (
         <div className='profile'>
@@ -176,7 +195,7 @@ export default function ProfilePage() {
                             <h1>{profile?.first_name} {profile?.last_name}</h1>
                             <h3>Musician in {profile?.zipcode}</h3>
                         </div>
-                        <button id='edit-profile-button' onClick={()=>navigate('/profile/edit')}>Edit Profile</button>
+                        {testing || currentUserID === profile?.id?<button id='edit-profile-button' onClick={()=>navigate('/profile/edit')}>Edit Profile</button>:null}
                     </div>
                     <div className="banner-socials">
                         {
@@ -211,14 +230,14 @@ export default function ProfilePage() {
                 </div>
                 <div className='user-about'>
                     <div className='picture-container'>
-                        <ProfilePictureModal setPicture={setProfilePicture} />
+                        {testing || currentUserID === profile?.id?<ProfilePictureModal setPicture={setProfilePicture} />:null}
                         {
                             profilePicture?
                                 <div className="profile-picture-container">
                                     <img src={profilePicture} alt="" className='profile-picture'/>
                                 </div>
                             :
-                                <img src={ProfilePic} alt="" className='profile-picture'/>
+                                <img src={DefaultProfilePic} alt="" className='profile-picture'/>
 
                         }
                     </div>
@@ -247,7 +266,7 @@ export default function ProfilePage() {
                     <div className="music-player">
                         <div className='music-sample-title'>
                             <h2>Music Sample</h2>
-                            <UploadMusicModal playlist={playlist} setPlaylist={setPlaylist}/>
+                            {testing || currentUserID === profile?.id?<UploadMusicModal playlist={playlist} setPlaylist={setPlaylist}/>:null}
                         </div>
                         <Player playlist={playlist} />
                     </div>
